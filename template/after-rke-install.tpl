@@ -15,7 +15,7 @@ PASS_API=$1
 #/
 
 
-GET_POD(){
+CHECK_POD(){
     NAMESPACE=$1
     POD_NAME=$2
     
@@ -59,18 +59,20 @@ CHECK_STATUS() {
     if [ -z "${GET_HELM_NAME}" ]
     then
         bash ${SHELL_PATH}
-        GET_POD ${NAMESPACE} ${POD_NAME}
+        CHECK_POD ${NAMESPACE} ${POD_NAME}
         ${ADD_COMMAND}
     fi
 }
 
-INPUT_COMMAND() {
+CHECK_API() {
     SHELL_PATH=$1
     SHELL_NAME=$2
+    
     read -p "[INFO] RUN ${SHELL_NAME} ? [ Y/N ]  : " INPUT
 
     if [ ${INPUT} == Y ] || [ ${INPUT} == y ]
     then
+        echo_api_blue "[API] ${SHELL_NAME} start"
         bash ${SHELL_PATH}/${SHELL_NAME}
 
     fi
@@ -91,7 +93,7 @@ then
     bash ${API_PATH}/rancher-update-password-api-start.sh
 
     echo_api_blue "[API] longhorn-api-start"
-    CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "GET_POD longhorn-system longhorn-manager"
+    CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
 fi
 
 echo_install_green "[INSTALL] mariadb-galera-install"
@@ -101,7 +103,7 @@ echo_install_green "[INSTALL] postgresql-install"
 CHECK_STATUS "helm list" platform postgres ${HELM_PATH}/postgresql/postgresql-install.sh postgres "bash ${HELM_PATH}/sql/SQL_postgresql.sh"
 
 echo_install_green "[INSTALL] harbor-install"
-CHECK_STATUS "helm list" platform harbor ${HELM_PATH}/harbor/harbor-install.sh harbor-registry "GET_POD platform harbor-core"
+CHECK_STATUS "helm list" platform harbor ${HELM_PATH}/harbor/harbor-install.sh harbor-registry "CHECK_POD platform harbor-core"
 
 sleep 10
 
@@ -117,18 +119,13 @@ CHECK_STATUS "helm list" platform keycloak ${HELM_PATH}/keycloak/keycloak-instal
 ## api
 if [ -z $PASS_API ]
 then
-    echo_api_blue "[API] keycloak-api-start"
-    INPUT_COMMAND ${API_PATH} keycloak-api-start.sh
+    CHECK_API ${API_PATH} keycloak-api-start.sh
 
-    echo_api_blue "[API] gitea-api-start"
-    INPUT_COMMAND ${API_PATH} gitea-api-start.sh
+    CHECK_API ${API_PATH} gitea-api-start.sh
 
-    echo_api_blue "[API] harbor-api-start"
-    INPUT_COMMAND ${API_PATH} harbor-api-start.sh
+    CHECK_API ${API_PATH} harbor-api-start.sh
 
-    echo_api_blue "[API] rancher-keycloak-oauth"
-    INPUT_COMMAND ${API_PATH} rancher-keycloak-oauth-api-start.sh
+    CHECK_API ${API_PATH} rancher-keycloak-oauth-api-start.sh
 
-    echo_api_blue "[API] gitea-push"
-    INPUT_COMMAND ${ETC_PATH} gitea-push.sh
+    CHECK_API ${ETC_PATH} gitea-push.sh
 fi

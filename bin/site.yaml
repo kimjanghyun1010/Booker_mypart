@@ -16,7 +16,7 @@ common:
     data: /data
     log: /applog
     ## gitea-push, harbor-login에서 사용
-    workdir: /home/centos/paasxpert-deployment-tool/bin
+    workdir: paasxpert-deployment-tool/bin
   username: centos
   password: crossent1234!
   IP:
