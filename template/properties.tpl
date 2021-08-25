@@ -7,7 +7,7 @@
 # @authors 크로센트
 # @see
 #/
-
+DEFAULT_USER="{{ .common.default_username }}"
 USERNAME="{{ .common.username }}"
 PASSWORD="{{ .common.password }}"
 

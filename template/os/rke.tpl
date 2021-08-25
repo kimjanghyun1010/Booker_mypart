@@ -2,7 +2,6 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-USER="{{ .common.username }}"
 
 HAPROXY=({{ range $element := .common.IP.haproxy }}"{{ $element }}" {{ end }})
 RANCHER=({{ range $element := .common.IP.rancher }}"{{ $element }}" {{ end }})
@@ -47,7 +46,7 @@ do
         let "m += 1"
     cat >>${OS_PATH}/rke/cluster.yml << EOF
       - address: ${master}
-        user: ${USER}
+        user: ${USERNAME}
         role:
           - controlplane
           - etcd
@@ -58,7 +57,7 @@ EOF
         let "m += 1"
     cat >>${OS_PATH}/rke/cluster.yml << EOF
       - address: ${master}
-        user: ${USER}
+        user: ${USERNAME}
         role:
           - controlplane
           - etcd
@@ -75,7 +74,7 @@ do
     let "w += 1"
     cat >>${OS_PATH}/rke/cluster.yml << EOF
       - address: ${worker}
-        user: ${USER}
+        user: ${USERNAME}
         role:
           - worker
         hostname_override: worker${w}

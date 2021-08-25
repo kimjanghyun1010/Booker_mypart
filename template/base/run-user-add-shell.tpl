@@ -3,8 +3,6 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 
-DEFAULT_USER=centos
-
 h=0
 i=0
 r=0

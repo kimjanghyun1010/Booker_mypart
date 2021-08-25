@@ -1,5 +1,5 @@
 #!/bin/sh
-DEFAULT_USER=centos
+DEFAULT_USER="{{ .common.default_username }}"
 USERNAME="{{ .common.username }}"
 PASSWORD="{{ .common.password }}"
 #/
