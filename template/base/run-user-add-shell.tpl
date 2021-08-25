@@ -5,6 +5,9 @@ source {{ .common.directory.app }}/properties.env
 
 DEFAULT_USER=centos
 
+h=0
+i=0
+r=0
 m=0
 w=0
 
@@ -17,63 +20,69 @@ w=0
 # @see
 #/
 
-for host in ${HAPROXY[@]}
-do
-    user_check=$(ssh -o StrictHostKeyChecking=no haproxy "sudo cat  /etc/passwd | grep ${USERNAME}")
+SSH_COMMAND() {
+    NODE_NAME=$1
+    NUM=${2:-""}
+    user_check=$(ssh -o StrictHostKeyChecking=no ${NODE_NAME}${NUM} "sudo cat  /etc/passwd | grep ${USERNAME}")
+    
     if [ "$user_check" == "" ]
     then
-        echo "[INFO] Create haproxy USER"
-        scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@haproxy:~/
-        ssh ${DEFAULT_USER}@haproxy "bash user-add.sh"
+        echo -e "[INFO] Create ${NODE_NAME}${NUM} USER"
+        scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@${NODE_NAME}${NUM}:~/
+        ssh ${DEFAULT_USER}@${NODE_NAME}${NUM} "bash user-add.sh"
+    fi
+}
+
+
+for host in ${HAPROXY[@]}
+do
+    NODE_COUNT=$(echo ${#HAPROXY[@]})
+    ## -lt <
+    if [ 1 -lt ${NODE_COUNT} ]
+    then
+        let "h += 1"
+        SSH_COMMAND haproxy ${h} 
+    else
+        SSH_COMMAND haproxy 
     fi
 done
 
 
 for host in ${INCEPTION[@]}
 do
-    user_check=$(ssh -o StrictHostKeyChecking=no inception "sudo cat  /etc/passwd | grep ${USERNAME}")
-    if [ "$user_check" == "" ]
+    NODE_COUNT=$(echo ${#INCEPTION[@]})
+    ## -lt <
+    if [ 1 -lt ${NODE_COUNT} ]
     then
-        echo "[INFO] Create inception USER"
-        scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@inception:~/
-        ssh ${DEFAULT_USER}@inception "bash user-add.sh"
+        let "i += 1"
+        SSH_COMMAND inception ${i}
+    else
+        SSH_COMMAND inception
     fi
 done
 
 
 for host in ${RANCHER[@]}
 do
-    user_check=$(ssh -o StrictHostKeyChecking=no rancher "sudo cat  /etc/passwd | grep ${USERNAME}")
-    if [ "$user_check" == "" ]
+    NODE_COUNT=$(echo ${#RANCHER[@]})
+    ## -lt <
+    if [ 1 -lt ${NODE_COUNT} ]
     then
-        echo "[INFO] Create rancher USER"
-        scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@rancher:~/
-        ssh ${DEFAULT_USER}@rancher "bash user-add.sh"
+        let "r += 1"
+        SSH_COMMAND rancher ${r}
+    else
+        SSH_COMMAND rancher
     fi
 done
 
 for host in ${MASTER[@]}
 do
     let "m += 1"
-    user_check=$(ssh -o StrictHostKeyChecking=no master${m} "sudo cat  /etc/passwd | grep ${USERNAME}")
-    
-    if [ "$user_check" == "" ]
-    then
-        echo -e "[INFO] Create master${m} USER"
-        scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@master${m}:~/
-        ssh ${DEFAULT_USER}@master${m} "bash user-add.sh"
-    fi
+    SSH_COMMAND master ${m}
 done
 
 for host in ${WORKER[@]}
 do
     let "w += 1"
-    user_check=$(ssh -o StrictHostKeyChecking=no worker${w} "sudo cat  /etc/passwd | grep ${USERNAME}")
-    
-    if [ "$user_check" == "" ]
-    then
-        echo -e "[INFO] Create worker${w} USER"
-        scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@worker${w}:~/
-        ssh ${DEFAULT_USER}@worker${w} "bash user-add.sh"
-    fi
+    SSH_COMMAND worker ${w}
 done
