@@ -115,6 +115,6 @@ gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/function.tpl > 
 gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/properties.tpl > ${APP_PATH}/properties.env
 
 echo "---- helm deploy script directory ----"
-tree -L 3 ${APP_PATH}
+tree -L 4 ${APP_PATH}
 
 
