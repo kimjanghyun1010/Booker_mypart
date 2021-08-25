@@ -52,10 +52,10 @@ then
     echo_yellow "Firewalld svc setting"
 fi 
 
-echo_blue "Common setting"
+# echo_blue "Common setting"
 
-mkdir ${DATA_PATH} ${LOG_PATH}
-chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
+# mkdir ${DATA_PATH} ${LOG_PATH}
+# chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
 echo_yellow "Common setting"
 
 sudo mkdir -p /etc/docker
