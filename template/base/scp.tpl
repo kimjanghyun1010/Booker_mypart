@@ -40,9 +40,10 @@ do
     ssh -o StrictHostKeyChecking=no ${USERNAME}@rancher sudo yum install -y wget 2>&1 >/dev/null
     ssh ${USERNAME}@rancher sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
     scp ${APP_PATH}/function.env ${USERNAME}@rancher:~/
+    scp ${APP_PATH}/properties.env ${USERNAME}@rancher:~/
     scp ${OS_PATH}/common/common.sh ${USERNAME}@rancher:~/
     scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@rancher:~/
-    ssh ${USERNAME}@rancher sed -i 's%/app/%./%g' common.sh
+    ssh ${USERNAME}@rancher sed -i 's%/app/%./%g' common.sh etc-hosts.sh
     ssh ${USERNAME}@rancher sudo bash common.sh
     ssh ${USERNAME}@rancher sudo bash etc-hosts.sh
     ssh ${USERNAME}@rancher "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
@@ -62,9 +63,10 @@ do
     ssh -o StrictHostKeyChecking=no ${USERNAME}@master${m} sudo yum install -y wget 2>&1 >/dev/null
     ssh ${USERNAME}@master${m} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
     scp ${APP_PATH}/function.env ${USERNAME}@master${m}:~/
+    scp ${APP_PATH}/properties.env ${USERNAME}@master${m}:~/
     scp ${OS_PATH}/common/common.sh ${USERNAME}@master${m}:~/
     scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@master${m}:~/
-    ssh ${USERNAME}@master${m} sed -i 's%/app/%./%g' common.sh
+    ssh ${USERNAME}@master${m} sed -i 's%/app/%./%g' common.sh etc-hosts.sh
     ssh ${USERNAME}@master${m} sudo bash common.sh
     ssh ${USERNAME}@master${m} sudo bash etc-hosts.sh
     ssh ${USERNAME}@master${m} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
@@ -84,9 +86,10 @@ do
     ssh -o StrictHostKeyChecking=no ${USERNAME}@worker${w} sudo yum install -y iscsi-initiator-utils wget 2>&1 >/dev/null
     ssh ${USERNAME}@worker${w} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
     scp ${APP_PATH}/function.env ${USERNAME}@worker${w}:~/
+    scp ${APP_PATH}/properties.env ${USERNAME}@worker${w}:~/
     scp ${OS_PATH}/common/common.sh ${USERNAME}@worker${w}:~/
     scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@worker${w}:~/
-    ssh ${USERNAME}@worker${w} sed -i 's%/app/%./%g' common.sh
+    ssh ${USERNAME}@worker${w} sed -i 's%/app/%./%g' common.sh etc-hosts.sh
     ssh ${USERNAME}@worker${w} sudo bash common.sh
     ssh ${USERNAME}@worker${w} sudo bash etc-hosts.sh
     ssh ${USERNAME}@worker${w} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
