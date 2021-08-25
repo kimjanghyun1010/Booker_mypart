@@ -37,8 +37,8 @@ SSH_COMMAND() {
 for host in ${HAPROXY[@]}
 do
     NODE_COUNT=$(echo ${#HAPROXY[@]})
-    ## -lt <
-    if [ 1 -lt ${NODE_COUNT} ]
+    ## -gt >
+    if [ ${NODE_COUNT} -gt 1 ]
     then
         let "h += 1"
         SSH_COMMAND haproxy ${h} 
@@ -51,8 +51,8 @@ done
 for host in ${INCEPTION[@]}
 do
     NODE_COUNT=$(echo ${#INCEPTION[@]})
-    ## -lt <
-    if [ 1 -lt ${NODE_COUNT} ]
+    ## -gt >
+    if [ ${NODE_COUNT} -gt 1 ]
     then
         let "i += 1"
         SSH_COMMAND inception ${i}
@@ -65,8 +65,8 @@ done
 for host in ${RANCHER[@]}
 do
     NODE_COUNT=$(echo ${#RANCHER[@]})
-    ## -lt <
-    if [ 1 -lt ${NODE_COUNT} ]
+    ## -gt >
+    if [ ${NODE_COUNT} -gt 1 ]
     then
         let "r += 1"
         SSH_COMMAND rancher ${r}

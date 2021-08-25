@@ -40,7 +40,9 @@ EOF
 
 for master in ${MASTER[@]}
 do
-    if [ -n ${master} ];
+    NODE_COUNT=$(echo ${#WORKER[@]})
+    ## -gt >
+    if [ ${NODE_COUNT} -gt 0 ]
     then
         let "m += 1"
     cat >>${OS_PATH}/rke/cluster.yml << EOF
@@ -51,22 +53,34 @@ do
           - etcd
         hostname_override: master${m}
 EOF
+
+    else
+        let "m += 1"
+    cat >>${OS_PATH}/rke/cluster.yml << EOF
+      - address: ${master}
+        user: ${USER}
+        role:
+          - controlplane
+          - etcd
+          - worker
+        hostname_override: master${m}
+EOF
+
     fi
+
 done  
     
 for worker in ${WORKER[@]}
 do
-    if [ -n ${worker} ];
-    then
-        let "w += 1"
-    cat >>${OS_PATH}/rke/cluster.yml << EOF
-      - address: ${worker}
-        user: ${USER}
-        role:
-          - worker
-        hostname_override: worker${w}
+    let "w += 1"
+cat >>${OS_PATH}/rke/cluster.yml << EOF
+  - address: ${worker}
+    user: ${USER}
+    role:
+      - worker
+    hostname_override: worker${w}
 EOF
-    fi
+
 done
 
 cat >> ${OS_PATH}/rke/cluster.yml << 'EOF'
@@ -134,9 +148,9 @@ CHECK_RESOURCE() {
 kubectl create namespace rke
 kubectl create secret generic tls-ca --from-file=${APP_PATH}/certs/cacerts.pem -n rke
 kubectl create secret tls tls-rancher-ingress --cert=${APP_PATH}/certs/server-cert.pem --key=${APP_PATH}/certs/server-key.pem -n rke
-kubectl create namespace {{ .global.namespace }}
-kubectl create secret tls platform --key ${APP_PATH}/certs/server-key.pem --cert ${APP_PATH}/certs/server-cert.pem -n  {{ .global.namespace }}
-kubectl create secret generic gitea-cert --from-file=${APP_PATH}/certs/ca-certificates.crt -n  {{ .global.namespace }}
+kubectl create namespace ${GLOBAL_NAMESPACE}
+kubectl create secret tls platform --key ${APP_PATH}/certs/server-key.pem --cert ${APP_PATH}/certs/server-cert.pem -n  ${GLOBAL_NAMESPACE}
+kubectl create secret generic gitea-cert --from-file=${APP_PATH}/certs/ca-certificates.crt -n  ${GLOBAL_NAMESPACE}
 
 EOF
 
