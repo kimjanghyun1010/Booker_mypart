@@ -1,9 +1,7 @@
 #!/bin/sh
-source {{ .common.directory.app }}/function.env
-source {{ .common.directory.app }}/properties.env
-
 DEFAULT_USER=centos
-
+USERNAME="{{ .common.username }}"
+PASSWORD="{{ .common.password }}"
 #/
 # <pre>
 # USERNAME 생성하는 shell

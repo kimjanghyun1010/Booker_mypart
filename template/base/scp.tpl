@@ -65,7 +65,7 @@ do
         let "h += 1"
         SSH_COMMAND haproxy ${h} no
     else
-        SSH_COMMAND haproxy no
+        SSH_COMMAND haproxy "" no
     fi
 
 done

@@ -73,12 +73,12 @@ done
 for worker in ${WORKER[@]}
 do
     let "w += 1"
-cat >>${OS_PATH}/rke/cluster.yml << EOF
-  - address: ${worker}
-    user: ${USER}
-    role:
-      - worker
-    hostname_override: worker${w}
+    cat >>${OS_PATH}/rke/cluster.yml << EOF
+      - address: ${worker}
+        user: ${USER}
+        role:
+          - worker
+        hostname_override: worker${w}
 EOF
 
 done

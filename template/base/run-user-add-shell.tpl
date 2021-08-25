@@ -23,7 +23,7 @@ w=0
 SSH_COMMAND() {
     NODE_NAME=$1
     NUM=${2:-""}
-    user_check=$(ssh -o StrictHostKeyChecking=no ${NODE_NAME}${NUM} "sudo cat  /etc/passwd | grep ${USERNAME}")
+    user_check=$(ssh -o StrictHostKeyChecking=no ${DEFAULT_USER}@${NODE_NAME}${NUM} "sudo cat  /etc/passwd | grep ${USERNAME}")
     
     if [ "$user_check" == "" ]
     then
