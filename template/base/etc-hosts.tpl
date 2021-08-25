@@ -60,3 +60,5 @@ do
                 echo "${worker} worker${w}" >> /etc/hosts
         fi
 done
+
+cat /etc/hosts
