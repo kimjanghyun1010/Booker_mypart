@@ -37,7 +37,7 @@ GITEA_URL={{ .gitea.ingress.cname }}.{{ .global.domain }}
 HARBOR_URL={{ .harbor.ingress.cname }}.{{ .global.domain }}
 KEYCLOAK_URL={{ .keycloak.ingress.cname }}.{{ .global.domain }}
 RANCHER_URL={{ .rancher.cname }}.{{ .global.domain }}
-JENKINS_URL={{ .jennkins.ingress.cname }}.{{ .global.domain }}
+JENKINS_URL={{ .jenkins.ingress.cname }}.{{ .global.domain }}
 PORTAL_URL={{ .portal.ingress.cname }}.{{ .global.domain }}
 
 
