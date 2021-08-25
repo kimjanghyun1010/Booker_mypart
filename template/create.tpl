@@ -53,6 +53,7 @@ GLOBAL_NAMESPACE="{{ .global.namespace }}"
 ##
 ## Main
 echo "package files mv the "${APP_PATH}" directory"
+mkdir ${DATA_PATH} ${LOG_PATH}
 
 # base
 for name in "${BASE_DIR_NAME[@]}"
