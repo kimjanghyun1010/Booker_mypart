@@ -133,17 +133,6 @@ fi
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v{{ .common.kubectl.version }}/bin/linux/amd64/kubectl 
 sudo chmod +x kubectl && sudo cp kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
 
-CHECK_RESOURCE() {
-  CRD=$1
-  NAME=$2
-  check=$(kubectl get ${CRD} ${NAME})
-
-  if [ -z ${check} ]
-  then
-
-  fi
-}
-
 
 kubectl create namespace rke
 kubectl create secret generic tls-ca --from-file=${APP_PATH}/certs/cacerts.pem -n rke
