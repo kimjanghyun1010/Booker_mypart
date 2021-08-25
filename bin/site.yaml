@@ -16,7 +16,7 @@ common:
     data: /data
     log: /applog
     ## gitea-push, harbor-login에서 사용
-    workdir: /home/centos/hkmc.clap-helm-catalog/install_template/bin
+    workdir: /home/centos/paasxpert-deployment-tool/bin
   username: centos
   password: crossent1234!
   IP:
