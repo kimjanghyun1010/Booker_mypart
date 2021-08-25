@@ -11,6 +11,8 @@ ETC_NAME=("gitea-push" "harbor-login" "jenkins-image-push" )
 ## new path
 BASEDIR=$(dirname "$0")
 APP_PATH="{{ .common.directory.app }}"
+DATA_PATH="{{ .common.directory.data }}"
+LOG_PATH="{{ .common.directory.log }}"
 DEPLOY_PATH="{{ .common.directory.app }}/deploy"
 OS_PATH="{{ .common.directory.app }}/deploy/os"
 HELM_PATH="{{ .common.directory.app }}/deploy/helm"
@@ -51,6 +53,7 @@ GLOBAL_NAMESPACE="{{ .global.namespace }}"
 ##
 ## Main
 echo "package files mv the "${APP_PATH}" directory"
+mkdir ${DATA_PATH} ${LOG_PATH}
 
 # base
 for name in "${BASE_DIR_NAME[@]}"
