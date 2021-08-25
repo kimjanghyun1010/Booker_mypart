@@ -101,6 +101,7 @@ done
 for name in "${JSON_NAME[@]}"
 do
     dir="$(echo ${name} | cut -d '-' -f1)"
+    mkdir -p ${API_PATH}/api-json-dir/${dir}
     gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${JSON_TEMPLATE_DIR}/${name}.tpl > ${API_PATH}/api-json-dir/${dir}/${name}.json
 done
 
