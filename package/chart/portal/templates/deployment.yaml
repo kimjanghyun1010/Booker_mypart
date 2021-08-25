@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paasxpert-k8s-{{ include "portal.fullname" . }}
+  labels:
+    app: {{ include "portal.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "portal.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "portal.fullname" . }}
+    spec:
+      containers:
+      - name: {{ include "portal.fullname" . }}
+        image: "{{ .Values.global.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+          - containerPort: {{ .Values.service.targetport }}
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: {{ .Values.service.targetport }}
+            scheme: HTTP
+          initialDelaySeconds: 60
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+        - name: log-dump
+          mountPath: /log/dump
+        - name: samples
+          mountPath: /opt/samples
+        envFrom:
+        - configMapRef:
+            name: {{ include "portal.fullname" . }}-configmap
+      initContainers:
+      - name: sample-clone
+        image: "{{ .Values.global.registry }}/{{ .Values.initimage.repository }}:{{ .Values.initimage.tag }}"
+        env:
+        - name: GIT_SSL_NO_VERIFY
+          value: "0"
+        command:
+          - sh
+          - -c
+          - |
+            GIT=`ls -al /opt/samples | grep git`
+            if [ -z ${GIT} ];
+            then
+              git clone {{ .Values.configmap.PAASXPERT_GIT_URL }}/samples/samples /opt/samples
+            else
+              echo "already exists"
+            fi
+        volumeMounts:
+          - name: samples
+            mountPath: /opt/samples
+      imagePullSecrets:
+      - name: {{ .Values.image.imagePullSecrets }}
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Seoul
+      - name: log-dump
+        hostPath:
+          path: /log
+      - name: samples
+        emptyDir: {}

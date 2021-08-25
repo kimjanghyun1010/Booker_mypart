@@ -1,0 +1,23 @@
+global:
+  registry: docker.io
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 200m
+  hostname: testgitea.clap.crossent.com
+  path: /
+  tls:
+    secretName: platform
+
+persistence:
+  enabled: true
+  storageClass: "nfs-provisioner-default"
+  accessMode: ReadWriteMany
+  size: 1Gi
+
+extraConfig:
+  host: https://testgitea.clap.crossent.com
+  signenabled: true
+  mariadb-svc: mariadb

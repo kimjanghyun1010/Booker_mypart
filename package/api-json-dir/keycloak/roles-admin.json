@@ -1,0 +1,6 @@
+    {
+        "name": "ADMIN",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "paasxpert"
+    }

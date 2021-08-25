@@ -1,0 +1,74 @@
+// {"name": "Spring Boot", "step": "3", description": "Spring Boot project Kubernetes deploy"}
+pipeline {
+    environment {
+        registryUrl = "https://${registryUrl}"
+        registry = "${registryUrl}/${registryProject}/"
+        application = "${application}"
+        tag = "${tag}"
+        registryCredential = "${registryCredential}"
+        kubernetesCredential = "${kubernetesCredential}"
+        kubernetesCluster = "https://${kubernetesClusterUrl}"
+        kubernetesClusterName = "${kubernetesClusterName}"
+        kubernetesNameSpace = "${kubernetesNamespace}"
+    }
+    agent {
+      kubernetes {
+        defaultContainer 'jnlp'
+        yamlFile 'JenkinsPod.yml'
+      }
+    }
+    stages {
+<#if "${packageType}" == "maven-jar" >
+        stage('spring build') {
+<#elseif "${packageType}" == "war" >
+        stage('war') {
+</#if>
+            steps {
+              container('maven') {
+<#if "${packageType}" == "maven-jar" >
+                sh "mvn -s /tmp/settings.xml -DskipTests=true clean package"
+<#elseif "${packageType}" == "war" >
+                sh "jar -xvf ROOT.war *"
+</#if>
+              }
+            }
+        }
+
+        stage('image build and push') {
+            steps {
+                container('docker') {
+                  script {
+                      docker.withRegistry(registryUrl, registryCredential) {
+                          dockerImage = docker.build registry + application + ":" + tag
+                          dockerImage.push(tag)
+                      }
+                  }
+                }
+            }
+        }
+
+        stage('k8s deploy') {
+            steps {
+              container('kubectl') {
+                withKubeConfig([credentialsId: kubernetesCredential,
+                                serverUrl: kubernetesCluster,
+                                clusterName: kubernetesClusterName,
+                                namespace: kubernetesNameSpace
+                                ]) {
+                    sh "kubectl apply -v=8 -f deployment.yml"
+                    sh """ kubectl patch deployment ${r"${application}"} -p '{"spec":{"template":{"metadata":{"annotations":{"build_id":"${r"${env.BUILD_ID}"}"}}}}}' """
+                }
+              }
+            }
+        }
+
+    }
+    post {
+        success {
+            echo 'success'
+        }
+        failure {
+            echo "Pipeline failed ${r"${env.BUILD_URL}"} ${r"${env.BUILD_NUMBER}"} ${r"${env.BUILD_ID}"}"
+        }
+    }
+}

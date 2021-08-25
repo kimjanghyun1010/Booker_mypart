@@ -1,0 +1,79 @@
+## values.yaml
+keycloak:
+  replicas: 2
+  ingress:
+    enabled: true
+    hosts:
+    - keycloak.clap.crossent.com
+    tls:
+    - hosts:
+      - keycloak.clap.crossent.com
+    secretName: platform
+  image:
+    repository: jboss/keycloak
+    pullSecrets:
+    - regcred
+  username: admin
+  password: crossent1234!
+  persistence:
+    dbVendor: mariadb
+    dbName: keycloak
+    dbHost: mariadb-svc
+    dbPort: 3306
+    dbUser: keycloak
+    dbPassword: keycloak
+
+  ## Additional init containers, e. g. for providing custom themes
+  extraInitContainers: |
+    - name: theme-provider
+      image: faasharbor.smartfarmkorea.net/library/paasxpert:v2.2
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+      - name: regcredimg
+      command:
+        - sh
+      args:
+        - -c
+        - |
+          echo "Copying theme..."
+          cp -R /paasxpert/* /theme
+      volumeMounts:
+        - name: theme
+          mountPath: /theme
+    - name: theme-provider1
+      image: faasharbor.smartfarmkorea.net/library/saip:v1.0
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+      - name: regcredimg
+      command:
+        - sh
+      args:
+        - -c
+        - |
+          echo "Copying theme..."
+          cp -R /saip/* /theme
+      volumeMounts:
+        - name: theme1
+          mountPath: /theme
+
+  extraVolumeMounts: |
+    - name: theme
+      mountPath: /opt/jboss/keycloak/themes/paasxpert
+    - name: theme1
+      mountPath: /opt/jboss/keycloak/themes/saip
+
+  extraVolumes: |
+    - name: theme
+      emptyDir: {}
+    - name: theme1
+      emptyDir: {}
+
+  extraEnv: |
+    - name: JGROUPS_DISCOVERY_PROTOCOL
+      value: dns.DNS_PING
+    - name: JGROUPS_DISCOVERY_PROPERTIES
+      value: 'dns_query=keycloak-headless.platform.svc.cluster.local'
+    - name: CACHE_OWNERS_COUNT
+      value: "2"
+    - name: CACHE_OWNERS_AUTH_SESSIONS_COUNT
+      value: "2"

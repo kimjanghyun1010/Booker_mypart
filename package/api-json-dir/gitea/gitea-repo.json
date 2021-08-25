@@ -1,0 +1,11 @@
+{
+    "auto_init": true,
+    "default_branch": "string",
+    "description": "string",
+    "gitignores": "",
+    "issue_labels": "",
+    "license": "",
+    "name": "samples",
+    "private": false,
+    "readme": ""
+}

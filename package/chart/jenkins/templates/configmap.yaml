@@ -1,0 +1,267 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ include "jenkins.fullname" . }}
+  name: {{ include "jenkins.fullname" . }}-configmap
+  namespace: {{ .Release.Namespace }}
+data:
+  apply_config.sh: |-
+    mkdir -p /usr/share/jenkins/ref/secrets/;
+    echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
+    yes n | cp -i /var/jenkins_config/config.xml /var/jenkins_home;
+    yes n | cp -i /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
+    yes n | cp -i /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+  config.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <hudson>
+      <disabledAdministrativeMonitors/>
+      <version>latest</version>
+      <numExecutors>0</numExecutors>
+      <mode>NORMAL</mode>
+      <useSecurity>true</useSecurity>
+      <authorizationStrategy class="hudson.security.ProjectMatrixAuthorizationStrategy">
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:admin</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:authenticated</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:admin</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:authenticated</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:admin</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:authenticated</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:admin</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:authenticated</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:admin</permission>
+        <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:authenticated</permission>
+        <permission>hudson.model.Computer.Build:admin</permission>
+        <permission>hudson.model.Computer.Build:authenticated</permission>
+        <permission>hudson.model.Computer.Configure:admin</permission>
+        <permission>hudson.model.Computer.Configure:authenticated</permission>
+        <permission>hudson.model.Computer.Connect:admin</permission>
+        <permission>hudson.model.Computer.Connect:authenticated</permission>
+        <permission>hudson.model.Computer.Create:admin</permission>
+        <permission>hudson.model.Computer.Create:authenticated</permission>
+        <permission>hudson.model.Computer.Delete:admin</permission>
+        <permission>hudson.model.Computer.Delete:authenticated</permission>
+        <permission>hudson.model.Computer.Disconnect:admin</permission>
+        <permission>hudson.model.Computer.Disconnect:authenticated</permission>
+        <permission>hudson.model.Hudson.Administer:admin</permission>
+        <permission>hudson.model.Hudson.Administer:authenticated</permission>
+        <permission>hudson.model.Hudson.Read:admin</permission>
+        <permission>hudson.model.Hudson.Read:authenticated</permission>
+        <permission>hudson.model.Item.Build:admin</permission>
+        <permission>hudson.model.Item.Build:authenticated</permission>
+        <permission>hudson.model.Item.Cancel:admin</permission>
+        <permission>hudson.model.Item.Cancel:authenticated</permission>
+        <permission>hudson.model.Item.Configure:admin</permission>
+        <permission>hudson.model.Item.Configure:authenticated</permission>
+        <permission>hudson.model.Item.Create:admin</permission>
+        <permission>hudson.model.Item.Create:authenticated</permission>
+        <permission>hudson.model.Item.Delete:admin</permission>
+        <permission>hudson.model.Item.Delete:authenticated</permission>
+        <permission>hudson.model.Item.Discover:admin</permission>
+        <permission>hudson.model.Item.Discover:authenticated</permission>
+        <permission>hudson.model.Item.Move:admin</permission>
+        <permission>hudson.model.Item.Move:authenticated</permission>
+        <permission>hudson.model.Item.Read:admin</permission>
+        <permission>hudson.model.Item.Read:authenticated</permission>
+        <permission>hudson.model.Item.Workspace:admin</permission>
+        <permission>hudson.model.Item.Workspace:authenticated</permission>
+        <permission>hudson.model.Run.Delete:admin</permission>
+        <permission>hudson.model.Run.Delete:authenticated</permission>
+        <permission>hudson.model.Run.Replay:admin</permission>
+        <permission>hudson.model.Run.Replay:authenticated</permission>
+        <permission>hudson.model.Run.Update:admin</permission>
+        <permission>hudson.model.Run.Update:authenticated</permission>
+        <permission>hudson.model.View.Configure:admin</permission>
+        <permission>hudson.model.View.Configure:authenticated</permission>
+        <permission>hudson.model.View.Create:admin</permission>
+        <permission>hudson.model.View.Create:authenticated</permission>
+        <permission>hudson.model.View.Delete:admin</permission>
+        <permission>hudson.model.View.Delete:authenticated</permission>
+        <permission>hudson.model.View.Read:admin</permission>
+        <permission>hudson.model.View.Read:authenticated</permission>
+        <permission>hudson.scm.SCM.Tag:admin</permission>
+        <permission>hudson.scm.SCM.Tag:authenticated</permission>
+        <permission>org.jenkins.plugins.lockableresources.LockableResourcesManager.Reserve:admin</permission>
+        <permission>org.jenkins.plugins.lockableresources.LockableResourcesManager.Reserve:authenticated</permission>
+        <permission>org.jenkins.plugins.lockableresources.LockableResourcesManager.Unlock:admin</permission>
+        <permission>org.jenkins.plugins.lockableresources.LockableResourcesManager.Unlock:authenticated</permission>
+        <permission>org.jenkins.plugins.lockableresources.LockableResourcesManager.View:admin</permission>
+        <permission>org.jenkins.plugins.lockableresources.LockableResourcesManager.View:authenticated</permission>
+      </authorizationStrategy>
+      <!-- securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+        <disableSignup>true</disableSignup>
+        <enableCaptcha>false</enableCaptcha>
+      </securityRealm -->
+      <securityRealm class="hudson.security.LegacySecurityRealm"/>
+      <disableRememberMe>false</disableRememberMe>
+      <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+      <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_fullname}</workspaceDir>
+      <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+      <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+      <jdks/>
+      <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+      <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+      <clouds>
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@">
+          <name>kubernetes</name>
+          <defaultsProviderTemplate></defaultsProviderTemplate>
+          <templates>
+            <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+              <inheritFrom></inheritFrom>
+              <name>jenkins-jenkins-slave</name>
+              <instanceCap>2147483647</instanceCap>
+              <idleMinutes>0</idleMinutes>
+              <label>jenkins-jenkins-slave</label>
+              <serviceAccount>default</serviceAccount>
+              <nodeSelector></nodeSelector>
+                <nodeUsageMode>NORMAL</nodeUsageMode>
+              <volumes>
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
+                  <hostPath>/var/run/docker.sock</hostPath>
+                  <mountPath>/var/run/docker.sock</mountPath>
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume>
+                  <mountPath>/home/jenkins/.m2</mountPath>
+                  <configMapName>jenkins-maven-settings</configMapName>
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume>
+              </volumes>
+              <containers>
+                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                  <name>jnlp</name>
+                  <image>{{ .Values.image.registry }}/library/jenkins/jnlp-slave:3.29-1-alpine</image>
+                  <imagePullSecretName>regcred</imagePullSecretName>
+                  <privileged>false</privileged>
+                  <alwaysPullImage>false</alwaysPullImage>
+                  <workingDir>/home/jenkins</workingDir>
+                  <command></command>
+                  <args>${computer.jnlpmac} ${computer.name}</args>
+                  <ttyEnabled>false</ttyEnabled>
+                  # Resources configuration is a little hacky. This was to prevent breaking
+                  # changes, and should be cleanned up in the future once everybody had
+                  # enough time to migrate.
+                  <resourceRequestCpu>512m</resourceRequestCpu>
+                  <resourceRequestMemory>512Mi</resourceRequestMemory>
+                  <resourceLimitCpu>512m</resourceLimitCpu>
+                  <resourceLimitMemory>512Mi</resourceLimitMemory>
+                  <envVars>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>JENKINS_URL</key>
+                      <value>http://jenkins.default.svc.cluster.local:8080</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                  </envVars>
+                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                  <name>kubectl</name>
+                  <image>{{ .Values.image.registry }}/library/k8s-kubectl</image>
+                  <imagePullSecretName>regcred</imagePullSecretName>
+                  <privileged>false</privileged>
+                  <alwaysPullImage>true</alwaysPullImage>
+                  <command>cat</command>
+                  <ttyEnabled>true</ttyEnabled>
+                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                  <name>docker</name>
+                  <image>{{ .Values.image.registry }}/library/docker</image>
+                  <imagePullSecretName>regcred</imagePullSecretName>
+                  <privileged>false</privileged>
+                  <alwaysPullImage>true</alwaysPullImage>
+                  <command>cat</command>
+                  <ttyEnabled>true</ttyEnabled>
+                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+              </containers>
+              <envVars>
+              </envVars>
+              <annotations/>
+              <imagePullSecrets>
+                <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+                  <name>regcred</name>
+                </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+              </imagePullSecrets>
+              <nodeProperties/>
+              <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
+            </org.csanchez.jenkins.plugins.kubernetes.PodTemplate></templates>
+          <serverUrl>https://kubernetes.default</serverUrl>
+          <skipTlsVerify>false</skipTlsVerify>
+          <namespace>platform</namespace>
+          <jenkinsUrl>http://jenkins:8080</jenkinsUrl>
+          <jenkinsTunnel>jenkins-agent:50000</jenkinsTunnel>
+          <containerCap>10</containerCap>
+          <retentionTimeout>5</retentionTimeout>
+          <connectTimeout>0</connectTimeout>
+          <readTimeout>0</readTimeout>
+          <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Never"/>
+        </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
+      </clouds>
+      <quietPeriod>5</quietPeriod>
+      <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+      <views>
+        <hudson.model.AllView>
+          <owner class="hudson" reference="../../.."/>
+          <name>All</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+        </hudson.model.AllView>
+      </views>
+      <primaryView>All</primaryView>
+      <slaveAgentPort>50000</slaveAgentPort>
+      <disabledAgentProtocols>
+        <string>JNLP-connect</string>
+        <string>JNLP2-connect</string>
+      </disabledAgentProtocols>
+      <label></label>
+      <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+        <excludeClientIPFromCrumb>true</excludeClientIPFromCrumb>
+      </crumbIssuer>
+      <nodeProperties/>
+      <globalNodeProperties/>
+      <noUsageStatistics>true</noUsageStatistics>
+    </hudson>
+  jenkins.CLI.xml: |-
+    <?xml version='1.1' encoding='UTF-8'?>
+    <jenkins.CLI>
+      <enabled>false</enabled>
+    </jenkins.CLI>
+  jenkins.model.JenkinsLocationConfiguration.xml: |-
+    <?xml version='1.1' encoding='UTF-8'?>
+    <jenkins.model.JenkinsLocationConfiguration>
+      <adminAddress></adminAddress>
+      <jenkinsUrl>https://{{ .Values.extraConfig.externalURL }}</jenkinsUrl>
+    </jenkins.model.JenkinsLocationConfiguration>
+  plugins.txt: ""
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ include "jenkins.fullname" . }}-maven-settings
+  name: {{ include "jenkins.fullname" . }}-maven-settings
+  namespace: {{ .Release.Namespace }}
+data:
+  settings.xml: |-
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                          https://maven.apache.org/xsd/settings-1.0.0.xsd">
+      <localRepository>/tmp/repository</localRepository>
+      <servers>
+        <server>
+          <id>nexus</id>
+          <username>admin</username>
+          <password>admin123</password>
+        </server>
+      </servers>
+      <mirrors>
+        <mirror>
+          <id>nexus</id>
+          <mirrorOf>*</mirrorOf>
+{{- if .Values.extraConfig.nexus.enabled }}
+          <url>{{ .Values.extraConfig.nexus.hostname }}/repository/maven-public/</url>
+{{ else }}
+          <url>https://repo1.maven.org/maven2/</url>
+        </mirror>
+      </mirrors>
+    </settings>
+{{- end }}

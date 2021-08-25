@@ -1,0 +1,25 @@
+
+global:
+  {{- if}}
+  imageRegistry: docker.io
+  postgresql:
+    postgresqlDatabase: postgres
+    postgresqlUsername: postgres
+    postgresqlPassword: postgres
+    replicationPassword: postgres
+  imagePullSecrets:
+  - regcred
+  storageClass: longhorn
+
+persistence:
+  enabled: true
+  size: 10Gi
+
+replication:
+  enabled: false
+
+volumePermissions:
+  enabled: true
+  securityContext:
+    runAsUser: 0
+

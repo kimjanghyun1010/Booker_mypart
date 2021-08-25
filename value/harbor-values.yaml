@@ -1,0 +1,138 @@
+expose:
+  type: ingress
+  tls:
+    enabled: true
+    certSource: secret
+    secret:
+      secretName: "platform"
+      notarySecretName: "platform"
+  ingress:
+    hosts:
+      core: core.harbor.domain
+      notary: notary.harbor.domain
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "true"
+      ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
+externalURL: https://core.harbor.domain
+
+internalTLS:
+  enabled: true
+  certSource: "auto"
+
+persistence:
+  enabled: true
+  persistentVolumeClaim:
+    registry:
+      storageClass: ""
+      size: 50Gi
+    chartmuseum:
+      storageClass: ""
+      size: 1Gi
+    jobservice:
+      storageClass: ""
+      size: 1Gi
+    redis:
+      storageClass: ""
+      size: 1Gi
+    trivy:
+      storageClass: ""
+      size: 5Gi
+
+imagePullPolicy: IfNotPresent
+
+imagePullSecrets:
+#  - name: docker-registry-secret
+
+# Set it as "Recreate" when "RWM" for volumes isn't supported
+updateStrategy:
+  type: Recreate
+
+# debug, info, warning, error or fatal
+logLevel: debug
+
+harborAdminPassword: "Harbor12345"
+
+
+portal:
+  image:
+    repository: goharbor/harbor-portal
+    tag: v2.1.1
+
+core:
+  image:
+    repository: goharbor/harbor-core
+    tag: v2.1.1
+
+jobservice:
+  image:
+    repository: goharbor/harbor-jobservice
+    tag: v2.1.1
+
+registry:
+  registry:
+    image:
+      repository: goharbor/registry-photon
+      tag: v2.1.1
+  controller:
+    image:
+      repository: goharbor/harbor-registryctl
+      tag: v2.1.1
+
+chartmuseum:
+  enabled: true
+  absoluteUrl: false
+  image:
+    repository: goharbor/chartmuseum-photon
+    tag: v2.1.1
+
+clair:
+  enabled: true
+  serviceAccountName: ""
+  clair:
+    image:
+      repository: goharbor/clair-photon
+      tag: v2.1.1
+  adapter:
+    image:
+      repository: goharbor/clair-adapter-photon
+      tag: v2.1.1
+
+trivy:
+  # enabled the flag to enable Trivy scanner
+  enabled: true
+  image:
+    repository: goharbor/trivy-adapter-photon
+    tag: v2.1.1
+
+notary:
+  enabled: true
+  server:
+    image:
+      repository: goharbor/notary-server-photon
+      tag: v2.1.1
+  signer:
+    image:
+      repository: goharbor/notary-signer-photon
+      tag: v2.1.1
+database:
+  type: external
+  external:
+    host: "192.168.0.1"
+    port: "5432"
+    username: "user"
+    password: "password"
+    coreDatabase: "registry"
+    clairDatabase: "clair"
+    notaryServerDatabase: "notary_server"
+    notarySignerDatabase: "notary_signer"
+
+redis:
+  type: internal
+  internal:
+    # set the service account to be used, default if left empty
+    image:
+      repository: goharbor/redis-photon
+      tag: v2.1.1

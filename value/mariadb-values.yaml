@@ -1,0 +1,10 @@
+mariadb:
+  global:
+    imagePullSecrets:
+    - regcred
+    storageClass: longhorn
+  replicaCount: 1
+  rootUser:
+    password: crossent12
+  persistence:
+    size: 10Gi

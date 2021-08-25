@@ -1,0 +1,82 @@
+replicaCount: 1
+
+global:
+  registry: faasharbor.smartfarmkorea.net
+
+image:
+  repository: library/paasxpert-k8s-portal
+  # pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+  imagePullSecrets: regcred
+# nameOverride: ""
+# fullnameOverride: ""
+
+initimage:
+  repository: library/jenkins/jnlp-slave
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "3.29-1-alpine"
+
+gitea:
+  hostname: https://faasgitea.smartfarmkorea.net
+
+## Configure extra options for liveness and readiness probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+##
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+service:
+  type: ClusterIP
+  port: 2080
+  targetport: 8089
+
+ingress:
+  enabled: true
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   nginx.ingress.kubernetes.io/proxy-body-size: 200m
+  hostname: faasportal.smartfarmkorea.net
+  tls:
+    secretName: platform
+  #    hosts:
+  #      - chart-example.local
+
+# resources:
+#   # We usually recommend not to specify default resources and to leave this as a conscious
+#   # choice for the user. This also increases chances charts run on environments with little
+#   # resources, such as Minikube. If you do want to specify resources, uncomment the following
+#   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+#   limits:
+#     cpu: 100m
+#     memory: 128Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
+
+configmap:
+  PAASXPERT_JENKINS_URL: https://faasjenkins.smartfarmkorea.net
+  PAASXPERT_GIT_URL: https://faasgitea.smartfarmkorea.net
+  PAASXPERT_K8S_URL: https://faasrancher.smartfarmkorea.net:2443
+  PAASXPERT_DOCKER_REGISTRY_URL: https://faasharbor.smartfarmkorea.net
+  PAASXPERT_KEYCLOAK_URL: https://faaskeycloak.smartfarmkorea.net
+  PAASXPERT_KIBANA_URL: https://rancher.smartfarmkorea.net:30561
+  PAASXPERT_JAEGER_URL: https://rancher.smartfarmkorea.net:30561
+  PAASXPERT_K8S_DOMAIN: smartfarmkorea.net
+  PAASXPERT_KEYCLOAK_SECRET: KEYCLOAK_CERT
+  PAASXPERT_JENKINS_API_TOKEN: JENKINS_TOKEN
+  PAASXPERT_GIT_API_TOKEN: GIT_TOKEN
+  PAASXPERT_RANCHER_API_TOKEN: RANCHER_TOKEN

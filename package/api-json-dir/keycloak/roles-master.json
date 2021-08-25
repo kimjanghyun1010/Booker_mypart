@@ -1,0 +1,6 @@
+    {
+        "name": "MASTER",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "paasxpert"
+    }

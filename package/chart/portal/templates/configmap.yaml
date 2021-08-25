@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "portal.fullname" . }}-configmap
+  labels:
+    app: {{ include "portal.fullname" . }}
+data:
+  PAASXPERT_JENKINS_URL: {{ .Values.configmap.PAASXPERT_JENKINS_URL }}
+  PAASXPERT_JENKINS_API_TOKEN: {{ .Values.configmap.PAASXPERT_JENKINS_API_TOKEN }}
+  PAASXPERT_GIT_URL: {{ .Values.configmap.PAASXPERT_GIT_URL }}
+  PAASXPERT_GIT_API_TOKEN: {{ .Values.configmap.PAASXPERT_GIT_API_TOKEN }}
+  PAASXPERT_GIT_AUTH_SOURCE_ID: "1"
+  PAASXPERT_K8S_URL: {{ .Values.configmap.PAASXPERT_K8S_URL }}
+  PAASXPERT_RANCHER_API_TOKEN: {{ .Values.configmap.PAASXPERT_RANCHER_API_TOKEN }}
+  PAASXPERT_DOCKER_REGISTRY_URL: {{ .Values.configmap.PAASXPERT_DOCKER_REGISTRY_URL }}
+  PAASXPERT_KEYCLOAK_URL: {{ .Values.configmap.PAASXPERT_KEYCLOAK_URL }}
+  PAASXPERT_KEYCLOAK_SECRET: {{ .Values.configmap.PAASXPERT_KEYCLOAK_SECRET }}
+  PAASXPERT_KIBANA_URL: {{ .Values.configmap.PAASXPERT_KIBANA_URL }}
+  PAASXPERT_JAEGER_URL: {{ .Values.configmap.PAASXPERT_JAEGER_URL }}
+  PAASXPERT_GIT_BRANCH_LIST: master,dev,prd
+  PAASXPERT_K8S_DOMAIN: {{ .Values.configmap.PAASXPERT_K8S_DOMAIN }}

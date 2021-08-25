@@ -1,0 +1,77 @@
+#!groovy
+@Library('common-shared-libraries@master') _
+
+pipeline{
+
+    environment {
+        registryUrl = "https://${registryUrl}"
+        registry = "${registryUrl}/${registryProject}/"
+        application = "${application}"
+        tag = "${tag}"
+        gitCredential = "${gitCredential}"
+        registryCredential = "${registryCredential}"
+    }
+
+    agent {
+      kubernetes {
+        defaultContainer 'jnlp'
+        yamlFile 'JenkinsPod.yml'
+      }
+    }
+
+    options {
+        timeout(time: 20, unit: 'MINUTES')
+    }
+
+    stages{
+        stage("SETUP"){
+            steps{
+                container('jnlp') {
+                    setUp()
+                }
+            }
+        }
+<#if "${packageType}" == "maven-jar" >
+        stage('SPRING BUILD') {
+<#elseif "${packageType}" == "war" >
+        stage('WAR') {
+</#if>
+            steps{
+                container('maven') {
+                    sourceBuild("${packageType}")
+                }
+            }
+        }
+        stage("SOURCE TEST"){
+            steps{
+                container('maven') {
+                    sourceTest('')
+                }
+            }
+        }
+
+        stage("IMAGE BUILD AND PUSH"){
+            steps{
+                container('docker') {
+                    dockerPush()
+                }
+            }
+        }
+        stage("DEPLOY"){
+            steps{
+                container('kubectl') {
+                    deploy('k8s')
+                }
+            }
+        }
+        stage("BRANCH MERGE") {
+            steps{
+                gitMerge()
+            }
+        }
+    }
+    post{
+        success { postEvent('success')}
+        failure { postEvent('failure')}
+    }
+}

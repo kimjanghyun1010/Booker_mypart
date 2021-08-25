@@ -1,0 +1,183 @@
+## ---
+
+#/
+# <pre>
+# 클러스터 생성을 위해 서버의 정보를 담는 yaml
+# common.IP, common.username, global.doamin은 필수로 설정 해야함
+# </pre>
+#
+# @authors 크로센트
+# @see
+#/
+
+common:
+  directory:
+    app: /app
+    data: /data
+    log: /applog
+    ## gitea-push, harbor-login에서 사용
+    workdir: /home/centos/hkmc.clap-helm-catalog/install_template/bin
+  username: centos
+  password: crossent1234!
+  IP:
+    haproxy:
+      haproxy1: 192.168.153.1
+    rancher:
+      rancher1: 192.168.153.2
+    master:
+      master1: 192.168.153.3
+      master2: 192.168.153.4
+      master3: 192.168.153.5
+    worker:
+      worker1: 192.168.153.6
+      worker2: 192.168.153.7
+      worker3: 192.168.153.8
+  docker:
+    version: 1.19.3
+    curl: 20.10.3
+  rke:
+    version: 1.2.8
+  kubectl:
+    version: 1.20.6
+  rancher:
+    version: 2.5.8
+global:
+  namespace: platform
+  domain: prd.msxpert.co.kr
+  ## private registry 설정할 경우 setting, harbor_secret 과 다른이름으로 생성
+  imagePullSecrets: 
+  harborimagePullSecrets: regcred
+  storageClass: longhorn
+
+  tls:
+    secret: platform
+  ## public 환경이 아닐 경우 private registry 주소를 적어준다.
+  image:
+    repository: docker.io
+
+  port:
+  ## nginx-http: 80 / nginx-https: 443
+  ## 기본 port가 변경되면 적는다.
+    nginx_http:
+    nginx_https:
+    rancher_https: 
+    registry: 5000
+    
+
+## ---
+rancher:
+  cname: rancher
+
+## ---
+registry:
+  cname: registry
+## ---
+
+mariadb:
+  replicaCount: 1
+  password: crossent12
+  persistence:
+    enabled: true
+    size: 10Gi
+
+## ---
+
+postgresql:
+  username: postgres
+  password: crossent12
+  persistence:
+    enabled: true
+    size: 10Gi
+
+## ---
+
+harbor:
+  adminPassword: crossent1234!
+
+  ingress:
+    cname: harbor
+    proxy_body_size: 10g
+
+  persistence:
+    enabled: true
+    registry:
+      size: 10Gi
+    chartmuseum:
+      size: 1Gi
+    jobservice:
+      size: 1Gi
+    redis:
+      size: 1Gi
+    trivy:
+      size: 1Gi
+
+  database:
+    type: external
+    ## postgresql 설치한 서비스 이름.
+    psql_service: "postgresql"
+    
+## ---
+
+keycloak:
+  replicaCount: 2
+
+  adminPassword: crossent1234!
+
+  ingress:
+    cname: keycloak
+
+  database:
+    ## mariadb 설치한 서비스 이름.
+    ## mysql_service: mariadb-ha-mariadb-galera
+    mysql_service: mariadb-galera
+
+  theme:
+    paasxpert:
+      tag: v2.2
+    another:
+      image: 
+      tag: 
+
+
+## ---
+
+gitea:
+  adminUsername: sudouser
+  adminPassword: Crossent1234!
+  adminEmail: sudouser@cro.com
+  ingress:
+    cname: gitea
+    proxy_body_size: 200m
+  persistence:
+    enabled: true
+    size: 10Gi
+  extraConfig:
+    signdisabled: false
+    mariadb_svc: mariadb-galera
+
+## ---
+
+jenkins:
+  adminPassword: crossent1234!
+
+  ingress:
+    cname: jenkins
+    proxy_body_size: 200m
+
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  extraConfig:
+    nexus:
+      enabled: false
+      ## hostname: http://101.55.126.222:2085
+      hostname:
+
+## ---
+
+portal:
+  ingress:
+    cname: portal
+    proxy_body_size:
+

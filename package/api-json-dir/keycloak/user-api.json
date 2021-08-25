@@ -1,0 +1,28 @@
+
+    {
+        "username": "paasadm",
+        "enabled": true,
+        "totp": false,
+        "emailVerified": false,
+        "firstName": "paasadm",
+        "lastName": "",
+        "email": "paasadm@cro.com",
+        "credentials": [
+            {
+            "type": "password",
+            "value": "Crossent1234!"
+            }
+        ],
+        "disableableCredentialTypes": [],
+        "requiredActions": [],
+        "notBefore": 0,
+        "access": {
+            "manageGroupMembership": true,
+            "view": true,
+            "mapRoles": true,
+            "impersonate": true,
+            "manage": true
+        },
+        "groups": ["paasxpert"]
+    }
+

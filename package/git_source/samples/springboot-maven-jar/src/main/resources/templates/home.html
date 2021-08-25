@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{project.name}">Crossent App</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="bootstrap.min.css" />
+
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1 th:text="#{project.name}">Crossent App</h1>
+        <p class="lead">Demo application on container (SR002)</p>
+        <p>The code is open source at <a href="#">GitHub</a>. You're currently looking at version <span th:text="#{project.version}">0.0.1</span>.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <form th:object="${insertRecord}" method="POST">
+                <div class="form-group">
+                    <label for="data">Record to insert</label>
+                    <input id="data" type="text" class="form-control" placeholder="Lorem ipsum" th:field="*{data}" />
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Records</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="record : ${records}">
+                        <td th:text="${record.data}">Some text</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+</body>
+</html>

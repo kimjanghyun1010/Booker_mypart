@@ -1,0 +1,9 @@
+{
+    "description": "string",
+    "full_name": "string",
+    "location": "string",
+    "repo_admin_change_team_access": true,
+    "username": "samples",
+    "visibility": "public",
+    "website": "string"
+}

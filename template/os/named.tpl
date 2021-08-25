@@ -1,0 +1,164 @@
+#!/bin/sh
+## named.sh
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+#/
+# <pre>
+# named 설치를 위한 shell을 EOF로 생성함
+# named 설치 후 update.sh을 통해 conf도 수정함
+# </pre>
+#
+# @authors 크로센트
+# @see
+#/
+
+
+echo_create "named-svc-start.sh"
+cat > ${OS_PATH}/named/named-svc-start.sh << 'EOF'
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+TITLE="- named svc - Install"
+
+echo_blue "${TITLE}"
+echo '{{ .common.password }}' | sudo -kS yum install -y bind bind-utils
+sudo systemctl enabled named
+sudo systemctl start named
+sudo systemctl status named
+STATUS=`systemctl status named | grep Active | awk '{print $2}'`
+if [ "${STATUS}" == "active" ];
+then
+  echo_green "${TITLE}"
+else
+  echo_red "${TITLE}"
+fi
+EOF
+
+echo_create "named.conf.tpl"
+cat > ${OS_PATH}/named/named.conf.tpl << 'EOF'
+//
+// named.conf
+//
+// Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
+// server as a caching only nameserver (as a localhost DNS resolver only).
+//
+// See /usr/share/doc/bind*/sample/ for example named configuration files.
+//
+// See the BIND Administrator's Reference Manual (ARM) for details about the
+// configuration located in /usr/share/doc/bind-{version}/Bv9ARM.html
+
+options {
+	listen-on port 53 { any; };
+	listen-on-v6 port 53 { ::1; };
+	directory 	"/var/named";
+	dump-file 	"/var/named/data/cache_dump.db";
+	statistics-file "/var/named/data/named_stats.txt";
+	memstatistics-file "/var/named/data/named_mem_stats.txt";
+	recursing-file  "/var/named/data/named.recursing";
+	secroots-file   "/var/named/data/named.secroots";
+	allow-query     { any; };
+
+	/*
+	 - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
+	 - If you are building a RECURSIVE (caching) DNS server, you need to enable
+	   recursion.
+	 - If your recursive DNS server has a public IP address, you MUST enable access
+	   control to limit queries to your legitimate users. Failing to do so will
+	   cause your server to become part of large scale DNS amplification
+	   attacks. Implementing BCP38 within your network would greatly
+	   reduce such attack surface
+	*/
+	recursion yes;
+
+	dnssec-enable yes;
+	dnssec-validation yes;
+
+	/* Path to ISC DLV key */
+	bindkeys-file "/etc/named.root.key";
+
+	managed-keys-directory "/var/named/dynamic";
+
+	pid-file "/run/named/named.pid";
+	session-keyfile "/run/named/session.key";
+};
+
+logging {
+        channel default_debug {
+                file "data/named.run";
+                severity dynamic;
+        };
+};
+
+zone "." IN {
+	type hint;
+	file "named.ca";
+};
+
+include "/etc/named.rfc1912.zones";
+include "/etc/named.root.key";
+
+zone "{{ .global.domain }}" IN {
+        type master;
+        file "{{ .global.domain }}";
+        allow-update { none; };
+};
+EOF
+
+echo_create "{{ .global.domain }}.tpl"
+cat > ${OS_PATH}/named/{{ .global.domain }}.tpl << 'EOF'
+$TTL 3H
+@       IN SOA   ns.{{ .global.domain }}. root.{{ .global.domain }}. (
+                                        1       ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+                IN NS   ns.{{ .global.domain }}.
+@               IN A    {{ range $element := .common.IP.haproxy }}{{ $element }} {{ end }}
+ns              IN A    {{ range $element := .common.IP.haproxy }}{{ $element }} {{ end }}
+*               IN CNAME ns
+EOF
+
+echo_create "named-svc-delete.sh"
+cat > ${OS_PATH}/named/named-svc-delete.sh << 'EOF'
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+TITLE="- named svc - Delete"
+
+echo_blue "${TITLE}"
+read -p "Uninstall named service? [ Y/N ] :" INPUT
+echo -n "Input \${USER} PASSWORD :"
+stty -echo
+read PASSWORD
+stty echo
+
+if [ ${INPUT} == Y ];
+then
+  echo '${PASSWORD}' | sudo --stdin systemctl status named
+  sudo systemctl stop named
+  sudo systemctl disable named
+  sudo yum remove -y bind bind-utils
+  echo_green "${TITLE}"
+else
+  echo_red "${TITLE}"
+fi
+EOF
+
+
+cat > ${OS_PATH}/named/named-svc-update.sh << 'EOF'
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+sudo cp ${OS_PATH}/haproxy/haproxy.tpl /etc/haproxy/haproxy.cfg
+sudo cp ${OS_PATH}/named/{{ .global.domain }}.tpl /var/named/{{ .global.domain }}
+sudo cp ${OS_PATH}/named/named.conf.tpl /etc/named.conf
+
+sudo systemctl restart haproxy
+sudo systemctl status haproxy
+
+sudo systemctl restart named
+sudo systemctl status named
+
+EOF

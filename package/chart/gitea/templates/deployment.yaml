@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gitea.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "gitea.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "gitea.fullname" . }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app: {{ include "gitea.fullname" . }}
+    spec:
+       {{- if .Values.imagePullSecrets }}
+       imagePullSecrets:
+       - name: {{ .Values.imagePullSecrets }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - env:
+        - name: GITEA_ADMIN_USERNAME
+          value: {{ .Values.gitea.adminUsername }}
+        - name: GITEA_ADMIN_PASSWORD
+          value: {{ .Values.gitea.adminPassword }}
+        - name: GITEA_ADMIN_EMAIL
+          value: {{ .Values.gitea.adminEmail }}
+        name: {{ .Chart.Name }}
+        image: "{{ .Values.global.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - name: http
+            containerPort: 3000
+            protocol: TCP
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - name: gitea-cert
+          mountPath: /etc/ssl/certs/ca-certificates.crt
+          subPath: ca-certificates.crt
+        - name: gitea-data
+          mountPath: /data
+        - name: tz-config
+          mountPath: /etc/localtime
+        - name: gitea-config
+          mountPath: /etc/gitea
+        - name: gitea-tls
+          mountPath: /data/gitea/https
+      initContainers:
+      - command:
+        - sh
+        - /etc/gitea/apply_config.sh
+        image: "{{ .Values.global.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: Always
+        name: copy-custom-config
+        resources: {}
+        volumeMounts:
+        - name: gitea-data
+          mountPath: /data
+        - name: gitea-config
+          mountPath: /etc/gitea
+      volumes:
+      - name: gitea-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "gitea.fullname" . }}-pvc
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
+      - name: gitea-config
+        configMap:
+          defaultMode: 0666
+          name: {{ include "gitea.fullname" . }}-configmap
+      - name: gitea-cert
+        secret:
+          defaultMode: 0666
+          secretName: gitea-cert
+      - name: gitea-tls
+        secret:
+          defaultMode: 0666
+          secretName: {{ .Values.ingress.tls.secretName }}
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Seoul

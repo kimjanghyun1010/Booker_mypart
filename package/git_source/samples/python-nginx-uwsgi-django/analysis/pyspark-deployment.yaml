@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pyspark
+  name: pyspark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pyspark
+  template:
+    metadata:
+      labels:
+        app: pyspark
+    spec:
+      containers:
+      - image: jupyter/pyspark-notebook:acb539921413
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 10
+          initialDelaySeconds: 200
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: http
+          timeoutSeconds: 1
+        name: pyspark
+        ports:
+        - containerPort: 8888
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: http
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "1"
+            memory: 500Mi
+        volumeMounts:
+        - mountPath: /home/jovyan
+          name: pyspark-data
+        - mountPath: /mnt
+          name: pyspark-library
+      volumes:
+      - name: pyspark-data
+        persistentVolumeClaim:
+          claimName: pyspark-data
+      - name: pyspark-library
+        persistentVolumeClaim:
+          claimName: pyspark-library
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pyspark
+  name: pyspark-http
+spec:
+  ports:
+  - name: http
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    app: pyspark
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 200m
+  labels:
+    app: pyspark
+  name: pyspark
+spec:
+  rules:
+  - host: pyspark.doxpert.co.kr
+    http:
+      paths:
+      - backend:
+          serviceName: pyspark-http
+          servicePort: http
+        path: /

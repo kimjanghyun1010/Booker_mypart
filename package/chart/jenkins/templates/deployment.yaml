@@ -1,0 +1,155 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jenkins.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "jenkins.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "jenkins.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "jenkins.fullname" . }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+      {{- end }}
+      containers:
+      - name: jenkins
+        image: {{ .Values.global.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - --argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)
+        - --argumentsRealm.roles.$(ADMIN_USER)=admin
+        env:
+        - name: JAVA_OPTS
+          value: "-Xms512m -Xmx512m -Djenkins.install.runSetupWizard=false -Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Seoul"
+        - name: JENKINS_SLAVE_AGENT_PORT
+          value: "50000"
+        - name: ADMIN_USER
+          value: admin
+          # valueFrom:
+          #   secretKeyRef:
+          #     key: jenkins-admin-user
+          #     name: jenkins
+        - name: ADMIN_PASSWORD
+          value: "{{ .Values.adminPassword }}"
+          # valueFrom:
+          #   secretKeyRef:
+          #     key: jenkins-admin-password
+          #     name: jenkins
+        - name: GIT_SSL_NO_VERIFY
+          value: "0"
+        ports:
+          - name: http
+            containerPort: {{ .Values.service.http.port }}
+            protocol: TCP
+          - name: slavelistener
+            containerPort: {{ .Values.service.slavelistener.port }}
+            protocol: TCP
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /login
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        - name: tz-config
+          mountPath: /etc/localtime
+        - name: jenkins-config
+          mountPath: /etc/jenkins_config
+          readOnly: true
+        - name: secrets-dir
+          mountPath: /usr/share/jenkins/ref/secrets/
+      initContainers:
+      - name: copy-default-config
+        {{- if .Values.config.tag }}
+        image: {{ .Values.global.registry }}/{{ .Values.config.repository }}:{{ .Values.config.tag }}
+        {{ else }}
+        image: {{ .Values.global.registry }}/{{ .Values.config.repository }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - sh
+        - /var/jenkins_config/apply_config.sh
+        env:
+        - name: ADMIN_USER
+          value: admin
+          # valueFrom:
+          #   secretKeyRef:
+          #     key: jenkins-admin-password
+          #     name: jenkins
+        - name: ADMIN_PASSWORD
+          value: "{{ .Values.adminPassword }}"
+          # valueFrom:
+          #   secretKeyRef:
+          #     key: jenkins-admin-user
+          #     name: jenkins
+        - name: GIT_SSL_NO_VERIFY
+          value: "0"
+        resources: {}
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        - name: jenkins-config
+          mountPath: /var/jenkins_config
+        - name: secrets-dir
+          mountPath: /usr/share/jenkins/ref/secrets/
+      schedulerName: default-scheduler
+      securityContext:
+        runAsUser: 0
+      serviceAccountName: {{ include "jenkins.fullname" . }}
+      volumes:
+      - name: plugins
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+      - name: jenkins-config
+        configMap:
+          defaultMode: 420
+          name: {{ include "jenkins.fullname" . }}-configmap
+      - name: secrets-dir
+        emptyDir: {}
+      - name: jenkins-home
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "jenkins.fullname" . }}-pvc
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Seoul

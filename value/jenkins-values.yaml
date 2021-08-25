@@ -1,0 +1,21 @@
+global:
+  registry: h-harbor.prd.msxpert.co.kr
+
+adminPassword: test1234!
+
+replicaCount: 1
+
+ingress:
+  enabled: true
+  hostname: jenkins-test.prd.msxpert.co.kr
+  tls:
+    secretName: platform
+
+persistence:
+  enabled: false
+
+extraConfig:
+  externalURL: https://jenkins-test.prd.msxpert.co.kr
+  nexus:
+    enabled: false
+    hostname: 

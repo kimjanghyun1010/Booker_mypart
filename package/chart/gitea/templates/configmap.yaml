@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ include "gitea.fullname" . }}
+  name: {{ include "gitea.fullname" . }}-configmap
+  namespace: {{ .Release.Namespace }}
+data:
+  app.ini: |-
+    APP_NAME = PaaSXpert Git
+    RUN_MODE = prod
+
+    [repository]
+    ROOT = /data/git/repositories
+
+    [repository.local]
+    LOCAL_COPY_PATH = /data/tmp/local-repo
+
+    [repository.upload]
+    TEMP_PATH = /data/gitea/uploads
+
+    [server]
+    APP_DATA_PATH    = /data/gitea
+    SSH_DOMAIN       = localhost
+    HTTP_PORT        = 3000
+    ROOT_URL         = https://{{ .Values.extraConfig.externalURL}}/
+    DISABLE_SSH      = false
+    SSH_PORT         = 22
+    SSH_LISTEN_PORT  = 22
+    LFS_START_SERVER = true
+    LFS_CONTENT_PATH = /data/git/lfs
+    LFS_MAX_FILE_SIZE= 0
+    CERT_FILE        = /data/gitea/https/tls.crt
+    KEY_FILE         = /data/gitea/https/tls.key
+
+    [database]
+    PATH     = /data/gitea/gitea.db
+    DB_TYPE  = mysql
+    HOST     = {{ .Values.extraConfig.mariadb_svc}}:3306
+    NAME     = gitea
+    USER     = gitea
+    PASSWD   = gitea
+    SSL_MODE = disable
+    CHARSET  = utf8
+
+    [openID]
+    ENABLE_OPENID_SIGNIN= true
+    ENABLE_OPENID_SIGNUP= true
+
+    [service]
+    DISABLE_REGISTRATION = {{ .Values.extraConfig.signdisabled}}
+
+    [indexer]
+    ISSUE_INDEXER_TYPE=db
+
+    [session]
+    PROVIDER = mysql
+    PROVIDER_CONFIG = `gitea:gitea@tcp({{ .Values.extraConfig.mariadb_svc}}:3306)/gitea_session`
+    COOKIE_NAME = i_hate_gitea
+
+    [picture]
+    AVATAR_UPLOAD_PATH            = /data/gitea/avatars
+    REPOSITORY_AVATAR_UPLOAD_PATH = /data/gitea/repo-avatars
+    DISABLE_GRAVATAR        = true
+    ENABLE_FEDERATED_AVATAR = false
+
+    [attachment]
+    PATH = /data/gitea/attachments
+
+    [log]
+    ROOT_PATH = /data/gitealog
+
+    [security]
+    INTERNAL_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE1OTUyMzM3NTh9.rAvqAg8ENQcJxPYzBVl_RFSlnUDu6P5SnZyQM_yiGgY
+    INSTALL_LOCK   = true
+    SECRET_KEY     = Ck46sSXKOg9d3pclFnYxuOCZjFeRBebz3MId5yhXPUWOPUxRM9zL2JZPC6oJGjhz
+
+    [oauth2]
+    JWT_SECRET = mmdjOQ9x6pSLC4NAIwd_WysKhsmll8DIO3Ur9QZpaz8
+
+  apply_config.sh: "mkdir -p /data/gitea/conf; mkdir -p /data/gitea/https; cp -f /etc/gitea/app.ini /data/gitea/conf; chown git:git /data/gitea/conf/app.ini;"
+  user_config.sh: "gitea admin create-user create --admin --username ${GITEA_ADMIN_USERNAME} --password ${GITEA_ADMIN_PASSWORD} --email ${GITEA_ADMIN_EMAIL} --must-change-password=false;"
