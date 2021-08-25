@@ -14,51 +14,6 @@ source {{ .common.directory.app }}/properties.env
 # @see
 #/
 
-
-echo_create "etc.hosts.sh"
-cat >> ${OS_PATH}/haproxy/etc.hosts.sh << 'EOF'
-source {{ .common.directory.app }}/function.env
-source {{ .common.directory.app }}/properties.env
-
-TITLE="Ipaddress Define"
-m=0
-w=0
-
-## Main
-echo_blue "${TITLE}"
-echo '${PASSWORD}' | sudo --stdin su
-if [ -n "${HAPROXY}" ];
-then
-        echo "${HAPROXY} haproxy" >> /etc/hosts
-
-fi
-
-if [ -n "${RANCHER}" ];
-then
-        echo "${RANCHER} rancher" >> /etc/hosts
-fi
-
-for master in ${MASTER[@]}
-do
-        if [ -n ${master} ];
-        then
-                let "m += 1"
-                echo "${master} master${m}" >> /etc/hosts
-        fi
-done
-
-for worker in ${WORKER[@]}
-do
-        if [ -n ${worker} ];
-        then
-                let "w += 1"
-                echo "${worker} worker${w}" >> /etc/hosts
-        fi
-done
-exit
-echo_yellow "${TITLE}"
-EOF
-
 echo_create "haproxy.tpl"
 cat >> ${OS_PATH}/haproxy/haproxy.tpl << 'EOF'
 #---------------------------------------------------------------------
