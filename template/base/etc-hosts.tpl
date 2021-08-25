@@ -60,6 +60,3 @@ do
                 echo "${worker} worker${w}" >> /etc/hosts
         fi
 done
-exit
-
-EOF
