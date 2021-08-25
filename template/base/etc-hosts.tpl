@@ -41,10 +41,10 @@ do
     else
         echo "${host} haproxy" >> /etc/hosts
         echo "nameserver ${host}" >> /etc/resolv.conf
-       # echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     fi
 done
 
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 
 for host in ${INCEPTION[@]}
 do
