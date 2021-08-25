@@ -2,8 +2,8 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-keycloak_url="https://{{ .keycloak.ingress.cname}}.{{ .global.domain}}"
-gitea_url="https://{{ .gitea.ingress.cname}}.{{ .global.domain}}"
+keycloak_url="https://${KEYCLOAK_URL}"
+gitea_url="https://${GITEA_URL}"
 p_realm=paasxpert
 m_realm=master
 
@@ -11,7 +11,6 @@ path="${JSON_PATH}/gitea"
 cookie_path=${path}/gitea-cookie.txt
 gitea_json_path=${path}/gitea-source.json
 
-app_path="{{ .common.directory.app }}"
 
 #/
 # <pre>
@@ -24,7 +23,7 @@ app_path="{{ .common.directory.app }}"
 #/
 
 ## sudouser 생성
-kubectl exec $(kubectl get pod -n {{ .global.namespace }} | grep gitea | awk '{print $1}') -n {{ .global.namespace }} bash /etc/gitea/user_config.sh
+kubectl exec $(kubectl get pod -n ${GLOBAL_NAMESPACE} | grep gitea | awk '{print $1}') -n {{ .global.namespace }} bash /etc/gitea/user_config.sh
 
 echo "----"
 echo "[INFO] Get token"

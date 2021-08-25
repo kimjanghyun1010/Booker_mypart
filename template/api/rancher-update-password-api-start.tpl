@@ -2,7 +2,7 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-rancher_url="https://{{ .rancher.cname }}.{{ .global.domain }}"
+rancher_url="https://${RANCHER_URL}"
 path="${JSON_PATH}/rancher"
 
 #/
@@ -16,7 +16,7 @@ path="${JSON_PATH}/rancher"
 #/
 
 echo "[INFO] Login rancher admin user"
-curl -ks -c ${path}/rancher-cookie.txt "$rancher_url/v3-public/localProviders/local?action=login" \
+curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
   "description": "UI Session",
@@ -34,14 +34,14 @@ R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
 # update admin password
 echo "[INFO] Update Password admin user"
-curl -ks "$rancher_url/v3/users?action=changepassword" \
+curl -ks "${rancher_url}/v3/users?action=changepassword" \
   -H 'content-type: application/json' \
   -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
   -d $'{"currentPassword":"admin","newPassword":"crossent1234\u0021"}'  > /dev/null 2>&1
 
 # create rancher server-url
 echo "[INFO] Create rancher server-url"
-curl -ks "$rancher_url/v3/settings/server-url" \
+curl -ks "${rancher_url}/v3/settings/server-url" \
   -X 'PUT' \
   -H 'content-type: application/json' \
   -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
