@@ -17,6 +17,7 @@ LOG_PATH="{{ .common.directory.log }}"
 DOCKER_URL="{{ .common.docker.curl }}"
 
 HAPROXY=({{ range $element := .common.IP.haproxy }}"{{ $element }}" {{ end }})
+INCEPTION=({{ range $element := .common.IP.inception }}"{{ $element }}" {{ end }})
 RANCHER=({{ range $element := .common.IP.rancher }}"{{ $element }}" {{ end }})
 MASTER=({{ range $element := .common.IP.master }}"{{ $element }}" {{ end }})
 WORKER=({{ range $element := .common.IP.worker }}"{{$element}}" {{ end }})

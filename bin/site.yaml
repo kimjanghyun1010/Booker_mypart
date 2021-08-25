@@ -22,16 +22,18 @@ common:
   IP:
     haproxy:
       haproxy1: 192.168.153.1
+    inception:
+      inception1: ""
     rancher:
-      rancher1: 192.168.153.2
+      rancher1: 192.168.153.3
     master:
-      master1: 192.168.153.3
-      master2: 192.168.153.4
-      master3: 192.168.153.5
+      master1: 192.168.153.4
+      master2: 192.168.153.5
+      master3: 192.168.153.6
     worker:
-      worker1: 192.168.153.6
-      worker2: 192.168.153.7
-      worker3: 192.168.153.8
+      worker1: 192.168.153.7
+      worker2: 192.168.153.8
+      worker3: 192.168.153.9
   docker:
     version: 1.19.3
     curl: 20.10.3

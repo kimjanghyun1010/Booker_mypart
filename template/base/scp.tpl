@@ -3,7 +3,9 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-
+h=0
+i=0
+r=0
 m=0
 w=0
 
@@ -17,79 +19,94 @@ w=0
 # @see
 #/
 
+# ECHO_NODE_NAME() {
+#     NODE_NAME=$1
+#     NUM=${2:-""}
+#     echo "------------------------------"
+#     echo "${NODE_NAME} ${NUM}"
+#     echo "------------------------------"
+# }
+
+
+SSH_COMMAND() {
+    NODE_NAME=$1
+    NUM=${2:-""}
+    DOCKER=${3:-""}
+
+    echo "------------------------------"
+    echo "${NODE_NAME} ${NUM}"
+    echo "------------------------------"
+
+    ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget 2>&1 >/dev/null
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
+    scp ${APP_PATH}/function.env ${USERNAME}@${NODE_NAME}${NUM}:~/
+    scp ${APP_PATH}/properties.env ${USERNAME}@${NODE_NAME}${NUM}:~/
+    scp ${OS_PATH}/common/common.sh ${USERNAME}@${NODE_NAME}${NUM}:~/
+    scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@${NODE_NAME}${NUM}:~/
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sed -i 's%/app/%./%g' common.sh etc-hosts.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash common.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash etc-hosts.sh
+    scp ~/.ssh/id_rsa ${USERNAME}@${NODE_NAME}${NUM}:~/.ssh
+    # -z null 일때 참
+    if [ -z ${DOCKER} ]
+    then
+        ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
+        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
+    fi
+}
+
+
 for host in ${HAPROXY[@]}
 do
-    echo "------------------------------"
-    echo "HAPROXY"
-    echo "------------------------------"
-    
-    sudo bash ${OS_PATH}/common/common.sh
+    NODE_COUNT=$(echo ${#HAPROXY[@]})
+    ## -lt <
+    if [ 1 -lt ${NODE_COUNT} ]
+    then
+        let "h += 1"
+        SSH_COMMAND haproxy ${h} no
+    else
+        SSH_COMMAND haproxy no
+    fi
+
 done
 
 
+for host in ${INCEPTION[@]}
+do    
+    NODE_COUNT=$(echo ${#INCEPTION[@]})
+    ## -lt <
+    if [ 1 -lt ${NODE_COUNT} ]
+    then
+        let "i += 1"
+        SSH_COMMAND inception ${i}
+    else
+        SSH_COMMAND inception
+    fi
+done
+
 for host in ${RANCHER[@]}
 do
-
-    echo "------------------------------"
-    echo "RANCHER"
-    echo "------------------------------"
-    
-    ssh -o StrictHostKeyChecking=no ${USERNAME}@rancher sudo yum install -y wget 2>&1 >/dev/null
-    ssh ${USERNAME}@rancher sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
-    scp ${APP_PATH}/function.env ${USERNAME}@rancher:~/
-    scp ${APP_PATH}/properties.env ${USERNAME}@rancher:~/
-    scp ${OS_PATH}/common/common.sh ${USERNAME}@rancher:~/
-    scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@rancher:~/
-    ssh ${USERNAME}@rancher sed -i 's%/app/%./%g' common.sh etc-hosts.sh
-    ssh ${USERNAME}@rancher sudo bash common.sh
-    ssh ${USERNAME}@rancher sudo bash etc-hosts.sh
-    ssh ${USERNAME}@rancher "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
-    ssh ${USERNAME}@rancher sudo usermod -aG docker ${USERNAME}
-    scp ~/.ssh/id_rsa ${USERNAME}@rancher:~/.ssh
+    NODE_COUNT=$(echo ${#RANCHER[@]})
+    ## -lt <
+    if [ 1 -lt ${NODE_COUNT} ]
+    then
+        let "r += 1"
+        SSH_COMMAND rancher ${r}
+    else
+        SSH_COMMAND rancher
+    fi
 done
 
 
 for host in ${MASTER[@]}
 do
     let "m += 1"
-    
-    echo "------------------------------"
-    echo  "MASTER ${m}"
-    echo "------------------------------"
-    
-    ssh -o StrictHostKeyChecking=no ${USERNAME}@master${m} sudo yum install -y wget 2>&1 >/dev/null
-    ssh ${USERNAME}@master${m} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
-    scp ${APP_PATH}/function.env ${USERNAME}@master${m}:~/
-    scp ${APP_PATH}/properties.env ${USERNAME}@master${m}:~/
-    scp ${OS_PATH}/common/common.sh ${USERNAME}@master${m}:~/
-    scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@master${m}:~/
-    ssh ${USERNAME}@master${m} sed -i 's%/app/%./%g' common.sh etc-hosts.sh
-    ssh ${USERNAME}@master${m} sudo bash common.sh
-    ssh ${USERNAME}@master${m} sudo bash etc-hosts.sh
-    ssh ${USERNAME}@master${m} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
-    ssh ${USERNAME}@master${m} sudo usermod -aG docker ${USERNAME}
-    scp ~/.ssh/id_rsa ${USERNAME}@master${m}:~/.ssh
+    SSH_COMMAND master ${m}
 done
 
 
 for host in ${WORKER[@]}
 do
     let "w += 1"
-    
-    echo "------------------------------"
-    echo  "WORKER ${w}"
-    echo "------------------------------"
-    
-    ssh -o StrictHostKeyChecking=no ${USERNAME}@worker${w} sudo yum install -y iscsi-initiator-utils wget 2>&1 >/dev/null
-    ssh ${USERNAME}@worker${w} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
-    scp ${APP_PATH}/function.env ${USERNAME}@worker${w}:~/
-    scp ${APP_PATH}/properties.env ${USERNAME}@worker${w}:~/
-    scp ${OS_PATH}/common/common.sh ${USERNAME}@worker${w}:~/
-    scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@worker${w}:~/
-    ssh ${USERNAME}@worker${w} sed -i 's%/app/%./%g' common.sh etc-hosts.sh
-    ssh ${USERNAME}@worker${w} sudo bash common.sh
-    ssh ${USERNAME}@worker${w} sudo bash etc-hosts.sh
-    ssh ${USERNAME}@worker${w} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
-    ssh ${USERNAME}@worker${w} sudo usermod -aG docker ${USERNAME}
-    scp ~/.ssh/id_rsa ${USERNAME}@worker${w}:~/.ssh
+    SSH_COMMAND worker ${w}
 done

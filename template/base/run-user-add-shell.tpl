@@ -3,11 +3,6 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 
-HAPROXY=({{ range $element := .common.IP.haproxy }}"{{ $element }}" {{ end }})
-RANCHER=({{ range $element := .common.IP.rancher }}"{{ $element }}" {{ end }})
-MASTER=({{ range $element := .common.IP.master }}"{{ $element }}" {{ end }})
-WORKER=({{ range $element := .common.IP.worker }}"{{$element}}" {{ end }})
-
 DEFAULT_USER=centos
 
 m=0
@@ -22,7 +17,7 @@ w=0
 # @see
 #/
 
-for host in ${HAPROXY}
+for host in ${HAPROXY[@]}
 do
     user_check=$(ssh -o StrictHostKeyChecking=no haproxy "sudo cat  /etc/passwd | grep ${USERNAME}")
     if [ "$user_check" == "" ]
@@ -33,7 +28,20 @@ do
     fi
 done
 
-for host in ${RANCHER}
+
+for host in ${INCEPTION[@]}
+do
+    user_check=$(ssh -o StrictHostKeyChecking=no inception "sudo cat  /etc/passwd | grep ${USERNAME}")
+    if [ "$user_check" == "" ]
+    then
+        echo "[INFO] Create inception USER"
+        scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@inception:~/
+        ssh ${DEFAULT_USER}@inception "bash user-add.sh"
+    fi
+done
+
+
+for host in ${RANCHER[@]}
 do
     user_check=$(ssh -o StrictHostKeyChecking=no rancher "sudo cat  /etc/passwd | grep ${USERNAME}")
     if [ "$user_check" == "" ]

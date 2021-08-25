@@ -3,10 +3,6 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-HAPROXY=({{ range $element := .common.IP.haproxy }}"{{ $element }}" {{ end }})
-RANCHER=({{ range $element := .common.IP.rancher }}"{{ $element }}" {{ end }})
-MASTER=({{ range $element := .common.IP.master }}"{{ $element }}" {{ end }})
-WORKER=({{ range $element := .common.IP.worker }}"{{$element}}" {{ end }})
 
 
 ## bash ssh_command.sh "ls -al" worker
