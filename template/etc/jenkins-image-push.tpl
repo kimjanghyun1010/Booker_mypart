@@ -2,7 +2,6 @@
 
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
-harbor_dns="{{ .harbor.ingress.cname }}.{{ .global.domain }}"
 
 path='images'
 docker_images=()
@@ -17,8 +16,8 @@ function docker_load(){
 }
 
 function docker_push(){
-        docker tag $1 ${harbor_dns}/library/$1
-        docker push ${harbor_dns}/library/$1
+        docker tag $1 ${HARBOR_URL}/library/$1
+        docker push ${HARBOR_URL}/library/$1
 }
 
 ## Main

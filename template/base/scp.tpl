@@ -1,8 +1,5 @@
 #!/bin/bash
 
-pwd={{ .common.password }}
-USERNAME={{ .common.username }}
-
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 

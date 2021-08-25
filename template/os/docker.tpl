@@ -1,3 +1,5 @@
+#!/bin/sh
+
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 

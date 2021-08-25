@@ -1,6 +1,6 @@
 #!/bin/bash
-USERNAME={{ .common.username}}
-PASSWORD={{ .common.password }}
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
 
 HAPROXY=({{ range $element := .common.IP.haproxy }}"{{ $element }}" {{ end }})
 RANCHER=({{ range $element := .common.IP.rancher }}"{{ $element }}" {{ end }})

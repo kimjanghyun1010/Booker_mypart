@@ -3,8 +3,6 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-USER="{{ .common.username }}"
-PASSWORD="{{ .common.password }}"
 IPTABLES=`systemctl status iptables | grep Active | awk '{print $2}'`
 FIREWALLD=`systemctl status firewalld | grep Active | awk '{print $2}'`
 
@@ -55,13 +53,9 @@ then
 fi 
 
 echo_blue "Common setting"
-## useradd "${USER}"
-## echo "${PASSWORD}" | passwd --stdin ${USER}
-## echo "${USER}"
-## sed -i -r -e "/root[[:space:]]*ALL/a\\${USER} ALL\=\(ALL\)       ALL" /etc/sudoers
 
 mkdir ${DATA_PATH} ${LOG_PATH}
-chown -R ${USER}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
+chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
 echo_yellow "Common setting"
 
 sudo mkdir -p /etc/docker

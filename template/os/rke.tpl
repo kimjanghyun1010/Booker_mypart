@@ -99,23 +99,44 @@ cat > ${OS_PATH}/rke/kubectl-install.sh << EOF
 
 source {{ .common.directory.app }}/properties.env
 
-mkdir ~/.kube
+
+if [ ! -d ~/.kube ]; then
+    mkdir ~/.kube
+fi
+
 sudo cp  ${OS_PATH}/rke/kube_config_cluster.yml ~/.kube/config
-sudo chown {{ .common.username }}. ~/.kube/config
+sudo chown ${USERNAME}. ~/.kube/config
+
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > ${OS_PATH}/rke/get_helm.sh
 chmod +x ${OS_PATH}/rke/get_helm.sh 
 ${OS_PATH}/rke/get_helm.sh
-sudo bash ${OS_PATH}/certificate/certificate.sh
+
+
+if [ ! -d ${APP_PATH}/certs ]; then
+    sudo bash ${OS_PATH}/certificate/certificate.sh
+fi
+
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v{{ .common.kubectl.version }}/bin/linux/amd64/kubectl 
 sudo chmod +x kubectl && sudo cp kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
+
+CHECK_RESOURCE() {
+  CRD=$1
+  NAME=$2
+  check=$(kubectl get ${CRD} ${NAME})
+
+  if [ -z ${check} ]
+  then
+
+  fi
+}
+
+
 kubectl create namespace rke
 kubectl create secret generic tls-ca --from-file=${APP_PATH}/certs/cacerts.pem -n rke
 kubectl create secret tls tls-rancher-ingress --cert=${APP_PATH}/certs/server-cert.pem --key=${APP_PATH}/certs/server-key.pem -n rke
 kubectl create namespace {{ .global.namespace }}
 kubectl create secret tls platform --key ${APP_PATH}/certs/server-key.pem --cert ${APP_PATH}/certs/server-cert.pem -n  {{ .global.namespace }}
-kubectl create secret generic gitea-cert \
-  --from-file=${APP_PATH}/certs/ca-certificates.crt \
-  -n  {{ .global.namespace }}
+kubectl create secret generic gitea-cert --from-file=${APP_PATH}/certs/ca-certificates.crt -n  {{ .global.namespace }}
 
 EOF
 

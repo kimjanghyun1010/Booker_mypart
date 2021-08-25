@@ -8,7 +8,6 @@ RANCHER=({{ range $element := .common.IP.rancher }}"{{ $element }}" {{ end }})
 MASTER=({{ range $element := .common.IP.master }}"{{ $element }}" {{ end }})
 WORKER=({{ range $element := .common.IP.worker }}"{{$element}}" {{ end }})
 
-PASSWORD="{{ .common.password }}"
 TITLE="Ipaddress Define"
 m=0
 w=0
@@ -22,8 +21,6 @@ w=0
 # @authors 크로센트
 # @see
 #/
-
-
 
 echo "[INFO] Update /etc/hosts"
 ## Main

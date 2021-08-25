@@ -1,21 +1,27 @@
+#!/bin/sh
+
 source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
 {{- if .global.imagePullSecrets }}
 source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
 
 echo_blue "./registry.sh"
 
 echo_create "registry-img-load.sh"
 cat >> {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
 IMAGE=`ls {{ .common.directory.app }}/package/image | grep registry | awk '{print $1}'`
 TITLE="- private registry container - Load"
 
 echo_blue "${TITLE}"
-docker load -i {{ .common.directory.app }}/package/image/${IMAGE}
-mkdir -p {{ .common.directory.app }}/deploy/os/registry/auth
+docker load -i ${APP_PATH}/package/image/${IMAGE}
+mkdir -p ${APP_PATH}/deploy/os/registry/auth
 docker run \
   --entrypoint htpasswd \
-  registry:2 -Bbn admin {{ .common.password }} > {{ .common.directory.app }}/deploy/os/registry/auth/htpasswd
+  registry:2 -Bbn admin ${PASSWORD} > ${APP_PATH}/deploy/os/registry/auth/htpasswd
 
 echo_yellow "${TITLE}"
 EOF
@@ -54,15 +60,17 @@ EOF
 echo_create "registry-start.sh"
 cat >> {{ .common.directory.app }}/deploy/os/registry/registry-start.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
 TITLE="- private registry container - Install"
 STATUS=` docker ps | grep registry | grep Up | awk '{print $1}'`
 
 echo_blue "${TITLE}"
 docker run -dit -p {{ .global.port.registry }}:5000 --restart=always --name registry --privileged=true \
-  -v {{ .common.directory.app }}/deploy/os/registry/config.yml:/etc/docker/registry/config.yml \
-  -v {{ .common.directory.app }}/deploy/os/registry/auth:/auth \
-  -v {{ .common.directory.app }}/certs:/certs \
-  -v {{ .common.directory.data }}/registry:/var/lib/registry \
+  -v ${APP_PATH}/deploy/os/registry/config.yml:/etc/docker/registry/config.yml \
+  -v ${APP_PATH}/deploy/os/registry/auth:/auth \
+  -v ${APP_PATH}/certs:/certs \
+  -v ${APP_PATH}/registry:/var/lib/registry \
   registry:2
 
 if [ -n ${STATUS} ];
@@ -77,6 +85,8 @@ EOF
 echo_create "registry-delete.sh"
 cat >> {{ .common.directory.app }}/deploy/os/registry/registry-delete.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
 TITLE="- private registry container - Delete"
 
 echo_blue "${TITLE}"
@@ -89,8 +99,8 @@ stty echo
 if [ ${INPUT} == Y ];
 then
   docker rm -f registry 
-  echo '${PASSWORD}'  | sudo --stdin rm -rf {{ .common.directory.data }}/registry
-  ls {{ .common.directory.data }}
+  echo '${PASSWORD}'  | sudo --stdin rm -rf ${DATA_PATH}/registry
+  ls ${DATA_PATH}
   echo_green "${TITLE}"
 else
   echo_red "${TITLE}"

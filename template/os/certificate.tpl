@@ -1,12 +1,14 @@
-source {{ .common.directory.app }}/function.env
+#!/bin/sh
 
-SITE_DNS=*.{{ .global.domain }}
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+SITE_DNS=*.${GLOBAL_URL}
 CERT_PW=test
-path="{{ .common.directory.app }}"
 
 echo_create "{{ .global.domain }} Domain certs"
-mkdir -p $path/certs
-cd $path/certs
+mkdir -p ${APP_PATH}/certs
+cd ${APP_PATH}/certs
 
 echo 01 > ca.srl
 
@@ -46,7 +48,7 @@ openssl rsa -passin pass:${CERT_PW} \
 
 openssl verify -CAfile ca.pem server-cert.pem
 
-cp $path/certs/server-cert.pem $path/certs/server.crt
-cp $path/certs/server-cert.pem $path/certs/ca-certificates.crt
-cp $path/certs/server-cert.pem $path/certs/cacerts.pem
-ls $path/certs
+cp ${APP_PATH}/certs/server-cert.pem ${APP_PATH}/certs/server.crt
+cp ${APP_PATH}/certs/server-cert.pem ${APP_PATH}/certs/ca-certificates.crt
+cp ${APP_PATH}/certs/server-cert.pem ${APP_PATH}/certs/cacerts.pem
+ls ${APP_PATH}/certs

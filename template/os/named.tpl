@@ -105,8 +105,8 @@ zone "{{ .global.domain }}" IN {
 };
 EOF
 
-echo_create "{{ .global.domain }}.tpl"
-cat > ${OS_PATH}/named/{{ .global.domain }}.tpl << 'EOF'
+echo_create "${GLOBAL_URL}.tpl"
+cat > ${OS_PATH}/named/${GLOBAL_URL}.tpl << 'EOF'
 $TTL 3H
 @       IN SOA   ns.{{ .global.domain }}. root.{{ .global.domain }}. (
                                         1       ; serial
@@ -152,7 +152,7 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 sudo cp ${OS_PATH}/haproxy/haproxy.tpl /etc/haproxy/haproxy.cfg
-sudo cp ${OS_PATH}/named/{{ .global.domain }}.tpl /var/named/{{ .global.domain }}
+sudo cp ${OS_PATH}/named/${GLOBAL_URL}.tpl /var/named/${GLOBAL_URL}
 sudo cp ${OS_PATH}/named/named.conf.tpl /etc/named.conf
 
 sudo systemctl restart haproxy

@@ -26,6 +26,8 @@ ETC_TEMPLATE_DIR="${TEMPLATE_DIR}/etc"
 JSON_TEMPLATE_DIR="${TEMPLATE_DIR}/json"
 SQL_TEMPLATE_DIR="${TEMPLATE_DIR}/sql"
 
+GLOBAL_NAMESPACE="{{ .global.namespace }}"
+
 #/
 # <pre>
 # gucci cli로 site.yaml이 가지고 있는 값을 바탕으로 template에 값을 채우는 script
@@ -42,13 +44,13 @@ SQL_TEMPLATE_DIR="${TEMPLATE_DIR}/sql"
 # then
 #     echo "--ssh key create--"
 #     ssh-keygen -t rsa  -N '' -f ~/.ssh/id_rsa <<< y > /dev/null 2>&1
-#     cp -r  ~/.ssh /home/{{ .common.username }}/
-#     chown -R {{ .common.username }}. /home/{{ .common.username }}/.ssh
+#     cp -r  ~/.ssh /home/${USERNAME}/
+#     chown -R ${USERNAME}. /home/${USERNAME}/.ssh
 # fi
 
 ##
 ## Main
-echo "package files mv the "{{ .common.directory.app }}" directory"
+echo "package files mv the "${APP_PATH}" directory"
 
 # base
 for name in "${BASE_DIR_NAME[@]}"
@@ -83,8 +85,8 @@ do
     cp -r ${BASEDIR}/../package/chart/${helm} ${HELM_PATH}/${helm}/
     gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${HELM_TEMPLATE_DIR}/${helm}.tpl > ${HELM_PATH}/${helm}/${helm}-values.yaml
     echo "option=\${1:-install}" > ${HELM_PATH}/${helm}/${helm}-install.sh
-    echo "helm \${option} ${helm} -f ${HELM_PATH}/${helm}/${helm}-values.yaml ${HELM_PATH}/${helm}/${helm} --namespace {{ .global.namespace }}" >> ${HELM_PATH}/${helm}/${helm}-install.sh
-    echo "helm delete ${helm} --namespace {{ .global.namespace }}" > ${HELM_PATH}/${helm}/${helm}-delete.sh
+    echo "helm \${option} ${helm} -f ${HELM_PATH}/${helm}/${helm}-values.yaml ${HELM_PATH}/${helm}/${helm} --namespace ${GLOBAL_NAMESPACE}" >> ${HELM_PATH}/${helm}/${helm}-install.sh
+    echo "helm delete ${helm} --namespace ${GLOBAL_NAMESPACE}" > ${HELM_PATH}/${helm}/${helm}-delete.sh
 done
 
 mkdir -p ${API_PATH}

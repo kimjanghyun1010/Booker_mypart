@@ -8,6 +8,9 @@
 # @see
 #/
 
+USERNAME="{{ .common.username }}"
+PASSWORD="{{ .common.password }}"
+
 APP_PATH="{{ .common.directory.app }}"
 DATA_PATH="{{ .common.directory.data }}"
 LOG_PATH="{{ .common.directory.log }}"
@@ -18,7 +21,6 @@ RANCHER=({{ range $element := .common.IP.rancher }}"{{ $element }}" {{ end }})
 MASTER=({{ range $element := .common.IP.master }}"{{ $element }}" {{ end }})
 WORKER=({{ range $element := .common.IP.worker }}"{{$element}}" {{ end }})
 
-## new path
 BASEDIR=$(dirname "$0")
 DEPLOY_PATH="${APP_PATH}/deploy"
 OS_PATH="${APP_PATH}/deploy/os"
@@ -28,3 +30,11 @@ JSON_PATH="${API_PATH}/api-json-dir"
 ETC_PATH="${APP_PATH}/deploy/etc"
 
 WORKDIR="{{ .common.directory.workdir }}"
+
+GLOBAL_URL={{ .global.domain }}
+GITEA_URL={{ .gitea.ingress.cname }}.{{ .global.domain }}
+HARBOR_URL={{ .harbor.ingress.cname }}.{{ .global.domain }}
+KEYCLOAK_URL={{ .keycloak.ingress.cname }}.{{ .global.domain }}
+RANCHER_URL={{ .rancher.cname }}.{{ .global.domain }}
+JENKINS_URL={{ .jennkins.ingress.cname }}.{{ .global.domain }}
+PORTAL_URL={{ .portal.ingress.cname }}.{{ .global.domain }}

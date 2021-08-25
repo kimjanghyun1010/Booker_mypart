@@ -2,7 +2,7 @@
 
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
-APP_PATH="{{ .common.directory.app }}"
+
 
 #/
 # <pre>
@@ -20,7 +20,6 @@ cat >> ${OS_PATH}/haproxy/etc.hosts.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-PASSWORD="{{ .common.password }}"
 TITLE="Ipaddress Define"
 m=0
 w=0
