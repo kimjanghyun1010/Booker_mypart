@@ -80,35 +80,35 @@ defaults
 # rancher
 #---------------------------------------------------------------------
 
-listen chartmuseum-http
-    balance  roundrobin
-    bind :2084
-    log global
-    mode tcp
-    option tcplog
-    server rancher rancher:2084 check
+# listen chartmuseum-http
+#     balance  roundrobin
+#     bind :2084
+#     log global
+#     mode tcp
+#     option tcplog
+#     server rancher rancher:2084 check
 
-listen rancher-https
-    balance  roundrobin
-    {{- if .global.port.rancher_https }}
-    bind :{{ .global.port.rancher_https }}
-    {{ else }}
-    bind :2443
-    {{- end }}
-    log global
-    mode tcp
-    option tcplog
-    server rancher rancher:2443 check
+# listen rancher-https
+#     balance  roundrobin
+#     {{- if .global.port.rancher_https }}
+#     bind :{{ .global.port.rancher_https }}
+#     {{ else }}
+#     bind :2443
+#     {{- end }}
+#     log global
+#     mode tcp
+#     option tcplog
+#     server rancher rancher:2443 check
 
-{{- if .global.port.registry }}
-listen registry-http
-    balance  roundrobin
-    bind :{{ .global.port.registry }}
-    log global
-    mode tcp
-    option tcplog
-    server rancher rancher:{{ .global.port.registry }} check
-{{- end }}
+# {{- if .global.port.registry }}
+# listen registry-http
+#     balance  roundrobin
+#     bind :{{ .global.port.registry }}
+#     log global
+#     mode tcp
+#     option tcplog
+#     server rancher rancher:{{ .global.port.registry }} check
+# {{- end }}
 
 #---------------------------------------------------------------------
 # k8s
