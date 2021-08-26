@@ -67,15 +67,46 @@ CHECK_STATUS() {
 CHECK_API() {
     SHELL_PATH=$1
     SHELL_NAME=$2
-    
-    read -p "[INFO] RUN ${SHELL_NAME} ? [ Y/N ]  : " INPUT
 
-    if [ ${INPUT} == Y ] || [ ${INPUT} == y ]
-    then
-        echo_api_blue "[API] ${SHELL_NAME} start"
-        bash ${SHELL_PATH}/${SHELL_NAME}
+    while true
+    do
+        read -p "[INFO] RUN ${SHELL_NAME} ? [ Y/N ]  : " INPUT
 
-    fi
+        if [ ${INPUT} == Y ] || [ ${INPUT} == y ]
+        then
+            echo_api_blue "[API] ${SHELL_NAME}"
+            bash ${SHELL_PATH}/${SHELL_NAME}
+            break
+        elif [ ${INPUT} == N ] || [ ${INPUT} == n ]
+        then
+            echo_api_blue_stop "[API] ${SHELL_NAME}"
+            break
+        fi
+    done
+}
+
+CHECK_KEYCLOAK() {
+    SHELL_NAME=$1
+
+    while true
+    do
+        read -p "[INFO] RUN ${SHELL_NAME} ? [ Y/N/D ]  : " INPUT
+
+        if [ ${INPUT} == Y ] || [ ${INPUT} == y ]
+        then
+            CHECK_STATUS "helm list" platform keycloak ${HELM_PATH}/keycloak/keycloak-install.sh
+            break
+        elif [ ${INPUT} == D ] || [ ${INPUT} == d ]
+        then
+            bash ${HOME}/${WORKDIR}/ssh_command.sh "" docker
+            CHECK_STATUS "helm list" platform keycloak ${HELM_PATH}/keycloak/keycloak-install.sh
+            break
+        elif [ ${INPUT} == N ] || [ ${INPUT} == n ]
+        then
+            echo_install_green_stop "[INFO] ${SHELL_NAME}"
+            break
+        fi
+    done
 }
 
 
@@ -92,7 +123,7 @@ then
     echo_api_blue "[API] rancher-update-password"
     bash ${API_PATH}/rancher-update-password-api-start.sh
 
-    echo_api_blue "[API] longhorn-api-start"
+    echo_api_blue "[API] longhorn-api"
     CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
 fi
 
@@ -113,8 +144,9 @@ echo_install_green "[INSTALL] gitea-install"
 CHECK_STATUS "helm list" platform gitea ${HELM_PATH}/gitea/gitea-install.sh
 
 echo_install_green "[INSTALL] keycloak-install"
-read -p "[INFO] Push Keycloak Theme before Press Enter : "
-CHECK_STATUS "helm list" platform keycloak ${HELM_PATH}/keycloak/keycloak-install.sh
+CHECK_KEYCLOAK keycloak-install.sh
+
+sleep 5
 
 ## api
 if [ -z $PASS_API ]

@@ -32,7 +32,7 @@ master_command() {
         echo "------------------------"
         echo -e "ssh master${m}"
         echo "------------------------"
-        ssh -o StrictHostKeyChecking=no  ${USERNAME}@master${m} $command
+        ssh -o StrictHostKeyChecking=no  ${USERNAME}@master${m} ${command}
     done
 }
 
@@ -43,38 +43,49 @@ worker_command() {
         echo "------------------------"
         echo -e "ssh worker${w}"
         echo "------------------------"
-        ssh -o StrictHostKeyChecking=no  ${USERNAME}@worker${w} $command
+        ssh -o StrictHostKeyChecking=no  ${USERNAME}@worker${w} ${command}
     done
 }
 
+keycloak_theme() {
+    NODE_NAME_SMALL=$1
+    NODE_NUM=1
 
-if [ "$role" == "" ]
+    echo "------------------------"
+    echo -e "ssh ${NODE_NAME_SMALL}${NODE_NUM}"
+    echo "------------------------"
+    ssh -o StrictHostKeyChecking=no  ${USERNAME}@${NODE_NAME_SMALL}${NODE_NUM} docker pull faasharbor.smartfarmkorea.net/library/paasxpert:v2.2
+    ssh ${USERNAME}@${NODE_NAME_SMALL}${NODE_NUM} docker tag faasharbor.smartfarmkorea.net/library/paasxpert:v2.2 ${HARBOR_URL}/library/paasxpert:v2.2
+    ssh ${USERNAME}@${NODE_NAME_SMALL}${NODE_NUM} docker push ${HARBOR_URL}/library/paasxpert:v2.2
+
+}
+
+if [ "${role}" == "" ]
 then
     master_command
 
     worker_command
 fi
 
-if [ "$role" == "master" ]
+if [ "${role}" == "master" ]
 then
     master_command
 fi
 
-if [ "$role" == "worker" ]
+if [ "${role}" == "worker" ]
 then
     worker_command
 fi
 
-if [ "$role" == "docker" ]
+if [ "${role}" == "docker" ]
 then
-    for host in ${WORKER[0]}
-    do
-        let "w += 1"
-        echo "------------------------"
-        echo -e "ssh worker${w}"
-        echo "------------------------"
-        ssh -o StrictHostKeyChecking=no  ${USERNAME}@worker${w} docker pull faasharbor.smartfarmkorea.net/library/paasxpert:v2.2
-        ssh ${USERNAME}@worker${w} docker tag faasharbor.smartfarmkorea.net/library/paasxpert:v2.2 ${HARBOR_URL}/library/paasxpert:v2.2
-        ssh ${USERNAME}@worker${w} docker push ${HARBOR_URL}/library/paasxpert:v2.2
-    done
+    NODE_COUNT=$(echo ${#WORKER[@]})
+    ## -gt >
+    if [ ${NODE_COUNT} -gt 0 ]
+    then
+        keycloak_theme master
+
+    else
+        keycloak_theme worker
+    fi
 fi

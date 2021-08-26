@@ -33,6 +33,7 @@ SSH_COMMAND() {
     NUM=${2:-""}
     DOCKER=${3:-""}
     ISCSI=${4:-""}
+    SCP_HAPROXY_NAMED=${5:-""}
 
     echo "------------------------------"
     echo "${NODE_NAME} ${NUM}"
@@ -54,21 +55,56 @@ SSH_COMMAND() {
         ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
         ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
     fi
+
+    if [ -z ${SCP_HAPROXY_NAMED} ]
+    then
+        scp -r ${OS_PATH}/haproxy ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
+        scp -r ${OS_PATH}/named ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
+    fi
 }
+
+
+# for host in ${HAPROXY[@]}
+# do
+#     NODE_COUNT=$(echo ${#HAPROXY[@]})
+#     ## -gt >
+#     if [ ${NODE_COUNT} -gt 1 ]
+#     then
+#         let "h += 1"
+#         SSH_COMMAND haproxy ${h} no
+#     else
+#         SSH_COMMAND haproxy "" no
+#     fi
+# done
 
 
 for host in ${HAPROXY[@]}
 do
-    NODE_COUNT=$(echo ${#HAPROXY[@]})
+    NODE_COUNT_I=$(echo ${#INCEPTION[@]})
     ## -gt >
-    if [ ${NODE_COUNT} -gt 1 ]
+    if [ ${NODE_COUNT_I} -gt 0 ]
     then
-        let "h += 1"
-        SSH_COMMAND haproxy ${h} no
-    else
-        SSH_COMMAND haproxy "" no
-    fi
+        NODE_COUNT_H=$(echo ${#HAPROXY[@]})
+        ## -gt >
+        if [ ${NODE_COUNT_H} -gt 1 ]
+        then
+            let "h += 1"
+            SSH_COMMAND haproxy ${h} no "" yes
+        else
+            SSH_COMMAND haproxy "" no "" yes
+        fi
 
+    else
+        NODE_COUNT_H=$(echo ${#HAPROXY[@]})
+        ## -gt >
+        if [ ${NODE_COUNT_H} -gt 1 ]
+        then
+            let "h += 1"
+            SSH_COMMAND haproxy ${h} no
+        else
+            SSH_COMMAND haproxy "" no
+        fi
+    fi
 done
 
 
@@ -84,6 +120,7 @@ do
         SSH_COMMAND inception
     fi
 done
+
 
 for host in ${RANCHER[@]}
 do
@@ -101,8 +138,15 @@ done
 
 for host in ${MASTER[@]}
 do
+    NODE_COUNT=$(echo ${#WORKER[@]})
     let "m += 1"
-    SSH_COMMAND master ${m}
+    ## -gt >
+    if [ ${NODE_COUNT} -gt 0 ]
+    then
+        SSH_COMMAND master ${m} "" iscsi-initiator-utils
+    else
+        SSH_COMMAND master ${m}
+    fi
 done
 
 

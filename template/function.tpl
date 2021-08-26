@@ -76,3 +76,13 @@ function echo_error_red(){
 	MSG=$1
 	echo -e "${RED}${MSG} Failed.${NC}"
 }
+
+function echo_api_blue_stop(){
+	MSG=$1
+	echo -e "${BLUE}${MSG} Stop.${NC}"
+}
+
+function echo_install_green_stop(){
+	MSG=$1
+	echo -e "${GREEN}${MSG} Stop.${NC}"
+}

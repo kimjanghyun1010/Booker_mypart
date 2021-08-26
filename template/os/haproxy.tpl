@@ -153,13 +153,14 @@ EOF
 echo_create "haproxy-svc-install.sh"
 cat >> ${OS_PATH}/haproxy/haproxy-svc-install.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
 TITLE="- haproxy svc - Install"
 
 
 echo_blue "${TITLE}"
-echo "{{ .common.password }}" | sudo --stdin yum install -y haproxy
+echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
 sudo systemctl enabled haproxy
-sudo cp {{ .common.directory.app }}/bin_deploy/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
+sudo cp ${APP_PATH}/bin_deploy/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
 sudo systemctl start haproxy
 sudo systemctl status haproxy
 
@@ -175,14 +176,17 @@ EOF
 echo_create "haproxy-script-delete.sh"
 cat >> ${OS_PATH}/haproxy/haproxy-script-delete.sh << 'EOF'
 #!/bin/sh
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
 
 echo "haproxy-svc-install.sh script delete"
-rm -rf {{ .common.directory.app }}/bin_deploy/haproxy/haproxy-svc-install.sh
+rm -rf ${APP_PATH}/bin_deploy/haproxy/haproxy-svc-install.sh
 EOF
 
 echo_create "haproxy-svc-delete.sh"
 cat >> ${OS_PATH}/haproxy/haproxy-svc-delete.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
 TITLE="- haproxy svc - Delete"
 
 read -p "Uninstall haproxy svc?  [ Y/N ] :" INPUT
@@ -197,7 +201,7 @@ then
   sudo systemctl disabled haproxy
   sudo systemctl status haproxy
   sudo yum remove -y haproxy
-  sudo rm -rf {{ .common.directory.app }}/bin_deploy/haproxy/
+  sudo rm -rf ${APP_PATH}/bin_deploy/haproxy/
   echo_green "${TITLE}"
 else
   echo_red "${TITLE}"

@@ -22,7 +22,7 @@ source {{ .common.directory.app }}/properties.env
 TITLE="- named svc - Install"
 
 echo_blue "${TITLE}"
-echo '{{ .common.password }}' | sudo -kS yum install -y bind bind-utils
+echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
 sudo systemctl enabled named
 sudo systemctl start named
 sudo systemctl status named

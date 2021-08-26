@@ -19,10 +19,19 @@ m_realm=master
 # @see
 #/
 
-echo "----"
-echo "[INFO] Get token"
-token=$(curl -ks  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode 'password=crossent1234!' --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
-echo "----"
+while true
+do
+    echo "----"
+    echo "[INFO] Get token"
+    token=$(curl -ks  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode "password=${KEYCLOAK_ADMIN_PW}" --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
+    echo "----"
+    # -n null이 아닐때 참
+    if [ -n ${token}]
+    then
+        break
+    fi
+    sleep 5
+done
 
 #echo realm delete 
 #curl -k  -X DELETE "${keycloak_url}/auth/admin/realms/${p_realm}" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/x-www-form-urlencoded'
