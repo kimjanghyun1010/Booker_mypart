@@ -54,8 +54,8 @@ SSH_COMMAND() {
         ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
         ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
     fi
-
-    if [ -z ${SCP_HAPROXY_NAMED} ]
+    # -n null 아닐때 참
+    if [ -n ${SCP_HAPROXY_NAMED} ]
     then
         ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${OS_PATH} ${DEPLOY_PATH}
         scp -r ${OS_PATH}/haproxy ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
