@@ -16,7 +16,7 @@ path="${JSON_PATH}/rancher"
 #/
 
 echo "[INFO] Login rancher admin user"
-curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
   "description": "UI Session",

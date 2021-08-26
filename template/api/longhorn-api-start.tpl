@@ -99,7 +99,7 @@ Platform_Start() {
 
 
 
-curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
   "description": "UI Session",
@@ -113,7 +113,7 @@ curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/
   "username": "admin"
 }' > /dev/null 2>&1
 
-R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
+R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
 
 echo "[INFO] Check project"
