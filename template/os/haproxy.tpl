@@ -156,20 +156,30 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 TITLE="- haproxy svc - Install"
 
+HAPROXY_INSTALL() {
+    echo_blue "${TITLE}"
+    echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
+    sudo systemctl enabled haproxy
+    sudo cp ${APP_PATH}/bin_deploy/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
+    sudo systemctl start haproxy
+    sudo systemctl status haproxy
 
-echo_blue "${TITLE}"
-echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
-sudo systemctl enabled haproxy
-sudo cp ${APP_PATH}/bin_deploy/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
-sudo systemctl start haproxy
-sudo systemctl status haproxy
+    STATUS=`systemctl status haproxy | grep Active | awk '{print $2}'`
+    if [ ${STATUS} == "active" ];
+    then
+    echo_green "${TITLE}"
+    else
+    echo_red "${TITLE}"
+    fi
+}
 
-STATUS=`systemctl status haproxy | grep Active | awk '{print $2}'`
-if [ ${STATUS} == "active" ];
+NODE_COUNT_I=$(echo ${#INCEPTION[@]})
+## -gt >
+if [ ${NODE_COUNT_I} -gt 0 ]
 then
-  echo_green "${TITLE}"
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/common.sh
 else
-  echo_red "${TITLE}"
+    HAPROXY_INSTALL
 fi
 EOF
 

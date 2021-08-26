@@ -119,6 +119,7 @@ done
 gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/function.tpl > ${APP_PATH}/function.env
 gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/properties.tpl > ${APP_PATH}/properties.env
 
+gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/loadbalancer-install.tpl > ${DEPLOY_PATH}/loadbalancer-install.sh
 echo "---- helm deploy script directory ----"
 tree -L 4 ${APP_PATH}
 
