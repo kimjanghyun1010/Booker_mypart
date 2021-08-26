@@ -36,7 +36,7 @@ Longhorn_Start() {
 
   if [ -z ${longhorn_id} ]
   then
-      echo "[ERROR] longhorn longhorn_id error"
+      echo_error_red "[ERROR] longhorn longhorn_id error"
       exit
   fi
 
@@ -85,7 +85,7 @@ Platform_Start() {
 
   if [ -z ${platform_id} ]
   then
-      echo "[ERROR] platform platform_id error"
+      echo_error_red "[ERROR] platform platform_id error"
       exit
   fi
 

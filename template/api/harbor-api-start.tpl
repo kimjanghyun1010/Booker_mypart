@@ -34,7 +34,7 @@ secret=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/clients/
 
 if [ -z ${secret} ]
 then
-    echo "[ERORR] harbor secret error"
+    echo_error_red "[ERORR] harbor secret error"
     exit
 fi
 sed -i "s/HARBOR_SECRET/${secret}/gi"  "${harbor_json_path}"

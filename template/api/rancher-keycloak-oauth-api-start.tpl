@@ -50,13 +50,13 @@ KID=$(curl -ks -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/keys" --head
 
 if [ -z ${CERTIFICATE} ]
 then
-    echo "rancher CERTIFICATE error"
+    echo_error_red "[ERROR] rancher CERTIFICATE error"
     exit
 fi
 
 if [ -z ${KID} ]
 then
-    echo "rancher KID error"
+    echo_error_red "[ERROR] rancher KID error"
     exit
 fi
 

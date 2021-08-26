@@ -70,3 +70,9 @@ function echo_install_green(){
 	ECHO_INSTALL_CUR=$(($ECHO_INSTALL_CUR + 1))
 	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_TOTAL}]${GREEN}${MSG} Success.${NC}"
 }
+
+
+function echo_error_red(){
+	MSG=$1
+	echo -e "${RED}${MSG} Failed.${NC}"
+}

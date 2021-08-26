@@ -40,7 +40,7 @@ then
     
     if [ -z ${CSRF} ]
     then
-        echo "[ERROR] gitea CSRF error"
+        echo_error_red "[ERROR] gitea CSRF error"
         exit
     fi
     
@@ -53,7 +53,7 @@ then
 
     if [ -z ${secret} ]
     then
-        echo "gitea secret error"
+        echo_error_red "gitea secret error"
         sed -i "s/${CSRF}/CSRF_TOKEN/gi"  "${gitea_json_path}"
         exit
     fi
