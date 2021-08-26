@@ -3,7 +3,7 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-DIR=${HOME}/${WORKDIR}
+DIR=${HOME}/${WORKDIR}/bin
 
 git config --global http.sslVerify false
 git clone https://sudouser:Crossent1234\!@${GITEA_URL}/samples/samples.git ${DIR}/samples

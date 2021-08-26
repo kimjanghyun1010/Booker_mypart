@@ -43,7 +43,6 @@ RANCHER_URL={{ .rancher.cname }}.{{ .global.domain }}
 JENKINS_URL={{ .jenkins.ingress.cname }}.{{ .global.domain }}
 PORTAL_URL={{ .portal.ingress.cname }}.{{ .global.domain }}
 
-
 GLOBAL_NAMESPACE="{{ .global.namespace }}"
 
 KEYCLOAK_ADMIN_PW="{{ .keycloak.adminPassword }}"

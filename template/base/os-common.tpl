@@ -41,6 +41,7 @@ SSH_COMMAND() {
 
     ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget ${ISCSI} 2>&1 >/dev/null
     ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${HOME}/${WORKDIR}
     scp ${APP_PATH}/function.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${APP_PATH}/properties.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${OS_PATH}/common/common.sh ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
