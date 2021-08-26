@@ -21,18 +21,50 @@ source {{ .common.directory.app }}/properties.env
 
 TITLE="- named svc - Install"
 
-echo_blue "${TITLE}"
-echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
-sudo systemctl enabled named
-sudo systemctl start named
-sudo systemctl status named
-STATUS=`systemctl status named | grep Active | awk '{print $2}'`
-if [ "${STATUS}" == "active" ];
+NAMED_INSTALL() {
+
+	echo_blue "${TITLE}"
+	echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
+	sudo systemctl enabled named
+	sudo systemctl start named
+	sudo systemctl status named
+	STATUS=`systemctl status named | grep Active | awk '{print $2}'`
+	if [ "${STATUS}" == "active" ];
+	then
+	    echo_green "${TITLE}"
+	else
+	    echo_red "${TITLE}"
+	fi
+}
+
+SSH_HAPROXY() {
+    NODE_NAME=$1
+    NUM=${2:-""}
+
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named-svc-start.sh
+	ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named-svc-update.sh
+}
+
+NODE_COUNT_I=$(echo ${#INCEPTION[@]})
+## -gt >
+
+if [ ${NODE_COUNT_I} -gt 0 ]
 then
-  echo_green "${TITLE}"
+    NODE_COUNT_H=$(echo ${#HAPROXY[@]})
+    ## -gt >
+    if [ ${NODE_COUNT_H} -gt 1 ]
+    then
+        let "h += 1"
+        SSH_HAPROXY haproxy ${h} no "" yes
+    else
+        SSH_HAPROXY haproxy "" no "" yes
+    fi
+
 else
-  echo_red "${TITLE}"
+    NAMED_INSTALL
 fi
+
 EOF
 
 echo_create "named.conf.tpl"

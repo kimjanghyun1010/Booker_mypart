@@ -173,11 +173,30 @@ HAPROXY_INSTALL() {
     fi
 }
 
+SSH_HAPROXY() {
+    NODE_NAME=$1
+    NUM=${2:-""}
+
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy-svc-install.sh
+}
+
 NODE_COUNT_I=$(echo ${#INCEPTION[@]})
 ## -gt >
+
+
 if [ ${NODE_COUNT_I} -gt 0 ]
 then
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/common.sh
+    NODE_COUNT_H=$(echo ${#HAPROXY[@]})
+    ## -gt >
+    if [ ${NODE_COUNT_H} -gt 1 ]
+    then
+        let "h += 1"
+        SSH_HAPROXY haproxy ${h} no "" yes
+    else
+        SSH_HAPROXY haproxy "" no "" yes
+    fi
+
 else
     HAPROXY_INSTALL
 fi

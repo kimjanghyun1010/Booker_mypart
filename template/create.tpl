@@ -68,7 +68,7 @@ if [ ! -d ${LOG_PATH} ]; then
     mkdir ${LOG_PATH}
 fi
 
-chown -R ${USERNAME}. ${BASEDIR} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
+chown -R ${USERNAME}. ${HOME}/${WORKDIR} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
 
 # base
 for name in "${BASE_DIR_NAME[@]}"
