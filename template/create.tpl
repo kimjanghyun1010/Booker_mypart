@@ -1,12 +1,12 @@
 #!/bin/sh
 
 ## new template name
-BASE_DIR_NAME=("scp" "ssh_key_copy" "ssh_command" "user-add" "run-user-add-shell" "etc-hosts" )
+BASE_DIR_NAME=("os-common" "ssh-key-copy" "ssh-command" "user-add" "run-user-add-shell" "etc-hosts" )
 OS_NAME=("common" "haproxy" "named" "certificate" "docker" "registry" "rancher" "rke")
 HELM_NAME=("mariadb-galera" "postgresql" "keycloak" "gitea" "harbor" "jenkins" "portal")
 API_SHELL_NAME=("keycloak-api-start" "gitea-api-start" "harbor-api-start" "longhorn-api-start" "jenkins-api-start" "rancher-keycloak-oauth-api-start" "rancher-update-password-api-start" "jenkins-api-start")
 JSON_NAME=("keycloak-gitea-api" "keycloak-harbor-api" "keycloak-jenkins-api" "keycloak-portal-api" "keycloak-rancher-api" "keycloak-master-portal-api" "gitea-source" "harbor-source" "keycloak-master-portal-role-admin" "rancher-keycloak-api")
-SQL_NAME=("SQL_mariadb" "SQL_postgresql")
+SQL_NAME=("SQL-mariadb" "SQL-postgresql")
 ETC_NAME=("gitea-push" "harbor-login" "jenkins-image-push" )
 ## new path
 BASEDIR=$(dirname "$0")
@@ -18,6 +18,8 @@ OS_PATH="{{ .common.directory.app }}/deploy/os"
 HELM_PATH="{{ .common.directory.app }}/deploy/helm"
 API_PATH="{{ .common.directory.app }}/deploy/api"
 ETC_PATH="{{ .common.directory.app }}/deploy/etc"
+
+USERNAME="{{ .common.username }}"
 ## template path
 TEMPLATE_DIR="${BASEDIR}/../template"
 BASE_TEMPLATE_DIR="${TEMPLATE_DIR}/base"
@@ -53,7 +55,20 @@ GLOBAL_NAMESPACE="{{ .global.namespace }}"
 ##
 ## Main
 echo "package files mv the "${APP_PATH}" directory"
-mkdir ${DATA_PATH} ${LOG_PATH}
+
+if [ ! -d ${APP_PATH} ]; then
+    mkdir ${APP_PATH}
+fi
+
+if [ ! -d ${DATA_PATH} ]; then
+    mkdir ${DATA_PATH}
+fi
+
+if [ ! -d ${LOG_PATH} ]; then
+    mkdir ${LOG_PATH}
+fi
+
+chown -R ${USERNAME}. ${BASEDIR} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
 
 # base
 for name in "${BASE_DIR_NAME[@]}"
@@ -70,7 +85,7 @@ do
     # rke
     if [ $name == rke ]
     then
-        gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/after-rke-install.tpl > ${OS_PATH}/${name}/after-rke-install.sh
+        gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/px-install.tpl > ${OS_PATH}/${name}/px-install.sh
     fi
 done
 
@@ -119,7 +134,7 @@ done
 gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/function.tpl > ${APP_PATH}/function.env
 gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/properties.tpl > ${APP_PATH}/properties.env
 
-gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/loadbalancer-install.tpl > ${DEPLOY_PATH}/loadbalancer-install.sh
+gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${OS_TEMPLATE_DIR}/loadbalancer-install.tpl > ${DEPLOY_PATH}/loadbalancer-install.sh
 echo "---- helm deploy script directory ----"
 tree -L 4 ${APP_PATH}
 
