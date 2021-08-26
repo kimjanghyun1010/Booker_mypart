@@ -30,7 +30,7 @@ curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProvi
   "username": "admin"
 }' > /dev/null 2>&1
 
-R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
+R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
 # update admin password
 echo "[INFO] Update Password admin user"

@@ -28,7 +28,7 @@ echo "[INFO] Get Token"
 token=$(curl -sk  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode 'password=crossent1234!' --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
 echo "----"
 
-curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
   "description": "UI Session",
@@ -42,7 +42,7 @@ curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/
   "username": "admin"
 }' > /dev/null 2>&1
 
-R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
+R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
 # rancher-keycloak-oauth-api
 CERTIFICATE=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/keys" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json'  | grep -Po '"certificate": *\K"[^"]*"' | cut -d '"' -f2 | sed 's%/%\\/%gi' )

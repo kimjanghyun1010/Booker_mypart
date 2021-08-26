@@ -25,7 +25,7 @@ w=0
 
 
 cat > ${OS_PATH}/rke/rancher-values.yml << EOF
-hostname: rancher.{{ .global.domain }}
+hostname: {{ .rancher.cname }}.{{ .global.domain }}
 ingress:
   enable: true
   tls:
