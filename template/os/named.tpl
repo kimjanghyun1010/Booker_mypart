@@ -41,9 +41,9 @@ SSH_HAPROXY() {
     NODE_NAME=$1
     NUM=${2:-""}
 
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named.sh
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named-svc-start.sh
-	ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named-svc-update.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named/named.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named/named-svc-start.sh
+	ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named/named-svc-update.sh
 }
 
 NODE_COUNT_I=$(echo ${#INCEPTION[@]})

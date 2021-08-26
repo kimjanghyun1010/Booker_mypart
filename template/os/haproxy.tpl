@@ -177,8 +177,8 @@ SSH_HAPROXY() {
     NODE_NAME=$1
     NUM=${2:-""}
 
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy.sh
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy-svc-install.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy/haproxy.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy/haproxy-svc-install.sh
 }
 
 NODE_COUNT_I=$(echo ${#INCEPTION[@]})
