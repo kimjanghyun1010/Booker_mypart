@@ -74,7 +74,7 @@ then
         echo -e "ssh worker${w}"
         echo "------------------------"
         ssh -o StrictHostKeyChecking=no  ${USERNAME}@worker${w} docker pull faasharbor.smartfarmkorea.net/library/paasxpert:v2.2
-        ssh ${USERNAME}@worker${w} docker tag faasharbor.smartfarmkorea.net/library/paasxpert:v2.2 {{ .harbor.ingress.cname }}.{{ .global.domain }}/library/paasxpert:v2.2
-        ssh ${USERNAME}@worker${w} docker push {{ .harbor.ingress.cname }}.{{ .global.domain }}/library/paasxpert:v2.2
+        ssh ${USERNAME}@worker${w} docker tag faasharbor.smartfarmkorea.net/library/paasxpert:v2.2 ${HARBOR_URL}/library/paasxpert:v2.2
+        ssh ${USERNAME}@worker${w} docker push ${HARBOR_URL}/library/paasxpert:v2.2
     done
 fi

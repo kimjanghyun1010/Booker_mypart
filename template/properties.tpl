@@ -2,6 +2,9 @@
 #/
 # <pre>
 # 주로 사용하는 path가 있는 env
+# user-add.sh에서는 properties.env를 사용 안함
+# scp.sh을 돌려야 properties.env 파일이 모든 노드에 생기는데
+# scp.sh 전에 user-add.sh을 실행해야 하기 때문
 # </pre>
 #
 # @authors 크로센트

@@ -32,12 +32,13 @@ SSH_COMMAND() {
     NODE_NAME=$1
     NUM=${2:-""}
     DOCKER=${3:-""}
+    ISCSI=${4:-""}
 
     echo "------------------------------"
     echo "${NODE_NAME} ${NUM}"
     echo "------------------------------"
 
-    ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget 2>&1 >/dev/null
+    ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget ${ISCSI} 2>&1 >/dev/null
     ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
     scp ${APP_PATH}/function.env ${USERNAME}@${NODE_NAME}${NUM}:~/
     scp ${APP_PATH}/properties.env ${USERNAME}@${NODE_NAME}${NUM}:~/
@@ -108,5 +109,5 @@ done
 for host in ${WORKER[@]}
 do
     let "w += 1"
-    SSH_COMMAND worker ${w}
+    SSH_COMMAND worker ${w} "" iscsi-initiator-utils
 done
