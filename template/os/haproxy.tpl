@@ -192,9 +192,9 @@ then
     if [ ${NODE_COUNT_H} -gt 1 ]
     then
         let "h += 1"
-        SSH_HAPROXY haproxy ${h} no "" yes
+        SSH_HAPROXY haproxy ${h} 
     else
-        SSH_HAPROXY haproxy "" no "" yes
+        SSH_HAPROXY haproxy "" 
     fi
 
 else
