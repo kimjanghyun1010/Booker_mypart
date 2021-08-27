@@ -143,9 +143,9 @@ do
     ## -gt >
     if [ ${NODE_COUNT} -gt 0 ]
     then
-        SSH_COMMAND master ${m} "" iscsi-initiator-utils
-    else
         SSH_COMMAND master ${m}
+    else
+        SSH_COMMAND master ${m} "" iscsi-initiator-utils
     fi
 done
 

@@ -14,12 +14,12 @@ PASS_API=$1
 # @see
 #/
 
-
 CHECK_POD(){
     NAMESPACE=$1
     POD_NAME=$2
     
     printf "${POD_NAME} \nRunning"
+    sleep 5
     while true
     do
         IS_RUN=$(kubectl get pod -n ${NAMESPACE} | grep ${POD_NAME} | tail -1 | awk '{print $3}')
@@ -98,7 +98,7 @@ CHECK_KEYCLOAK() {
             break
         elif [ ${INPUT} == D ] || [ ${INPUT} == d ]
         then
-            bash ${HOME}/${WORKDIR}/ssh_command.sh "" docker
+            bash ${HOME}/${WORKDIR_BIN}/ssh-command.sh "" docker
             CHECK_STATUS "helm list" platform keycloak ${HELM_PATH}/keycloak/keycloak-install.sh
             break
         elif [ ${INPUT} == N ] || [ ${INPUT} == n ]
@@ -128,10 +128,10 @@ then
 fi
 
 echo_install_green "[INSTALL] mariadb-galera-install"
-CHECK_STATUS "helm list" platform mariadb ${HELM_PATH}/mariadb-galera/mariadb-galera-install.sh mariadb "bash ${HELM_PATH}/sql/SQL_mariadb.sh"
+CHECK_STATUS "helm list" platform mariadb ${HELM_PATH}/mariadb-galera/mariadb-galera-install.sh mariadb "bash ${HELM_PATH}/sql/SQL-mariadb.sh"
 
 echo_install_green "[INSTALL] postgresql-install"
-CHECK_STATUS "helm list" platform postgres ${HELM_PATH}/postgresql/postgresql-install.sh postgres "bash ${HELM_PATH}/sql/SQL_postgresql.sh"
+CHECK_STATUS "helm list" platform postgres ${HELM_PATH}/postgresql/postgresql-install.sh postgres "bash ${HELM_PATH}/sql/SQL-postgresql.sh"
 
 echo_install_green "[INSTALL] harbor-install"
 CHECK_STATUS "helm list" platform harbor ${HELM_PATH}/harbor/harbor-install.sh harbor-registry "CHECK_POD platform harbor-core"

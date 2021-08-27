@@ -34,6 +34,7 @@ JSON_PATH="${API_PATH}/api-json-dir"
 ETC_PATH="${APP_PATH}/deploy/etc"
 
 WORKDIR="{{ .common.directory.workdir }}"
+WORKDIR_BIN="{{ .common.directory.workdir }}/bin"
 
 GLOBAL_URL={{ .global.domain }}
 GITEA_URL={{ .gitea.ingress.cname }}.{{ .global.domain }}

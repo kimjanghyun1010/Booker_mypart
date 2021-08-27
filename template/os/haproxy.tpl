@@ -121,15 +121,25 @@ listen k8s-https
     log global
     mode tcp
     option tcplog
+    {{- if .common.IP.worker }}
     {{ range $key, $element := .common.IP.worker }}server {{$key}} {{$key}}:443 check
     {{ end }}
+    {{ else }}
+    {{ range $key, $element := .common.IP.master }}server {{$key}} {{$key}}:443 check
+    {{ end }}
+    {{- end }}
 {{ else }}
     bind :443
     log global
     mode tcp
     option tcplog
+    {{- if .common.IP.worker }}
     {{ range $key, $element := .common.IP.worker }}server {{$key}} {{$key}}:443 check
     {{ end }}
+    {{ else }}
+    {{ range $key, $element := .common.IP.master }}server {{$key}} {{$key}}:443 check
+    {{ end }}
+    {{- end }}
 {{- end }}
 listen k8s-http
     balance  roundrobin
@@ -138,15 +148,25 @@ listen k8s-http
     log global
     mode tcp
     option tcplog
-    {{ range $key, $element := .common.IP.worker }}server {{$key}} {{$key}}:80 check
+    {{- if .common.IP.worker }}
+    {{ range $key, $element := .common.IP.worker }}server {{$key}} {{$key}}:443 check
     {{ end }}
+    {{ else }}
+    {{ range $key, $element := .common.IP.master }}server {{$key}} {{$key}}:443 check
+    {{ end }}
+    {{- end }}
 {{ else }}
     bind :80
     log global
     mode tcp
     option tcplog
-    {{ range $key, $element := .common.IP.worker }}server {{$key}} {{$key}}:80 check
+    {{- if .common.IP.worker }}
+    {{ range $key, $element := .common.IP.worker }}server {{$key}} {{$key}}:443 check
     {{ end }}
+    {{ else }}
+    {{ range $key, $element := .common.IP.master }}server {{$key}} {{$key}}:443 check
+    {{ end }}
+    {{- end }}
 {{- end }}
 EOF
 

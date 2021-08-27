@@ -83,9 +83,9 @@ then
     ## -gt >
     if [ ${NODE_COUNT} -gt 0 ]
     then
-        keycloak_theme master
+        keycloak_theme worker
 
     else
-        keycloak_theme worker
+        keycloak_theme master
     fi
 fi
