@@ -8,5 +8,4 @@ bash ${OS_PATH}/haproxy/haproxy-svc-install.sh
 
 bash ${OS_PATH}/named/named.sh
 bash ${OS_PATH}/named/named-svc-start.sh
-bash ${OS_PATH}/named/named-svc-update.sh
 

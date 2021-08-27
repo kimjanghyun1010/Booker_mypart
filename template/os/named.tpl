@@ -31,9 +31,14 @@ NAMED_INSTALL() {
     then
         echo_blue "${TITLE}"
         echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
+
+        sudo cp ${OS_PATH}/named/${GLOBAL_URL}.tpl /var/named/${GLOBAL_URL}
+        sudo cp ${OS_PATH}/named/named.conf.tpl /etc/named.conf
+
         sudo systemctl enabled named
         sudo systemctl start named
         sudo systemctl status named
+        
         STATUS=`systemctl status named | grep Active | awk '{print $2}'`
         if [ "${STATUS}" == "active" ];
         then
@@ -50,7 +55,6 @@ SSH_NAMED() {
 
     ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/named/named.sh
     ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/named/named-svc-start.sh run
-	ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/named/named-svc-update.sh
 }
 
 # -z null일때 참
@@ -190,21 +194,4 @@ then
 else
   echo_red "${TITLE}"
 fi
-EOF
-
-
-cat > ${OS_PATH}/named/named-svc-update.sh << 'EOF'
-source {{ .common.directory.app }}/function.env
-source {{ .common.directory.app }}/properties.env
-
-# sudo cp ${OS_PATH}/haproxy/haproxy.tpl /etc/haproxy/haproxy.cfg
-sudo cp ${OS_PATH}/named/${GLOBAL_URL}.tpl /var/named/${GLOBAL_URL}
-sudo cp ${OS_PATH}/named/named.conf.tpl /etc/named.conf
-
-sudo systemctl restart haproxy
-sudo systemctl status haproxy
-
-sudo systemctl restart named
-sudo systemctl status named
-
 EOF
