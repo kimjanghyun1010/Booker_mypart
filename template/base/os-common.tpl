@@ -48,7 +48,7 @@ SSH_COMMAND() {
     fi
     if [ ! -z ${SCP_HAPROXY_NAMED} ]
     then
-        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p  ${OS_PATH} ${DEPLOY_PATH}
+        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
         ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
         scp -r ${OS_PATH}/haproxy ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp -r ${OS_PATH}/named ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
