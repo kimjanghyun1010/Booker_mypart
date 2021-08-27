@@ -15,7 +15,7 @@ source {{ .common.directory.app }}/properties.env
 #/
 
 echo_create "haproxy.tpl"
-cat >> ${OS_PATH}/haproxy/haproxy.tpl << 'EOF'
+cat > ${OS_PATH}/haproxy/haproxy.tpl << 'EOF'
 #---------------------------------------------------------------------
 # Example configuration for a possible web application.  See the
 # full configuration options online.
@@ -151,7 +151,7 @@ listen k8s-http
 EOF
 
 echo_create "haproxy-svc-install.sh"
-cat >> ${OS_PATH}/haproxy/haproxy-svc-install.sh << 'EOF'
+cat > ${OS_PATH}/haproxy/haproxy-svc-install.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 TITLE="- haproxy svc - Install"
@@ -185,7 +185,7 @@ SSH_HAPROXY() {
     NODE_NAME=$1
     NUM=${2:-""}
 
-    ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/haproxy/haproxy.sh
+    ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/haproxy/haproxy.sh
     ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/haproxy/haproxy-svc-install.sh run
 }
 
@@ -218,7 +218,7 @@ done
 EOF
 
 echo_create "haproxy-script-delete.sh"
-cat >> ${OS_PATH}/haproxy/haproxy-script-delete.sh << 'EOF'
+cat > ${OS_PATH}/haproxy/haproxy-script-delete.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -228,7 +228,7 @@ rm -rf ${APP_PATH}/bin_deploy/haproxy/haproxy-svc-install.sh
 EOF
 
 echo_create "haproxy-svc-delete.sh"
-cat >> ${OS_PATH}/haproxy/haproxy-svc-delete.sh << 'EOF'
+cat > ${OS_PATH}/haproxy/haproxy-svc-delete.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 TITLE="- haproxy svc - Delete"

@@ -49,7 +49,7 @@ SSH_NAMED() {
     NODE_NAME=$1
     NUM=${2:-""}
 
-    ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/named/named.sh
+    ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/named/named.sh
     ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/named/named-svc-start.sh run
 	ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/named/named-svc-update.sh
 }
