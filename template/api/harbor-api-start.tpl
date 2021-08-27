@@ -22,13 +22,13 @@ harbor_json_path=${path}/harbor-source.json
 #/
 
 echo "----"
-echo "[INFO] keycloak get token"
+echo_api_blue "[INFO] keycloak get token"
 token=$(curl -sk  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode 'password=crossent1234!' --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
 echo "----"
 
 ## --harbor api--
 
-echo "[INFO] harbor get secret"
+echo_api_blue "[INFO] harbor get secret"
 harbor_id=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/clients?clientId=harbor" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"id": *\K"[^"]*"' | head -1 | cut -d '"' -f2 )
 secret=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/clients/${harbor_id}/client-secret" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"value": *\K"[^"]*"' | cut -d '"' -f2)
 
@@ -39,12 +39,12 @@ then
 fi
 sed -i "s/HARBOR_SECRET/${secret}/gi"  "${harbor_json_path}"
 
-echo "[INFO] harbor api"
+echo_api_blue "[INFO] harbor api"
 curl -X PUT -ks ${harbor_url}/api/v2.0/configurations -H "accept: application/json" -H "Content-Type: application/json" -H "Authorization: Basic YWRtaW46Y3Jvc3NlbnQxMjM0IQ==" -d @${path}/harbor-source.json
 
 sed -i "s/${secret}/HARBOR_SECRET/gi"  "${harbor_json_path}"
 
-echo "[INFO] Create default Project"
+echo_api_blue "[INFO] Create default Project"
 curl -ks "${harbor_url}/api/v2.0/projects" \
   -H 'content-type: application/json' \
   -H "Authorization: Basic YWRtaW46Y3Jvc3NlbnQxMjM0IQ==" \

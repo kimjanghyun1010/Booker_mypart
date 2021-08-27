@@ -22,7 +22,7 @@ m_realm=master
 while true
 do
     echo "----"
-    echo "[INFO] Get token"
+    echo_api_blue "[INFO] Get token"
     token=$(curl -ks  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode "password=${KEYCLOAK_ADMIN_PW}" --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
     echo "----"
     # -z null 일때 참
@@ -37,19 +37,19 @@ done
 #curl -k  -X DELETE "${keycloak_url}/auth/admin/realms/${p_realm}" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/x-www-form-urlencoded'
 
 ## --realm create--
-echo "[INFO] Create realm"
+echo_api_blue "[INFO] Create realm"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/realm-api.json 
 
 ## --auth policy setting--
-echo "[INFO] auth policy setting"
+echo_api_blue "[INFO] auth policy setting"
 curl -k -X PUT "${keycloak_url}/auth/admin/realms/${p_realm}/authentication/required-actions/UPDATE_PASSWORD" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/auth-policy.json
 
 ## --paasxpert group create--
-echo "[INFO] Create paasxpert group"
+echo_api_blue "[INFO] Create paasxpert group"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/groups" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/group-api.json
 
 ## --paasxpert roles create--
-echo "[INFO] Create paasxpert roles "
+echo_api_blue "[INFO] Create paasxpert roles "
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/roles" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/roles-admin.json
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/roles" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/roles-manager.json
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/roles" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/roles-master.json
@@ -57,33 +57,33 @@ curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/roles" --header "
 
 
 ## --paasxpert user create--
-echo "[INFO] Create paasxpert user"
+echo_api_blue "[INFO] Create paasxpert user"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/users" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/user-api.json
 
 ## --rancher client create--
-echo "[INFO] Create rancher client"
+echo_api_blue "[INFO] Create rancher client"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/clients" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/keycloak-rancher-api.json 
 ## --harbor client create--
-echo "[INFO] Create harbor client"
+echo_api_blue "[INFO] Create harbor client"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/clients" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/keycloak-harbor-api.json 
 ## --gitea client create--
-echo "[INFO] Create gitea client"
+echo_api_blue "[INFO] Create gitea client"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/clients" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/keycloak-gitea-api.json 
 ## --jekins client create--
-echo "[INFO] Create jekins client"
+echo_api_blue "[INFO] Create jekins client"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/clients" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/keycloak-jenkins-api.json 
 ## --portal client create--
-echo "[INFO] Create portal client"
+echo_api_blue "[INFO] Create portal client"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/clients" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/keycloak-portal-api.json 
 
 
 ## --master portal client create--
-echo "[INFO] Create master portal client create"
+echo_api_blue "[INFO] Create master portal client create"
 curl -k  -X POST "${keycloak_url}/auth/admin/realms/${m_realm}/clients" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d @$path/keycloak-master-portal-api.json
 
 
 ## --role mapping--
-echo "[INFO] role mapping"
+echo_api_blue "[INFO] role mapping"
 user_id=$(curl -sk  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/users" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | cut -f 4 -d '"' )
 admin_id=$(curl -sk  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/roles/admin" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | cut -f 4 -d '"' )
 master_id=$(curl -sk  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/roles/master" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | cut -f 4 -d '"' )
@@ -103,7 +103,7 @@ EOF
 curl -k -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/users/${user_id}/role-mappings/realm" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d "$(admin_role_add)"
 curl -k -X POST "${keycloak_url}/auth/admin/realms/${p_realm}/users/${user_id}/role-mappings/realm" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' -d "$(master_role_add)"
 
-echo "[INFO] master_portal_role"
+echo_api_blue "[INFO] master_portal_role"
 portal_id=$(curl -ks -X GET "${keycloak_url}/auth/admin/realms/${m_realm}/clients?clientId=portal" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"id": *\K"[^"]*"'| head -1 | cut -d '"' -f2)
 portal_user_id=$(curl -ks -X GET "${keycloak_url}/auth/admin/realms/${m_realm}/clients/${portal_id}/service-account-user" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"id": *\K"[^"]*"'| head -1 | cut -d '"' -f2 )
 
@@ -126,7 +126,7 @@ done
 
 if [ -z ${admin_id} ]
 then
-    echo "[ERROR] keycloak admin_id error"
+    echo_error_red "[ERROR] keycloak admin_id error"
     exit
 fi
 
@@ -136,14 +136,14 @@ sudo sed -i "s/${admin_id}/ADMIN_ID/gi"  "${path}/keycloak-master-portal-role-ad
 
 
 ## portal get secret
-echo "[INFO] Get portal secret"
+echo_api_blue "[INFO] Get portal secret"
 portal_id=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${m_realm}/clients?clientId=portal" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"id": *\K"[^"]*"' | head -1 | cut -d '"' -f2 )
 secret=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${m_realm}/clients/${portal_id}/client-secret" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"value": *\K"[^"]*"' | cut -d '"' -f2)
 
 if [ -z ${secret} ]
 
 then
-    echo "[ERROR] portal secret error"
+    echo_error_red "[ERROR] portal secret error"
     exit
 fi
 
@@ -151,13 +151,13 @@ sed -i "s/KEYCLOAK_CERT/${secret}/gi" "${HELM_PATH}/portal/portal-values.yaml"
 
 
 ## jenkins get secret
-echo "[INFO] Get jenkins secret"
+echo_api_blue "[INFO] Get jenkins secret"
 jenkins_id=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/clients?clientId=jenkins" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"id": *\K"[^"]*"' | head -1 | cut -d '"' -f2 )
 jenkins_secret=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/clients/${jenkins_id}/client-secret" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"value": *\K"[^"]*"' | cut -d '"' -f2)
 
 if [ -z ${jenkins_secret} ]
 then
-    echo "[ERROR] jenkins secret error"
+    echo_error_red "[ERROR] jenkins secret error"
     exit
 fi
 sed -i "s/JENKINS_CLIENT_SECRET/${jenkins_secret}/g" "${API_PATH}/jenkins-api-start.sh"

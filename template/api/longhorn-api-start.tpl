@@ -16,7 +16,7 @@ path="${JSON_PATH}/longhorn"
 #/
 
 Longhorn_Start() {
-  echo "[INFO] Create Project Longhorn"
+  echo_api_blue "[INFO] Create Project Longhorn"
 
   curl -ks -X POST "${rancher_url}/v3/project?_replace=true"   -H 'content-type: application/json'   -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}"   -d'{"enableProjectMonitoring":false,"type":"project","name":"Longhorn","clusterId":"local","labels":{}}' > /dev/null 2>&1
 
@@ -44,7 +44,7 @@ Longhorn_Start() {
   sudo sed -i "s/LONGHORN_ID/${longhorn_id}/gi"  "${path}/create-longhorn-app.json"
 
   # create Longhorn Namespace
-  echo "[INFO] Create namespace Longhorn"
+  echo_api_blue "[INFO] Create namespace Longhorn"
   curl -ks "${rancher_url}/v3/clusters/local/namespace" \
     -H 'content-type: application/json' \
     -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
@@ -53,7 +53,7 @@ Longhorn_Start() {
   sleep 10 
 
   # create Longhorn application
-  echo "[INFO] Create longhorn application"
+  echo_api_blue "[INFO] Create longhorn application"
   curl -ks "${rancher_url}/v3/projects/${longhorn_id}/app" \
     -H 'content-type: application/json' \
     -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
@@ -66,7 +66,7 @@ Longhorn_Start() {
 
 
 Platform_Start() {
-  echo "[INFO] Create Project Platform"
+  echo_api_blue "[INFO] Create Project Platform"
   curl -ks -X POST "${rancher_url}/v3/project?_replace=true"   -H 'content-type: application/json'   -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}"   -d'{"enableProjectMonitoring":false,"type":"project","name":"Platform","clusterId":"local","labels":{}}' > /dev/null 2>&1
 
   rancher_project_list=$(curl -ks "${rancher_url}/v3/project"   -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}")
@@ -90,7 +90,7 @@ Platform_Start() {
   fi
 
   # move platform namespace
-  echo "[INFO] Move namespace platform"
+  echo_api_blue "[INFO] Move namespace platform"
   curl -ks "${rancher_url}/v3/cluster/local/namespaces/platform?action=move" \
     -H 'content-type: application/json' \
     -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
@@ -116,7 +116,7 @@ curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProvi
 R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
 
-echo "[INFO] Check project"
+echo_api_blue "[INFO] Check project"
 CHECK_PROJECT_ALL=$(curl -ks "${rancher_url}/v3/project"   -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}")
 CHECK_PROJECT_NAME=($(echo ${CHECK_PROJECT_ALL} | grep -Po '"name": *\K"[^"]*"'| cut -d '"' -f2 | sed '1d'))
 
@@ -129,13 +129,13 @@ do
   if [ "$i" == "Longhorn" ]
   then
       let "longhorn_num += 1"
-      echo "[INFO] exist Project Longhorn"
+      echo_error_red "[INFO] exist Project Longhorn"
   fi
 
   if [ "$i" == "Platform" ]
   then
       let "project_num += 1"
-      echo "[INFO] exist Project Platform"
+      echo_error_red "[INFO] exist Project Platform"
   fi
 done
 
@@ -149,4 +149,4 @@ then
     Platform_Start
 fi
 
-echo "[INFO] END Longhorn-api"
+echo_api_blue "[INFO] END Longhorn-api"

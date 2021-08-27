@@ -26,12 +26,11 @@ gitea_json_path=${path}/gitea-source.json
 kubectl exec $(kubectl get pod -n ${GLOBAL_NAMESPACE} | grep gitea | awk '{print $1}') -n {{ .global.namespace }} bash /etc/gitea/user_config.sh
 
 echo "----"
-echo "[INFO] Get token"
+echo_api_blue "[INFO] Get token"
 token=$(curl -sk  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode 'password=crossent1234!' --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
 echo "----"
 
 ## --gitea api--
-echo gitea api
 
 if [ ! -e ${cookie_path} ]
 then
@@ -47,7 +46,7 @@ then
     sed -i "s/CSRF_TOKEN/$CSRF/gi"  "${gitea_json_path}"
 
     ## gitea get secret
-    echo "[INFO] Get gitea secret"
+    echo_api_blue "[INFO] Get gitea secret"
     gitea_id=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/clients?clientId=gitea" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"id": *\K"[^"]*"' | head -1 | cut -d '"' -f2 )
     secret=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/clients/${gitea_id}/client-secret" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json' | grep -Po '"value": *\K"[^"]*"' | cut -d '"' -f2)
 
@@ -60,7 +59,7 @@ then
     sed -i "s/GITEA_SECRET/${secret}/gi"  "${gitea_json_path}"
     
     # create org , repo
-    echo "[INFO] Create gitea org, repo"
+    echo_api_blue "[INFO] Create gitea org, repo"
     curl -X POST -ks ${gitea_url}/admin/auths/new -b ${cookie_path} -H "Authorization: Basic c3Vkb3VzZXI6Q3Jvc3NlbnQxMjM0IQ=="  -H 'cookie: lang=ko-KR;' -d @${path}/gitea-source.json > /dev/null 2>&1
     
     curl -ks -X POST ${gitea_url}/api/v1/orgs -b ${cookie_path} -H "Authorization: Basic c3Vkb3VzZXI6Q3Jvc3NlbnQxMjM0IQ==" -H "accept: application/json" -H 'cookie: lang=ko-KR;'  -H "Content-Type: application/json" -d @${path}/gitea-org.json > /dev/null 2>&1
@@ -70,7 +69,7 @@ then
     sed -i "s/${secret}/GITEA_SECRET/gi"  "${gitea_json_path}"
     
     ## create gitea api token
-    echo "[INFO] Create gitea api token"
+    echo_api_blue "[INFO] Create gitea api token"
     echo $(curl -ks -X POST ${gitea_url}/api/v1/users/sudouser/tokens  -H "Authorization: Basic c3Vkb3VzZXI6Q3Jvc3NlbnQxMjM0IQ=="  -H "Content-Type: application/json" -b ${cookie_path}  -d '{"name":"admin-api-token"}' | grep -Po '"sha1": *\K"[^"]*"' | cut -d '"' -f2) > ${path}/gitea-api-token.txt
     sed -i "s/GIT_TOKEN/$(cat ${path}/gitea-api-token.txt)/gi" "${HELM_PATH}/portal/portal-values.yaml"
     

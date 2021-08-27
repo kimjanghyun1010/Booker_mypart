@@ -24,7 +24,7 @@ server_key=$(cat ${APP_PATH}/certs/server-key.pem | sed 'N;N;N;N;N;s/\n/\\n/gi' 
 #/
 
 echo "----"
-echo "[INFO] Get Token"
+echo_api_blue "[INFO] Get Token"
 token=$(curl -sk  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode 'password=crossent1234!' --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
 echo "----"
 
@@ -66,7 +66,7 @@ sed -i "s/KID/${KID}/gi" ${path}/rancher-keycloak-api.json
 XML=$(cat ${path}/rancher-keycloak-api.json |  sed 's/\t/\\t/gi' | sed 's/\"/\\"/gi'  | sed 'N;s/\n/\\n/gi'   | sed 'N;s/\n/\\n/gi' | sed 'N;s/\n/\\n/gi'     | sed 'N;N;N;N;s/\n/\\n/gi' )
 
 
-echo "[INFO] Put Oauth Configs"
+echo_api_blue "[INFO] Put Oauth Configs"
 curl -ks "${rancher_url}/v3/keyCloakConfigs/keycloak" \
   -X 'PUT' \
   -H 'content-type: application/json' \
@@ -77,7 +77,7 @@ sed -i "s/${CERTIFICATE}/PAASXPERT_CERTIFIATE/gi" ${path}/rancher-keycloak-api.j
 sed -i "s/${KID}/KID/gi" ${path}/rancher-keycloak-api.json
 
 ## create paasadm user
-echo "[INFO] create paasadm user"
+echo_api_blue "[INFO] create paasadm user"
 curl -ks -X POST "${rancher_url}/v3/user"  -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" -d $'{"enabled":true,"mustChangePassword":false,"type":"user","username":"paasadm","password":"Crossent1234\u0021"}' > /dev/null 2>&1
 
 USER_ID=$(curl -ks -X GET  "${rancher_url}/v3/users?username=paasadm"  -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" | grep -Po '"id": *\K"[^"]*"' | cut -d '"' -f2)
@@ -94,7 +94,7 @@ curl -ks -X POST "${rancher_url}/v3/clusterroletemplatebinding" \
   -d '{"type":"clusterRoleTemplateBinding","clusterId":"local","userPrincipalId":"local://'"${USER_ID}"'","roleTemplateId":"cluster-owner"}' > /dev/null 2>&1
 
 ## create rancher api token
-echo $(curl -ks "${rancher_url}/v3/token" -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" -d '{"current":false,"enabled":true,"expired":false,"isDerived":false,"ttl":0,"type":"token","description":"admin-api-token"}'  | grep -Po '"token": *\K"[^"]*"' | cut -d '"' -f2) > ${path}/rancher-api-token.txt
+echo_api_blue $(curl -ks "${rancher_url}/v3/token" -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" -d '{"current":false,"enabled":true,"expired":false,"isDerived":false,"ttl":0,"type":"token","description":"admin-api-token"}'  | grep -Po '"token": *\K"[^"]*"' | cut -d '"' -f2) > ${path}/rancher-api-token.txt
 sed -i "s/RANCHER_TOKEN/$(cat $path/rancher-api-token.txt)/gi" "${HELM_PATH}/portal/portal-values.yaml"
 
 

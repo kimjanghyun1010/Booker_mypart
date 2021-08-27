@@ -15,7 +15,7 @@ path="${JSON_PATH}/rancher"
 # @see
 #/
 
-echo "[INFO] Login rancher admin user"
+echo_api_blue "[INFO] Login rancher admin user"
 curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
@@ -33,18 +33,18 @@ curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProvi
 R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
 # update admin password
-echo "[INFO] Update Password admin user"
+echo_api_blue "[INFO] Update Password admin user"
 curl -ks "${rancher_url}/v3/users?action=changepassword" \
   -H 'content-type: application/json' \
   -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
   -d $'{"currentPassword":"admin","newPassword":"crossent1234\u0021"}'  > /dev/null 2>&1
 
 # create rancher server-url
-echo "[INFO] Create rancher server-url"
+echo_api_blue "[INFO] Create rancher server-url"
 curl -ks "${rancher_url}/v3/settings/server-url" \
   -X 'PUT' \
   -H 'content-type: application/json' \
   -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
   -d '{"baseType":"setting","creatorId":null,"customized":false,"default":"","id":"server-url","name":"server-url","source":"default","type":"setting","value":"'"${rancher_url}"'"}' > /dev/null 2>&1
 
-echo "[INFO] END Update Password"
+echo_api_blue "[INFO] END Update Password"
