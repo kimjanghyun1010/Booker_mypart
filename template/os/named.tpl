@@ -19,6 +19,8 @@ cat > ${OS_PATH}/named/named-svc-start.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
+INCEPTON_COMMAND=${1:-""}
+
 TITLE="- named svc - Install"
 
 NAMED_INSTALL() {
@@ -37,34 +39,41 @@ NAMED_INSTALL() {
 	fi
 }
 
-SSH_HAPROXY() {
+SSH_NAMED() {
     NODE_NAME=$1
     NUM=${2:-""}
 
     ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named/named.sh
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named/named-svc-start.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named/named-svc-start.sh run
 	ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/named/named-svc-update.sh
 }
 
-NODE_COUNT_I=$(echo ${#INCEPTION[@]})
-## -gt >
+# -z null일때 참
 
-if [ ${NODE_COUNT_I} -gt 0 ]
-then
-    NODE_COUNT_H=$(echo ${#HAPROXY[@]})
-    ## -gt >
-    if [ ${NODE_COUNT_H} -gt 1 ]
+for host in ${HAPROXY[@]}
+do
+    if [ ! -z ${INCEPTION_COMMAND} ]
     then
-        let "h += 1"
-        SSH_HAPROXY haproxy ${h} no "" yes
+        NODE_COUNT_I=$(echo ${#INCEPTION[@]})
+        ## -gt >
+        if [ ${NODE_COUNT_I} -gt 0 ]
+        then
+            NODE_COUNT_H=$(echo ${#HAPROXY[@]})
+            ## -gt >
+            if [ ${NODE_COUNT_H} -gt 1 ]
+            then
+                let "h += 1"
+                SSH_NAMED haproxy ${h} 
+            else
+                SSH_NAMED haproxy "" 
+            fi
+        else
+            NAMED_INSTALL
+        fi
     else
-        SSH_HAPROXY haproxy "" no "" yes
+        NAMED_INSTALL
     fi
-
-else
-    NAMED_INSTALL
-fi
-
+done
 EOF
 
 echo_create "named.conf.tpl"
@@ -183,7 +192,7 @@ cat > ${OS_PATH}/named/named-svc-update.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-sudo cp ${OS_PATH}/haproxy/haproxy.tpl /etc/haproxy/haproxy.cfg
+# sudo cp ${OS_PATH}/haproxy/haproxy.tpl /etc/haproxy/haproxy.cfg
 sudo cp ${OS_PATH}/named/${GLOBAL_URL}.tpl /var/named/${GLOBAL_URL}
 sudo cp ${OS_PATH}/named/named.conf.tpl /etc/named.conf
 
