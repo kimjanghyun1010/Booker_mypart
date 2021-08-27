@@ -185,8 +185,8 @@ SSH_HAPROXY() {
     NODE_NAME=$1
     NUM=${2:-""}
 
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy/haproxy.sh
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy/haproxy-svc-install.sh run
+    ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/haproxy/haproxy.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} bash ${OS_PATH}/haproxy/haproxy-svc-install.sh run
 }
 
 # -z null일때 참
