@@ -21,9 +21,9 @@ w=0
 SSH_COMMAND() {
     NODE_NAME=$1
     NUM=${2:-""}
-    user_check=$(ssh -o StrictHostKeyChecking=no ${DEFAULT_USER}@${NODE_NAME}${NUM} "sudo cat  /etc/passwd | grep ${USERNAME}")
+    CHECK_USER=$(ssh -o StrictHostKeyChecking=no ${DEFAULT_USER}@${NODE_NAME}${NUM} "sudo cat  /etc/passwd | grep ${USERNAME}")
     
-    if [ "$user_check" == "" ]
+    if [ -z "$CHECK_USER" ]
     then
         echo -e "[INFO] Create ${NODE_NAME}${NUM} USER"
         scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@${NODE_NAME}${NUM}:~/
