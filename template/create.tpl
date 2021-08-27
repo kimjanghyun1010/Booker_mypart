@@ -18,7 +18,7 @@ OS_PATH="{{ .common.directory.app }}/deploy/os"
 HELM_PATH="{{ .common.directory.app }}/deploy/helm"
 API_PATH="{{ .common.directory.app }}/deploy/api"
 ETC_PATH="{{ .common.directory.app }}/deploy/etc"
-
+WORKDIR_PATH="{{ .common.directory.workdir }}"
 USERNAME="{{ .common.username }}"
 ## template path
 TEMPLATE_DIR="${BASEDIR}/../template"
@@ -108,7 +108,7 @@ done
 mkdir -p ${API_PATH}
 mkdir -p ${HELM_PATH}/sql
 cp -r ${BASEDIR}/../package/api-json-dir ${API_PATH}
-chown -R ${USERNAME}. ${HOME}/${WORKDIR} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
+chown -R ${USERNAME}. ${HOME}/${WORKDIR_PATH} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
 
 #  api
 for name in "${API_SHELL_NAME[@]}"
