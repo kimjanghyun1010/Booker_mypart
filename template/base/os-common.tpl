@@ -19,15 +19,6 @@ w=0
 # @see
 #/
 
-# ECHO_NODE_NAME() {
-#     NODE_NAME=$1
-#     NUM=${2:-""}
-#     echo "------------------------------"
-#     echo "${NODE_NAME} ${NUM}"
-#     echo "------------------------------"
-# }
-
-
 SSH_COMMAND() {
     NODE_NAME=$1
     NUM=${2:-""}
@@ -40,8 +31,8 @@ SSH_COMMAND() {
     echo "------------------------------"
 
     ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget ${ISCSI} 2>&1 >/dev/null
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${OS_PATH} ${DEPLOY_PATH}
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${HOME}/${WORKDIR}
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} 
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
     scp ${APP_PATH}/function.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${APP_PATH}/properties.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${OS_PATH}/common/common.sh ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
@@ -57,26 +48,13 @@ SSH_COMMAND() {
     fi
     if [ ! -z ${SCP_HAPROXY_NAMED} ]
     then
-        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${OS_PATH} ${DEPLOY_PATH}
-        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${HOME}/${WORKDIR}
+        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p  ${OS_PATH} ${DEPLOY_PATH}
+        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
         scp -r ${OS_PATH}/haproxy ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp -r ${OS_PATH}/named ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp ${DEPLOY_PATH}/loadbalancer-install.sh ${USERNAME}@${NODE_NAME}${NUM}:${DEPLOY_PATH}
     fi
 }
-
-# for host in ${HAPROXY[@]}
-# do
-#     NODE_COUNT=$(echo ${#HAPROXY[@]})
-#     ## -gt >
-#     if [ ${NODE_COUNT} -gt 1 ]
-#     then
-#         let "h += 1"
-#         SSH_COMMAND haproxy ${h} no
-#     else
-#         SSH_COMMAND haproxy "" no
-#     fi
-# done
 
 for host in ${HAPROXY[@]}
 do

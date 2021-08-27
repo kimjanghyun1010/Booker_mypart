@@ -109,7 +109,6 @@ done
 mkdir -p ${API_PATH}
 mkdir -p ${HELM_PATH}/sql
 cp -r ${BASEDIR}/../package/api-json-dir ${API_PATH}
-chown -R ${USERNAME}. ${WORKDIR_PATH} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
 
 #  api
 for name in "${API_SHELL_NAME[@]}"
@@ -136,7 +135,7 @@ gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/properties.tpl 
 
 gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${OS_TEMPLATE_DIR}/loadbalancer-install.tpl > ${DEPLOY_PATH}/loadbalancer-install.sh
 
-
+chown -R ${USERNAME}. ${WORKDIR_PATH} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
 
 echo "---- helm deploy script directory ----"
 tree -L 4 ${APP_PATH}
