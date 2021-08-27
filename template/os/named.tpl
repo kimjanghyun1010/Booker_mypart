@@ -25,23 +25,17 @@ TITLE="- named svc - Install"
 
 NAMED_INSTALL() {
 
-    INSTALLED=`yum list installed | grep bind-utils | awk '{print $1}'`
-
-    if [ -z ${INSTALLED} ]
+    echo_blue "${TITLE}"
+    echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
+    sudo systemctl enabled named
+    sudo systemctl start named
+    sudo systemctl status named
+    STATUS=`systemctl status named | grep Active | awk '{print $2}'`
+    if [ "${STATUS}" == "active" ];
     then
-
-        echo_blue "${TITLE}"
-        echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
-        sudo systemctl enabled named
-        sudo systemctl start named
-        sudo systemctl status named
-        STATUS=`systemctl status named | grep Active | awk '{print $2}'`
-        if [ "${STATUS}" == "active" ];
-        then
-            echo_green "${TITLE}"
-        else
-            echo_red "${TITLE}"
-        fi
+        echo_green "${TITLE}"
+    else
+        echo_red "${TITLE}"
     fi
 }
 
