@@ -156,6 +156,8 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 TITLE="- haproxy svc - Install"
 
+INCEPTON_COMMAND=${1:-""}
+
 HAPROXY_INSTALL() {
     echo_blue "${TITLE}"
     echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
@@ -178,28 +180,36 @@ SSH_HAPROXY() {
     NUM=${2:-""}
 
     ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy/haproxy.sh
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy/haproxy-svc-install.sh
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/haproxy/haproxy-svc-install.sh run
 }
 
-NODE_COUNT_I=$(echo ${#INCEPTION[@]})
-## -gt >
+# -z null일때 참
 
-
-if [ ${NODE_COUNT_I} -gt 0 ]
-then
-    NODE_COUNT_H=$(echo ${#HAPROXY[@]})
-    ## -gt >
-    if [ ${NODE_COUNT_H} -gt 1 ]
+for host in ${HAPROXY[@]}
+do
+    if [ ! -z ${INCEPTION_COMMAND} ]
     then
-        let "h += 1"
-        SSH_HAPROXY haproxy ${h} 
+        NODE_COUNT_I=$(echo ${#INCEPTION[@]})
+        ## -gt >
+        if [ ${NODE_COUNT_I} -gt 0 ]
+        then
+            NODE_COUNT_H=$(echo ${#HAPROXY[@]})
+            ## -gt >
+            if [ ${NODE_COUNT_H} -gt 1 ]
+            then
+                let "h += 1"
+                SSH_HAPROXY haproxy ${h} 
+            else
+                SSH_HAPROXY haproxy "" 
+            fi
+        else
+            HAPROXY_INSTALL
+        fi
     else
-        SSH_HAPROXY haproxy "" 
+        HAPROXY_INSTALL
     fi
+done
 
-else
-    HAPROXY_INSTALL
-fi
 EOF
 
 echo_create "haproxy-script-delete.sh"

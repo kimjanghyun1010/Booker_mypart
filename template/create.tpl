@@ -1,5 +1,6 @@
 #!/bin/sh
 
+USERNAME="{{ .common.username }}"
 ## new template name
 BASE_DIR_NAME=("os-common" "ssh-key-copy" "ssh-command" "user-add" "run-user-add-shell" "etc-hosts" )
 OS_NAME=("common" "haproxy" "named" "certificate" "docker" "registry" "rancher" "rke")
@@ -18,8 +19,8 @@ OS_PATH="{{ .common.directory.app }}/deploy/os"
 HELM_PATH="{{ .common.directory.app }}/deploy/helm"
 API_PATH="{{ .common.directory.app }}/deploy/api"
 ETC_PATH="{{ .common.directory.app }}/deploy/etc"
-WORKDIR_PATH="{{ .common.directory.workdir }}"
-USERNAME="{{ .common.username }}"
+WORKDIR_PATH="/home/${USERNAME}/{{ .common.directory.workdir }}"
+
 ## template path
 TEMPLATE_DIR="${BASEDIR}/../template"
 BASE_TEMPLATE_DIR="${TEMPLATE_DIR}/base"
@@ -108,7 +109,7 @@ done
 mkdir -p ${API_PATH}
 mkdir -p ${HELM_PATH}/sql
 cp -r ${BASEDIR}/../package/api-json-dir ${API_PATH}
-chown -R ${USERNAME}. ${HOME}/${WORKDIR_PATH} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
+chown -R ${USERNAME}. ${WORKDIR_PATH} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
 
 #  api
 for name in "${API_SHELL_NAME[@]}"
