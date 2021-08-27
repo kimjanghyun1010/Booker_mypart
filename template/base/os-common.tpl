@@ -43,8 +43,12 @@ SSH_COMMAND() {
     # -z null 일때 참
     if [ -z ${DOCKER} ]
     then
-        ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
-        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
+        CHECK_DOCKER=`ssh ${USERNAME}@${NODE_NAME}${NUM} yum list installed  | grep  "docker-ce\." | awk '{print $1}'`
+        if [ -z ${CHECK_DOCKER} ]
+        then
+            ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
+            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
+        fi
     fi
     if [ ! -z ${SCP_HAPROXY_NAMED} ]
     then
