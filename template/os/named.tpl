@@ -19,7 +19,7 @@ cat > ${OS_PATH}/named/named-svc-start.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-INCEPTON_COMMAND=${1:-""}
+INCEPTION_COMMAND=${1:-""}
 
 TITLE="- named svc - Install"
 

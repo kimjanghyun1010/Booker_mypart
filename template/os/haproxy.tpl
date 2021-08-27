@@ -156,7 +156,7 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 TITLE="- haproxy svc - Install"
 
-INCEPTON_COMMAND=${1:-""}
+INCEPTION_COMMAND=${1:-""}
 
 HAPROXY_INSTALL() {
 
