@@ -74,7 +74,7 @@ CHECK_API() {
 
         if [ ${INPUT} == Y ] || [ ${INPUT} == y ]
         then
-            echo_api_blue "[API] ${SHELL_NAME}"
+            echo_api_blue_no_num "[API] ${SHELL_NAME}"
             bash ${SHELL_PATH}/${SHELL_NAME}
             break
         elif [ ${INPUT} == N ] || [ ${INPUT} == n ]
@@ -120,10 +120,10 @@ sleep 5
 
 if [ -z $PASS_API ]
 then
-    echo_api_blue "[API] rancher-update-password"
+    echo_api_blue_no_num "[API] rancher-update-password"
     bash ${API_PATH}/rancher-update-password-api-start.sh
 
-    echo_api_blue "[API] longhorn-api"
+    echo_api_blue_no_num "[API] longhorn-api"
     CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
 fi
 

@@ -71,6 +71,10 @@ function echo_install_green(){
 	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_TOTAL}]${GREEN}${MSG} Success.${NC}"
 }
 
+function echo_api_blue_no_num(){
+	MSG=$1
+	echo -e "${BLUE}${MSG} Start.${NC}"
+}
 
 function echo_error_red(){
 	MSG=$1
