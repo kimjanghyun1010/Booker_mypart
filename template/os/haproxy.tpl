@@ -167,7 +167,7 @@ HAPROXY_INSTALL() {
         echo_blue "${TITLE}"
         echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
         sudo systemctl enabled haproxy
-        sudo cp ${APP_PATH}/bin_deploy/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
+        sudo cp ${oS_PATH}/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
         sudo systemctl start haproxy
         sudo systemctl status haproxy
 
