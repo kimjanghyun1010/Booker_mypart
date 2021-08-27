@@ -187,7 +187,7 @@ SSH_HAPROXY() {
 
 for host in ${HAPROXY[@]}
 do
-    if [ ! -z ${INCEPTION_COMMAND} ]
+    if [ -z ${INCEPTION_COMMAND} ]
     then
         NODE_COUNT_I=$(echo ${#INCEPTION[@]})
         ## -gt >
