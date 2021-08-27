@@ -159,19 +159,25 @@ TITLE="- haproxy svc - Install"
 INCEPTON_COMMAND=${1:-""}
 
 HAPROXY_INSTALL() {
-    echo_blue "${TITLE}"
-    echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
-    sudo systemctl enabled haproxy
-    sudo cp ${APP_PATH}/bin_deploy/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
-    sudo systemctl start haproxy
-    sudo systemctl status haproxy
 
-    STATUS=`systemctl status haproxy | grep Active | awk '{print $2}'`
-    if [ ${STATUS} == "active" ];
+    INSTALLED=`yum list installed | grep haproxy | awk '{print $1}'`
+
+    if [ -z ${INSTALLED} ]
     then
-    echo_green "${TITLE}"
-    else
-    echo_red "${TITLE}"
+        echo_blue "${TITLE}"
+        echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
+        sudo systemctl enabled haproxy
+        sudo cp ${APP_PATH}/bin_deploy/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
+        sudo systemctl start haproxy
+        sudo systemctl status haproxy
+
+        STATUS=`systemctl status haproxy | grep Active | awk '{print $2}'`
+        if [ ${STATUS} == "active" ];
+        then
+        echo_green "${TITLE}"
+        else
+        echo_red "${TITLE}"
+        fi
     fi
 }
 
@@ -184,7 +190,6 @@ SSH_HAPROXY() {
 }
 
 # -z null일때 참
-
 for host in ${HAPROXY[@]}
 do
     if [ -z ${INCEPTION_COMMAND} ]
