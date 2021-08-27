@@ -59,7 +59,8 @@ then
     fi
     sed -i "s/GITEA_SECRET/${secret}/gi"  "${gitea_json_path}"
     
-    echo "[INFO] Get gitea secret"
+    # create org , repo
+    echo "[INFO] Create gitea org, repo"
     curl -X POST -ks ${gitea_url}/admin/auths/new -b ${cookie_path} -H "Authorization: Basic c3Vkb3VzZXI6Q3Jvc3NlbnQxMjM0IQ=="  -H 'cookie: lang=ko-KR;' -d @${path}/gitea-source.json > /dev/null 2>&1
     
     curl -ks -X POST ${gitea_url}/api/v1/orgs -b ${cookie_path} -H "Authorization: Basic c3Vkb3VzZXI6Q3Jvc3NlbnQxMjM0IQ==" -H "accept: application/json" -H 'cookie: lang=ko-KR;'  -H "Content-Type: application/json" -d @${path}/gitea-org.json > /dev/null 2>&1

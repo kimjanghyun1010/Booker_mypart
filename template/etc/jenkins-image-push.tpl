@@ -21,7 +21,6 @@ function docker_push(){
 }
 
 ## Main
-step "jenkins docker image upload"
 
 for i in ${image_list[@]}
 do

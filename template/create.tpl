@@ -58,15 +58,15 @@ GLOBAL_NAMESPACE="{{ .global.namespace }}"
 echo "package files mv the "${APP_PATH}" directory"
 
 if [ ! -d ${APP_PATH} ]; then
-    mkdir ${APP_PATH}
+    mkdir -p ${APP_PATH}
 fi
 
 if [ ! -d ${DATA_PATH} ]; then
-    mkdir ${DATA_PATH}
+    mkdir -p ${DATA_PATH}
 fi
 
 if [ ! -d ${LOG_PATH} ]; then
-    mkdir ${LOG_PATH}
+    mkdir -p ${LOG_PATH}
 fi
 
 # base

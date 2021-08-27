@@ -23,6 +23,31 @@ role=$2
 # @see
 #/
 
+haproxy_command() {
+
+    for host in ${HAPROXY[@]}
+    do
+        echo "------------------------"
+        echo -e "ssh haproxy"
+        echo "------------------------"
+        ssh -o StrictHostKeyChecking=no  ${USERNAME}@haproxy ${command}
+    done
+}
+
+
+
+inception_command() {
+
+    for host in ${INCEPTION[@]}
+    do
+        echo "------------------------"
+        echo -e "ssh inception"
+        echo "------------------------"
+        ssh -o StrictHostKeyChecking=no  ${USERNAME}@inception ${command}
+    done
+}
+
+
 
 master_command() {
 
@@ -62,9 +87,15 @@ keycloak_theme() {
 
 if [ "${role}" == "" ]
 then
-    master_command
 
+    inception_command
+    master_command
     worker_command
+fi
+
+if [ "${role}" == "inception" ]
+then
+    inception_command
 fi
 
 if [ "${role}" == "master" ]
