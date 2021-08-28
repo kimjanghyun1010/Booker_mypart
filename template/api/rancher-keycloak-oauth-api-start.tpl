@@ -94,7 +94,7 @@ curl -ks -X POST "${rancher_url}/v3/clusterroletemplatebinding" \
   -d '{"type":"clusterRoleTemplateBinding","clusterId":"local","userPrincipalId":"local://'"${USER_ID}"'","roleTemplateId":"cluster-owner"}' > /dev/null 2>&1
 
 ## create rancher api token
-echo_api_blue $(curl -ks "${rancher_url}/v3/token" -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" -d '{"current":false,"enabled":true,"expired":false,"isDerived":false,"ttl":0,"type":"token","description":"admin-api-token"}'  | grep -Po '"token": *\K"[^"]*"' | cut -d '"' -f2) > ${path}/rancher-api-token.txt
+curl -ks "${rancher_url}/v3/token" -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" -d '{"current":false,"enabled":true,"expired":false,"isDerived":false,"ttl":0,"type":"token","description":"admin-api-token"}'  | grep -Po '"token": *\K"[^"]*"' | cut -d '"' -f2 > ${path}/rancher-api-token.txt
 sed -i "s/RANCHER_TOKEN/$(cat $path/rancher-api-token.txt)/gi" "${HELM_PATH}/portal/portal-values.yaml"
 
 
