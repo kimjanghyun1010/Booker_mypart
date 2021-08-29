@@ -194,9 +194,9 @@ HAPROXY_INSTALL() {
         STATUS=`systemctl status haproxy | grep Active | awk '{print $2}'`
         if [ ${STATUS} == "active" ];
         then
-        echo_green "${TITLE}"
+            echo_green "${TITLE}"
         else
-        echo_red "${TITLE}"
+            echo_red "${TITLE}"
         fi
     fi
 }

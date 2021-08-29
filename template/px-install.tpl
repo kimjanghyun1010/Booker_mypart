@@ -85,21 +85,24 @@ CHECK_API() {
     done
 }
 
-CHECK_KEYCLOAK() {
-    SHELL_NAME=$1
-
+CHECK_ADD_COMMAND() {
+    NAMESPACE=$1
+    HELM_NAME=$2
+    SHELL_PATH=$3
+    SHELL_NAME=$4
+    ADD_COMMAND=${5:-""}
     while true
     do
         read -p "[INFO] RUN ${SHELL_NAME} ? [ Y/N/D ]  : " INPUT
 
         if [ ${INPUT} == Y ] || [ ${INPUT} == y ]
         then
-            CHECK_STATUS "helm list" platform keycloak ${HELM_PATH}/keycloak/keycloak-install.sh
+            CHECK_STATUS "helm list" ${NAMESPACE} ${HELM_NAME} ${SHELL_PATH}/${SHELL_NAME}
             break
         elif [ ${INPUT} == D ] || [ ${INPUT} == d ]
         then
-            bash ${HOME}/${WORKDIR_BIN}/ssh-command.sh "" docker
-            CHECK_STATUS "helm list" platform keycloak ${HELM_PATH}/keycloak/keycloak-install.sh
+            ${ADD_COMMAND}
+            CHECK_STATUS "helm list" ${NAMESPACE} ${HELM_NAME} ${SHELL_PATH}/${SHELL_NAME}
             break
         elif [ ${INPUT} == N ] || [ ${INPUT} == n ]
         then
@@ -144,9 +147,17 @@ echo_install_green "[INSTALL] gitea-install"
 CHECK_STATUS "helm list" platform gitea ${HELM_PATH}/gitea/gitea-install.sh
 
 echo_install_green "[INSTALL] keycloak-install"
-CHECK_KEYCLOAK keycloak-install.sh
+CHECK_ADD_COMMAND platform keycloak ${HELM_PATH}/keycloak keycloak-install.sh "bash ${HOME}/${WORKDIR_BIN}/ssh-command.sh "" docker"
 
 sleep 5
+
+echo_install_green "[INSTALL] jenkins-install"
+CHECK_ADD_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "bash ${ETC_PATH}/jenkins-image-push.sh"
+
+
+echo_install_green "[INSTALL] portal-install"
+CHECK_STATUS "helm list" platform portal ${HELM_PATH}/portal/portal-install.sh
+
 
 ## api
 if [ -z $PASS_API ]
