@@ -114,7 +114,7 @@ ${OS_PATH}/rke/rke up --config ${OS_PATH}/rke/cluster.yml
 EOF
 
 
-cat > ${OS_PATH}/rke/kubectl-install.sh << EOF
+cat > ${OS_PATH}/rke/kubectl-install.sh << 'EOF'
 
 source {{ .common.directory.app }}/properties.env
 
