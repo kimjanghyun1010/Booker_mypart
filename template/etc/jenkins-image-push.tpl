@@ -3,7 +3,7 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-path='images'
+path="${ETC_PATH}/images"
 docker_images=()
 
 ## 변수
