@@ -91,7 +91,8 @@ CHECK_ADD_COMMAND() {
     HELM_NAME=$2
     SHELL_PATH=$3
     SHELL_NAME=$4
-    ADD_COMMAND=${5:-""}
+    ADD_COMMAND_1=${5:-""}
+    ADD_COMMAND_2=${6:-""}
     while true
     do
         read -p "[INFO] RUN ${SHELL_NAME} ? [ Y/N/D ]  : " INPUT
@@ -102,7 +103,8 @@ CHECK_ADD_COMMAND() {
             break
         elif [ ${INPUT} == D ] || [ ${INPUT} == d ]
         then
-            ${ADD_COMMAND}
+            ${ADD_COMMAND_1}
+            ${ADD_COMMAND_2}
             CHECK_STATUS "helm list" ${NAMESPACE} ${HELM_NAME} ${SHELL_PATH}/${SHELL_NAME}
             break
         elif [ ${INPUT} == N ] || [ ${INPUT} == n ]
@@ -153,7 +155,7 @@ CHECK_ADD_COMMAND platform keycloak ${HELM_PATH}/keycloak keycloak-install.sh "b
 sleep 5
 
 echo_install_green "[INSTALL] jenkins-install"
-CHECK_ADD_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "cp -r ${HOME}/images ${ETC_PATH} ; bash ${ETC_PATH}/jenkins-image-push.sh"
+CHECK_ADD_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "cp -r ${HOME}/images ${ETC_PATH}" "bash ${ETC_PATH}/jenkins-image-push.sh"
 
 ## api
 if [ -z $PASS_API ]
