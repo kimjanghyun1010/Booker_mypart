@@ -59,6 +59,7 @@ CHECK_STATUS() {
     if [ -z "${GET_HELM_NAME}" ]
     then
         bash ${SHELL_PATH}
+        sleep 5
         CHECK_POD ${NAMESPACE} ${POD_NAME}
         ${ADD_COMMAND}
     fi
@@ -147,7 +148,7 @@ echo_install_green "[INSTALL] gitea-install"
 CHECK_STATUS "helm list" platform gitea ${HELM_PATH}/gitea/gitea-install.sh
 
 echo_install_green "[INSTALL] keycloak-install"
-CHECK_ADD_COMMAND platform keycloak ${HELM_PATH}/keycloak keycloak-install.sh "bash ${HOME}/${WORKDIR_BIN}/ssh-command.sh "" docker"
+CHECK_ADD_COMMAND platform keycloak ${HELM_PATH}/keycloak keycloak-install.sh "bash ${HOME}/${WORKDIR_BIN}/ssh-command.sh \"\" docker"
 
 sleep 5
 
