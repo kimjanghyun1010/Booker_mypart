@@ -155,11 +155,6 @@ sleep 5
 echo_install_green "[INSTALL] jenkins-install"
 CHECK_ADD_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "bash ${ETC_PATH}/jenkins-image-push.sh"
 
-
-echo_install_green "[INSTALL] portal-install"
-CHECK_STATUS "helm list" platform portal ${HELM_PATH}/portal/portal-install.sh
-
-
 ## api
 if [ -z $PASS_API ]
 then
@@ -173,3 +168,8 @@ then
 
     CHECK_API ${ETC_PATH} gitea-push.sh
 fi
+
+
+
+echo_install_green "[INSTALL] portal-install"
+CHECK_STATUS "helm list" platform portal ${HELM_PATH}/portal/portal-install.sh
