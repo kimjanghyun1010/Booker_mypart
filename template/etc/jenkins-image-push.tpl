@@ -7,8 +7,8 @@ path="${ETC_PATH}/images"
 docker_images=()
 
 ## 변수
-count=`ls ${ETC_PATH}/images | grep tar | wc -l`
-image_list=`ls ${ETC_PATH}/images | grep tar | awk '{print $1}'`
+count=`ls ${path} | grep tar | wc -l`
+image_list=`ls ${path} | grep tar | awk '{print $1}'`
 
 ## 함수
 function docker_load(){
