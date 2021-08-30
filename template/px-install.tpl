@@ -59,7 +59,7 @@ CHECK_STATUS() {
     if [ -z "${GET_HELM_NAME}" ]
     then
         bash ${SHELL_PATH}
-        sleep 5
+        sleep 10
         CHECK_POD ${NAMESPACE} ${POD_NAME}
         ${ADD_COMMAND}
     fi

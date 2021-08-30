@@ -16,7 +16,7 @@ path="${JSON_PATH}/longhorn"
 # @see
 #/
 
-echo "[INFO] Login rancher admin user"
+echo "[INFO] Custom Longhorn Volume"
 curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
