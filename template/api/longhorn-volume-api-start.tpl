@@ -16,7 +16,7 @@ path="${JSON_PATH}/longhorn"
 # @see
 #/
 
-echo "[INFO] Custom Longhorn Volume"
+#echo "[INFO] Custom Longhorn Volume"
 curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
@@ -62,12 +62,15 @@ sed -i "${FIND_COMMA}s/,//" ${path}/longhorn-volume-add.json
 
 for node in ${NODES_NAME_ARRAY[@]}
 do
+    echo_api_blue "[INFO] Disable default volume"
     curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/nodes/${node}?action=diskUpdate" \
      -H "cookie: R_SESS=${R_SESS}"  -d @${path}/disable-longhorn-volume.json  > /dev/null 2>&1
-   
+    
+    echo_api_blue "[INFO] Delete default volume"
     curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/nodes/${node}?action=diskUpdate" \
      -H "cookie: R_SESS=${R_SESS}"  -d @${path}/delete-longhorn-volume.json  > /dev/null 2>&1
-    
+
+    echo_api_blue "[INFO] Create mount volume"
     curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/nodes/${node}?action=diskUpdate" \
      -H "cookie: R_SESS=${R_SESS}"  -d @${path}/longhorn-volume-add.json  > /dev/null 2>&1
 done
