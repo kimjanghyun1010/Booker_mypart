@@ -48,6 +48,7 @@ SSH_COMMAND() {
         then
             ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
             ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
+            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo systemctl enable docker
         fi
     fi
     if [ ! -z ${SCP_HAPROXY_NAMED} ]
