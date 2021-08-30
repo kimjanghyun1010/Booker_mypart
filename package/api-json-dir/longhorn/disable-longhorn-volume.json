@@ -1,0 +1,15 @@
+{
+    "disks": {
+      "default-disk-fd0100000000": {
+        "storageAvailable": 0,
+        "storageScheduled": 0,
+        "storageMaximum": 0,
+        "name": "default-disk-fd0100000000",
+        "path": "/var/lib/longhorn/",
+        "storageReserved": 0,
+        "allowScheduling": false,
+        "evictionRequested": false,
+        "deleted": false
+      }
+    }
+  }

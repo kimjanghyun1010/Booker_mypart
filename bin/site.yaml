@@ -24,7 +24,7 @@ common:
     haproxy:
       haproxy1: 192.168.153.1
     inception:
-      inception1: ""
+      inception1: 192.168.153.2
     rancher:
       rancher1: 192.168.153.3
     master:
@@ -44,6 +44,12 @@ common:
     version: 1.20.6
   rancher:
     version: 2.5.8
+# mount한 볼륨으로 longhorn을 구성할지에 대한 설정 false는 default 볼륨을 사용함(/var/lib/longhorn)
+longhorn:
+  enable: true
+  name:
+    disk-1: /mnt/test/longhorn-1
+    disk-2: /mnt/test/longhorn-2
 global:
   namespace: platform
   domain: prd.msxpert.co.kr

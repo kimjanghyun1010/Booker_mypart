@@ -2,8 +2,6 @@
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-PASS_API=$1
-
 #/
 # <pre>
 # rke 설치 후 진행하는 shell
@@ -13,6 +11,8 @@ PASS_API=$1
 # @authors 크로센트
 # @see
 #/
+
+LONGHORN_VOLUME={{ .longhorn.enable }}
 
 CHECK_POD(){
     NAMESPACE=$1
@@ -124,14 +124,18 @@ CHECK_STATUS "helm list" rke rancher ${OS_PATH}/rke/rancher-install.sh
 
 sleep 5
 
-if [ -z $PASS_API ]
-then
-    echo_api_blue_no_num "[API] rancher-update-password"
-    bash ${API_PATH}/rancher-update-password-api-start.sh
 
-    echo_api_blue_no_num "[API] longhorn-api"
-    CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
+echo_api_blue_no_num "[API] rancher-update-password"
+bash ${API_PATH}/rancher-update-password-api-start.sh
+
+echo_api_blue_no_num "[API] longhorn-api"
+CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
+
+if [ ${LONGHORN_VOLUME} == "true" ]
+then
+    bash ${API_PATH}/rancher-update-password-api-start.sh
 fi
+
 
 echo_install_green "[INSTALL] mariadb-galera-install"
 CHECK_STATUS "helm list" platform mariadb ${HELM_PATH}/mariadb-galera/mariadb-galera-install.sh mariadb "bash ${HELM_PATH}/sql/SQL-mariadb.sh"
@@ -158,19 +162,16 @@ echo_install_green "[INSTALL] jenkins-install"
 CHECK_ADD_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "cp -r ${HOME}/images ${ETC_PATH}" "bash ${ETC_PATH}/jenkins-image-push.sh"
 
 ## api
-if [ -z $PASS_API ]
-then
-    CHECK_API ${API_PATH} keycloak-api-start.sh
 
-    CHECK_API ${API_PATH} gitea-api-start.sh
+CHECK_API ${API_PATH} keycloak-api-start.sh
 
-    CHECK_API ${API_PATH} harbor-api-start.sh
+CHECK_API ${API_PATH} gitea-api-start.sh
 
-    CHECK_API ${API_PATH} rancher-keycloak-oauth-api-start.sh
+CHECK_API ${API_PATH} harbor-api-start.sh
 
-    CHECK_API ${ETC_PATH} gitea-push.sh
-fi
+CHECK_API ${API_PATH} rancher-keycloak-oauth-api-start.sh
 
+CHECK_API ${ETC_PATH} gitea-push.sh
 
 
 echo_install_green "[INSTALL] portal-install"
