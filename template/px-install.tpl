@@ -124,7 +124,6 @@ CHECK_STATUS "helm list" rke rancher ${OS_PATH}/rke/rancher-install.sh
 
 sleep 5
 
-
 echo_api_blue_no_num "[API] rancher-update-password"
 bash ${API_PATH}/rancher-update-password-api-start.sh
 
@@ -133,9 +132,9 @@ CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api
 
 if [ ${LONGHORN_VOLUME} == "true" ]
 then
+    echo_api_blue_no_num "[API] longhorn-Volume-api"
     bash ${API_PATH}/longhorn-volume-api-start.sh
 fi
-
 
 echo_install_green "[INSTALL] mariadb-galera-install"
 CHECK_STATUS "helm list" platform mariadb ${HELM_PATH}/mariadb-galera/mariadb-galera-install.sh mariadb "bash ${HELM_PATH}/sql/SQL-mariadb.sh"

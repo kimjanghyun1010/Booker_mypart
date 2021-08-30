@@ -39,6 +39,23 @@ NODES_NAME=$(curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longh
 
 NODES_NAME_ARRAY=(${NODES_NAME})
 
+for node in ${NODES_NAME_ARRAY[@]}
+do
+    CHECK_VOLUME=$(curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/nodes/${node}" -H "cookie: R_SESS=${R_SESS}" | grep -Po '"path": *\K"[^"]*"' | cut -d '"' -f2 )
+    
+    for c_volume in ${CHECK_VOLUME[@]}
+    do
+        for l_volume in ${LONGHORN_VOLUME[@]}
+        do
+            if [ ${c_volume} == ${l_volume} ]
+            then
+                echo_error_red "[ERROR] exist longhorn volume : ${l_volume}"
+                exit
+            fi
+        done
+    done
+done
+
 JSON_LENGTH=`cat ${path}/longhorn-volume-add.json | wc -l`
 FIND_COMMA=`expr ${JSON_LENGTH} - 3`
 sed -i "${FIND_COMMA}s/,//" ${path}/longhorn-volume-add.json
