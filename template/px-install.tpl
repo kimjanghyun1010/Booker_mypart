@@ -133,7 +133,7 @@ CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api
 
 if [ ${LONGHORN_VOLUME} == "true" ]
 then
-    bash ${API_PATH}/rancher-update-password-api-start.sh
+    bash ${API_PATH}/longhorn-volume-api-start.sh
 fi
 
 

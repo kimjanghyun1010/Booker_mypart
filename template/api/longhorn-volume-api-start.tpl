@@ -40,17 +40,17 @@ NODES_NAME=$(curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longh
 NODES_NAME_ARRAY=(${NODES_NAME})
 
 JSON_LENGTH=`cat ${path}/longhorn-volume-add.json | wc -l`
-FIND_COMMA=`expr ${JSON_LENGTH} - 4`
+FIND_COMMA=`expr ${JSON_LENGTH} - 3`
 sed -i "${FIND_COMMA}s/,//" ${path}/longhorn-volume-add.json
 
 for node in ${NODES_NAME_ARRAY[@]}
 do
     curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/nodes/${node}?action=diskUpdate" \
-     -H "cookie: R_SESS=${R_SESS}"  -d @${path}/disable-longhorn-volume.json
+     -H "cookie: R_SESS=${R_SESS}"  -d @${path}/disable-longhorn-volume.json  > /dev/null 2>&1
    
     curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/nodes/${node}?action=diskUpdate" \
-     -H "cookie: R_SESS=${R_SESS}"  -d @${path}/delete-longhorn-volume.json
+     -H "cookie: R_SESS=${R_SESS}"  -d @${path}/delete-longhorn-volume.json  > /dev/null 2>&1
     
     curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/nodes/${node}?action=diskUpdate" \
-     -H "cookie: R_SESS=${R_SESS}"  -d @${path}/longhorn-volume-add.json
+     -H "cookie: R_SESS=${R_SESS}"  -d @${path}/longhorn-volume-add.json  > /dev/null 2>&1
 done
