@@ -49,7 +49,7 @@ do
         do
             if [ ${c_volume} == ${l_volume} ]
             then
-                echo_error_red "[ERROR] exist longhorn volume : ${l_volume}"
+                echo_api_blue_no_num "[ERROR] exist longhorn volume : ${l_volume}"
                 exit
             fi
         done

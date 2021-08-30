@@ -23,7 +23,7 @@ while true
 do
     echo "----"
     echo_api_blue "[INFO] Get token"
-    token=$(curl -ks  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode "password=${KEYCLOAK_ADMIN_PW}" --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
+    token=$(curl -ks  --request POST "${keycloak_url}/auth/realms/${m_realm}/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode "password=${KEYCLOAK_ADMIN_PW}" --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
     echo "----"
     # -z null 일때 참
     if [ ! -z ${token} ]
