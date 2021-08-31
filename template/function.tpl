@@ -98,7 +98,7 @@ function echo_api_green_no_num(){
 }
 
 
-function echo_api_green_no_num(){
+function echo_api_red_no_num(){
 	MSG=$1
 	echo -e "${RED}${MSG} Start.${NC}"
 }
