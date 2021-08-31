@@ -19,6 +19,7 @@ source {{ .common.directory.app }}/properties.env
 INCEPTION_COMMAND=${1:-""}
 
 TITLE="- named svc - Install"
+TITLE_END="- named svc - Installed"
 
 NAMED_INSTALL() {
 
@@ -39,7 +40,7 @@ NAMED_INSTALL() {
         STATUS=`systemctl status named | grep Active | awk '{print $2}'`
         if [ "${STATUS}" == "active" ];
         then
-            echo_api_green_no_num "${TITLE}"
+            echo_api_green_no_num "${TITLE_END}"
         else
             echo_api_green_no_num "${TITLE}"
         fi

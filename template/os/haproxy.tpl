@@ -173,6 +173,7 @@ cat > ${OS_PATH}/haproxy/haproxy-svc-install.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 TITLE="- haproxy svc - Install"
+TITLE_END="- haproxy svc - Installed"
 
 INCEPTION_COMMAND=${1:-""}
 
@@ -192,9 +193,9 @@ HAPROXY_INSTALL() {
         STATUS=`systemctl status haproxy | grep Active | awk '{print $2}'`
         if [ ${STATUS} == "active" ];
         then
-            echo_api_green_no_num "${TITLE}"
+            echo_api_green_no_num "${TITLE_END}"
         else
-            echo_api_red_no_num "${TITLE}"
+            echo_api_green_no_num "${TITLE}"
         fi
     fi
 }
