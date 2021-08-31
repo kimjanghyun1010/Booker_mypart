@@ -54,8 +54,8 @@ SSH_COMMAND() {
             elif [ ${INSTALL_ROLE} == "offline" ]
             then
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${RPM_PATH}
-                scp -r ${RPM_DOCKER_PATH} ${USERNAME}@${NODE_NAME}${NUM}:~/${RPM_PATH}
-                scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}/docker
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${RPM_PATH}
+                scp -r ${RPM_DOCKER_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${RPM_PATH}
                 scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}/docker
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker.sh
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker-svc-start.sh
