@@ -28,6 +28,7 @@ fi
 
 sudo groupadd docker
 sudo gpasswd -a ${USERNAME} docker
+sudo usermod -aG docker ${USERNAME}
 sudo systemctl enable docker.service
 sudo systemctl start docker.service
 # sg docker -c "bash"

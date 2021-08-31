@@ -46,15 +46,28 @@ SSH_COMMAND() {
         CHECK_DOCKER=`ssh ${USERNAME}@${NODE_NAME}${NUM} yum list installed  | grep  "docker-ce\." | awk '{print $1}'`
         if [ -z ${CHECK_DOCKER} ]
         then
-            ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
-            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
-            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo systemctl enable docker
+            if [ ${INSTALL_ROLE} == "online" ]
+            then
+                ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo systemctl enable docker
+            elif [ ${INSTALL_ROLE} == "offline" ]
+            then
+                scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/docker/docker.sh
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/docker/docker-svc-start.sh
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/docker/docker-login.sh
+            fi
         fi
     fi
     if [ ! -z ${SCP_HAPROXY_NAMED} ]
     then
         ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
         ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
+        if [ ${INSTALL_ROLE} == "offline" ]
+        then
+            scp -r ${RPM_PATH} ${USERNAME}@${NODE_NAME}${NUM}:~/
+        fi
         scp -r ${OS_PATH}/haproxy ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp -r ${OS_PATH}/named ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp ${DEPLOY_PATH}/loadbalancer-install.sh ${USERNAME}@${NODE_NAME}${NUM}:${DEPLOY_PATH}
