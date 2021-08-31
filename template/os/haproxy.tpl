@@ -160,10 +160,10 @@ listen k8s-http
     mode tcp
     option tcplog
     {{- if .common.IP.worker }}
-    {{ range $key, $element := .common.IP.worker }}server {{$key}} {{$key}}:443 check
+    {{ range $key, $element := .common.IP.worker }}server {{$key}} {{$key}}:80 check
     {{ end }}
     {{ else }}
-    {{ range $key, $element := .common.IP.master }}server {{$key}} {{$key}}:443 check
+    {{ range $key, $element := .common.IP.master }}server {{$key}} {{$key}}:80 check
     {{ end }}
     {{- end }}
 {{- end }}
