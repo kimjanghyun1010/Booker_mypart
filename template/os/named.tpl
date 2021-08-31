@@ -42,7 +42,7 @@ NAMED_INSTALL() {
         then
             echo_api_green_no_num "${TITLE_END}"
         else
-            echo_api_green_no_num "${TITLE}"
+            echo_api_red_no_num "${TITLE_END}"
         fi
     fi
 }
