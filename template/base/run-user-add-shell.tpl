@@ -25,7 +25,7 @@ SSH_COMMAND() {
     
     if [ -z "$CHECK_USER" ]
     then
-        echo_api_blue_no_num -e "[INFO] Create ${NODE_NAME}${NUM} USER"
+        echo_api_blue_no_num "[INFO] Create ${NODE_NAME}${NUM} USER"
         scp ${BASEDIR}/user-add.sh ${DEFAULT_USER}@${NODE_NAME}${NUM}:~/
         ssh ${DEFAULT_USER}@${NODE_NAME}${NUM} "bash user-add.sh"
     fi
