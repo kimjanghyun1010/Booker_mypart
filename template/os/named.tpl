@@ -1,5 +1,4 @@
 #!/bin/sh
-## named.sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
@@ -13,8 +12,6 @@ source {{ .common.directory.app }}/properties.env
 # @see
 #/
 
-
-echo_create "named-svc-start.sh"
 cat > ${OS_PATH}/named/named-svc-start.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -85,7 +82,6 @@ do
 done
 EOF
 
-echo_create "named.conf.tpl"
 cat > ${OS_PATH}/named/named.conf.tpl << 'EOF'
 //
 // named.conf
@@ -155,7 +151,6 @@ zone "{{ .global.domain }}" IN {
 };
 EOF
 
-echo_create "${GLOBAL_URL}.tpl"
 cat > ${OS_PATH}/named/${GLOBAL_URL}.tpl << 'EOF'
 $TTL 3H
 @       IN SOA   ns.{{ .global.domain }}. root.{{ .global.domain }}. (
@@ -170,7 +165,6 @@ ns              IN A    {{ range $element := .common.IP.haproxy }}{{ $element }}
 *               IN CNAME ns
 EOF
 
-echo_create "named-svc-delete.sh"
 cat > ${OS_PATH}/named/named-svc-delete.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env

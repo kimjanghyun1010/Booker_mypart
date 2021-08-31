@@ -14,7 +14,6 @@ source {{ .common.directory.app }}/properties.env
 # @see
 #/
 
-echo_create "haproxy.tpl"
 cat > ${OS_PATH}/haproxy/haproxy.tpl << 'EOF'
 #---------------------------------------------------------------------
 # Example configuration for a possible web application.  See the
@@ -170,7 +169,6 @@ listen k8s-http
 {{- end }}
 EOF
 
-echo_create "haproxy-svc-install.sh"
 cat > ${OS_PATH}/haproxy/haproxy-svc-install.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -237,7 +235,6 @@ done
 
 EOF
 
-echo_create "haproxy-script-delete.sh"
 cat > ${OS_PATH}/haproxy/haproxy-script-delete.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
@@ -247,7 +244,6 @@ echo "haproxy-svc-install.sh script delete"
 rm -rf ${APP_PATH}/bin_deploy/haproxy/haproxy-svc-install.sh
 EOF
 
-echo_create "haproxy-svc-delete.sh"
 cat > ${OS_PATH}/haproxy/haproxy-svc-delete.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -272,4 +268,3 @@ else
 fi
 EOF
 
-echo_yellow "haproxy.sh"
