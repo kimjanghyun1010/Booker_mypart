@@ -10,6 +10,7 @@
 # @authors 크로센트
 # @see
 #/
+INSTALL_ROLE="{{ .common.env }}"
 
 DEFAULT_USER="{{ .common.default_username }}"
 USERNAME="{{ .common.username }}"
@@ -38,6 +39,7 @@ WORKDIR="{{ .common.directory.workdir }}"
 WORKDIR_BIN="{{ .common.directory.workdir }}/bin"
 
 GLOBAL_URL={{ .global.domain }}
+
 GITEA_URL={{ .gitea.ingress.cname }}.{{ .global.domain }}
 HARBOR_URL={{ .harbor.ingress.cname }}.{{ .global.domain }}
 KEYCLOAK_URL={{ .keycloak.ingress.cname }}.{{ .global.domain }}
@@ -56,6 +58,23 @@ RKE_VERSION={{ .common.rke.version }}
 RANCHER_VERSION={{ .common.rancher.version }}
 KUBECTL_VERSION={{ .common.kubectl.version }}
 
+## offline
 
+REGISTRY_PORT={{ .global.port.registry }}
+
+OFFLINE_FILE_PATH=${HOME}/offline_file
+RPM_PATH=${OFFLINE_FILE_PATH}/rpm
+RPM_NAMED_PATH=${RPM_PATH}/named
+RPM_HAPROXY_PATH=${RPM_PATH}/haproxy
+
+GUCCI_CLI_PATH=${OFFLINE_FILE_PATH}/gucci_client
+HELM_CLI_PATH=${OFFLINE_FILE_PATH}/helm_client
+KUBECTL_CLI_PATH=${OFFLINE_FILE_PATH}/kubectl_client
+RKE_CLI_PATH=${OFFLINE_FILE_PATH}/rke_client
+REGISTRY_PATH=${OFFLINE_FILE_PATH}/registry
+RANCHER_PACKAGE_PATH=${OFFLINE_FILE_PATH}/rancher_package
+
+
+## api
 p_realm=paasxpert
 m_realm=master

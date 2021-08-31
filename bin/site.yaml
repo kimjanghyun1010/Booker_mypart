@@ -11,6 +11,8 @@
 #/
 
 common:
+## online, offline
+  env: online
   directory:
     app: /app
     data: /data

@@ -28,7 +28,16 @@ NAMED_INSTALL() {
     if [ -z ${INSTALLED} ]
     then
         echo_api_blue_no_num "${TITLE}"
-        echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
+
+        if [ ${INSTALL_ROLE} == "online" ]
+        then
+            echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
+        elif [ ${INSTALL_ROLE} == "offline" ]
+        then
+            sudo rpm -ivh --nodeps --force --replacefiles --replacepkgs ${RPM_NAMED_PATH}/*.rpm
+        else
+            echo "[ERROR] Failed INSTALL_ROLE setting"
+        fi
 
         sudo cp ${OS_PATH}/named/${GLOBAL_URL}.tpl /var/named/${GLOBAL_URL}
         sudo cp ${OS_PATH}/named/named.conf.tpl /etc/named.conf

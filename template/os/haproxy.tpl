@@ -99,15 +99,17 @@ defaults
 #     option tcplog
 #     server rancher rancher:2443 check
 
-# {{- if .global.port.registry }}
-# listen registry-http
-#     balance  roundrobin
-#     bind :{{ .global.port.registry }}
-#     log global
-#     mode tcp
-#     option tcplog
-#     server rancher rancher:{{ .global.port.registry }} check
-# {{- end }}
+{{- if .global.port.registry }}
+    {{- if .common.IP.inception }}
+listen registry-http
+    balance  roundrobin
+    bind :{{ .global.port.registry }}
+    log global
+    mode tcp
+    option tcplog
+    server inception inception:{{ .global.port.registry }} check
+    {{- end }}
+{{- end }}
 
 #---------------------------------------------------------------------
 # k8s
@@ -183,8 +185,19 @@ HAPROXY_INSTALL() {
 
     if [ -z ${INSTALLED} ]
     then
+
         echo_api_blue_no_num "${TITLE}"
-        echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
+
+        if [ ${INSTALL_ROLE} == "online" ]
+        then
+            echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
+        elif [ ${INSTALL_ROLE} == "offline" ]
+        then
+            sudo rpm -ivh --nodeps --force --replacefiles --replacepkgs ${RPM_HAPROXY_PATH}/*.rpm
+        else
+            echo "[ERROR] Failed INSTALL_ROLE setting"
+        fi
+
         sudo systemctl enabled haproxy
         sudo cp ${OS_PATH}/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
         sudo systemctl start haproxy

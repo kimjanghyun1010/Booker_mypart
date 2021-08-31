@@ -82,6 +82,7 @@ EOF
 
 done
 
+
 cat >> ${OS_PATH}/rke/cluster.yml << 'EOF'
 services:
   etcd:
@@ -94,6 +95,17 @@ ingress:
     use-forwarded-headers: "true"
 EOF
 
+
+if [ ${INSTALL_ROLE} == "offline" ]
+then
+cat >> ${OS_PATH}/rke/cluster.yml << 'EOF'
+private_registries:
+    - url: registry.${GLOBAL_URL}:${REGISTRY_PORT}
+      user: admin
+      password: ${PASSWORD}
+EOF
+fi
+
 cat > ${OS_PATH}/rke/rke-install.sh << EOF
 #!/bin/sh
 
@@ -103,9 +115,15 @@ source {{ .common.directory.app }}/properties.env
 CHECK_RKE=`ls ${OS_PATH}/rke | grep ^rke$`
 if [ -z ${CHEKCK_RKE} ]
 then
-    wget https://github.com/rancher/rke/releases/download/v${RKE_VERSION}/rke_linux-amd64 -O ${OS_PATH}/rke/rke
-
-    ## rke cluster install
+    if [ ${INSTALL_ROLE} == "online" ]
+    then
+        wget https://github.com/rancher/rke/releases/download/v${RKE_VERSION}/rke_linux-amd64 -O ${OS_PATH}/rke/rke
+    elif [ ${INSTALL_ROLE} == "offline" ]
+    then
+        cp ${RKE_CLI_PATH}/rke ${OS_PATH}/rke/
+    else
+        echo "[ERROR] Failed INSTALL_ROLE setting"
+    fi
     chmod +x ${OS_PATH}/rke/rke
 fi
 
@@ -133,9 +151,19 @@ sudo chown ${USERNAME}. ~/.kube/config
 
 if [ -z ${CHECK_HELM} ]
 then
-    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > ${OS_PATH}/rke/get_helm.sh
-    chmod +x ${OS_PATH}/rke/get_helm.sh 
-    ${OS_PATH}/rke/get_helm.sh
+
+    if [ ${INSTALL_ROLE} == "online" ]
+    then
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > ${OS_PATH}/rke/get_helm.sh
+        chmod +x ${OS_PATH}/rke/get_helm.sh 
+        ${OS_PATH}/rke/get_helm.sh
+    elif [ ${INSTALL_ROLE} == "offline" ]
+    then
+        cp ${HELM_CLI_PATH}/helm ${OS_PATH}/rke/helm
+        sudo chmod +x ${OS_PATH}/rke/helm && sudo cp ${OS_PATH}/rke/helm /usr/local/bin/helm && sudo ln -s /usr/local/bin/helm /usr/bin/helm
+    else
+        echo "[ERROR] Failed INSTALL_ROLE setting"
+    fi
 fi
 
 if [ ! -d ${APP_PATH}/certs ]; then
@@ -144,9 +172,19 @@ fi
 
 if [ -z ${CHECK_KUBECTL} ]
 then
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl 
+    if [ ${INSTALL_ROLE} == "online" ]
+    then
+        curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl 
+    elif [ ${INSTALL_ROLE} == "offline" ]
+    then
+        cp ${KUBECTL_CLI_PATH}/kubectl ${OS_PATH}/rke/kubectl
+        sudo chmod +x ${OS_PATH}/rke/kubectl && sudo cp ${OS_PATH}/rke/kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
+    else
+        echo "[ERROR] Failed INSTALL_ROLE setting"
+    fi
     sudo chmod +x kubectl && sudo cp kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
     CHECK_KUBECTL=`ls /usr/local/bin | grep ^kubectl$`
+
 fi
 
 if [ ! -z ${CHECK_KUBECTL} ]
@@ -179,8 +217,16 @@ cat > ${OS_PATH}/rke/rancher-install.sh << EOF
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-helm fetch rancher-stable/rancher --version ${RANCHER_VERSION}
+if [ ${INSTALL_ROLE} == "online" ]
+then
+    helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+    helm fetch rancher-stable/rancher --version ${RANCHER_VERSION}
+elif [ ${INSTALL_ROLE} == "offline" ]
+then
+    cp ${RANCHER_PACKAGE_PATH}/rancher-${RANCHER_VERSION}.tgz
+else
+    echo "[ERROR] Failed INSTALL_ROLE setting"
+fi
 tar -zxvf rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke/
 helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke
 EOF

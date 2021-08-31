@@ -11,16 +11,27 @@ source {{ .common.directory.app }}/properties.env
 TITLE="- docker svc - Install"
 
 echo_blue "${TITLE}"
-echo '{{ .common.password }}' | sudo --stdin yum install -y yum-utils
-sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-sudo yum install -y docker-ce-${DOCKER_VERSION} docker-ce-cli-${DOCKER_VERSION} containerd.io
-yum list docker-ce --showduplicates | sort -r
+
+if [ ${INSTALL_ROLE} == "online" ]
+then
+    echo "${PASSWORD}" | sudo --stdin yum install -y yum-utils
+    sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    sudo yum install -y docker-ce-${DOCKER_VERSION} docker-ce-cli-${DOCKER_VERSION} containerd.io
+    yum list docker-ce --showduplicates | sort -r
+elif [ ${INSTALL_ROLE} == "offline" ]
+then
+    sudo rpm -ivh --nodeps --force --replacefiles --replacepkgs ${RPM_PATH}/docker/*.rpm
+else
+    echo "[ERROR] Failed INSTALL_ROLE setting"
+
+fi
+
 sudo groupadd docker
-sudo gpasswd -a {{ .common.username }} docker
+sudo gpasswd -a ${USERNAME} docker
 sudo systemctl enable docker.service
 sudo systemctl start docker.service
-sg docker -c "bash"
-sg ${USER} -c "bash"
+# sg docker -c "bash"
+# sg ${USERNAME} -c "bash"
 docker version
 EOF
 
@@ -33,14 +44,14 @@ source {{ .common.directory.app }}/properties.env
 TITLE="- docker svc - Delete"
 
 read -p "Uninstall dockerd service? [Y/N] : " INPUT
-echo -n "Input \${USER} PASSWORD : "
+echo -n "Input \${USERNAME} PASSWORD : "
 stty -echo
 read PASSWORD
 stty echo
 
 if [ ${INPUT} == Y ];
 then
-  echo '${PASSWORD}' | sudo --stdin systemctl stop docker
+  echo "${PASSWORD}" | sudo --stdin systemctl stop docker
   sudo systemctl disable docker
   sudo yum list installed | grep docker
   sudo yum erase containerd.io.x86_64 -y

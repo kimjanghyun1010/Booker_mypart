@@ -13,11 +13,11 @@ cat >> {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'E
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-IMAGE=`ls {{ .common.directory.app }}/package/image | grep registry | awk '{print $1}'`
+IMAGE=`ls ${REGISTRY_PATH} | grep registry | awk '{print $1}'`
 TITLE="- private registry container - Load"
 
 echo_blue "${TITLE}"
-docker load -i ${APP_PATH}/package/image/${IMAGE}
+docker load -i ${REGISTRY_PATH}/${IMAGE}
 mkdir -p ${APP_PATH}/deploy/os/registry/auth
 docker run \
   --entrypoint htpasswd \
@@ -66,7 +66,7 @@ TITLE="- private registry container - Install"
 STATUS=` docker ps | grep registry | grep Up | awk '{print $1}'`
 
 echo_blue "${TITLE}"
-docker run -dit -p {{ .global.port.registry }}:5000 --restart=always --name registry --privileged=true \
+docker run -dit -p ${REGISTRY_PORT}:5000 --restart=always --name registry --privileged=true \
   -v ${APP_PATH}/deploy/os/registry/config.yml:/etc/docker/registry/config.yml \
   -v ${APP_PATH}/deploy/os/registry/auth:/auth \
   -v ${APP_PATH}/certs:/certs \
