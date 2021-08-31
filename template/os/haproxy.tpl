@@ -212,11 +212,11 @@ for host in ${HAPROXY[@]}
 do
     if [ -z ${INCEPTION_COMMAND} ]
     then
-        NODE_COUNT_I=$(echo ${#INCEPTION[@]})
+        NODE_COUNT_I=${#INCEPTION[@]}
         ## -gt >
         if [ ${NODE_COUNT_I} -gt 0 ]
         then
-            NODE_COUNT_H=$(echo ${#HAPROXY[@]})
+            NODE_COUNT_H=${#HAPROXY[@]}
             ## -gt >
             if [ ${NODE_COUNT_H} -gt 1 ]
             then
