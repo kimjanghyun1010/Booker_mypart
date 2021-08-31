@@ -182,7 +182,7 @@ HAPROXY_INSTALL() {
 
     if [ -z ${INSTALLED} ]
     then
-        echo_blue "${TITLE}"
+        echo_api_blue_no_num "${TITLE}"
         echo "${PASSWORD}" | sudo --stdin yum install -y haproxy
         sudo systemctl enabled haproxy
         sudo cp ${OS_PATH}/haproxy/haproxy.tpl  /etc/haproxy/haproxy.cfg
@@ -192,9 +192,9 @@ HAPROXY_INSTALL() {
         STATUS=`systemctl status haproxy | grep Active | awk '{print $2}'`
         if [ ${STATUS} == "active" ];
         then
-            echo_green "${TITLE}"
+            echo_api_green_no_num "${TITLE}"
         else
-            echo_red "${TITLE}"
+            echo_api_red_no_num "${TITLE}"
         fi
     fi
 }

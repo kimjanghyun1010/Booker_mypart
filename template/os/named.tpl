@@ -26,7 +26,7 @@ NAMED_INSTALL() {
 
     if [ -z ${INSTALLED} ]
     then
-        echo_blue "${TITLE}"
+        echo_api_blue_no_num "${TITLE}"
         echo '${PASSWORD}' | sudo -kS yum install -y bind bind-utils
 
         sudo cp ${OS_PATH}/named/${GLOBAL_URL}.tpl /var/named/${GLOBAL_URL}
@@ -39,9 +39,9 @@ NAMED_INSTALL() {
         STATUS=`systemctl status named | grep Active | awk '{print $2}'`
         if [ "${STATUS}" == "active" ];
         then
-            echo_green "${TITLE}"
+            echo_api_green_no_num "${TITLE}"
         else
-            echo_red "${TITLE}"
+            echo_api_green_no_num "${TITLE}"
         fi
     fi
 }

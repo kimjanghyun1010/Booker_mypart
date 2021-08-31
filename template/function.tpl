@@ -71,11 +71,6 @@ function echo_install_green(){
 	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_TOTAL}]${GREEN}${MSG} Success.${NC}"
 }
 
-function echo_api_blue_no_num(){
-	MSG=$1
-	echo -e "${BLUE}${MSG} Start.${NC}"
-}
-
 function echo_error_red(){
 	MSG=$1
 	echo -e "${RED}${MSG} Failed.${NC}"
@@ -89,4 +84,21 @@ function echo_api_blue_stop(){
 function echo_install_green_stop(){
 	MSG=$1
 	echo -e "${GREEN}${MSG} Stop.${NC}"
+}
+
+function echo_api_blue_no_num(){
+	MSG=$1
+	echo -e "${BLUE}${MSG} Start.${NC}"
+}
+
+
+function echo_api_green_no_num(){
+	MSG=$1
+	echo -e "${GREEN}${MSG} Start.${NC}"
+}
+
+
+function echo_api_green_no_num(){
+	MSG=$1
+	echo -e "${RED}${MSG} Start.${NC}"
 }
