@@ -67,7 +67,7 @@ SSH_COMMAND() {
     then
         if [ ${INSTALL_ROLE} == "offline" ]
         then
-            scp -r ${RPM_PATH} ${USERNAME}@${NODE_NAME}${NUM}:~/${OFFLINE_FILE_PATH}
+            scp -r ${RPM_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${OFFLINE_FILE_PATH}
         fi
         scp -r ${OS_PATH}/haproxy ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp -r ${OS_PATH}/named ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
