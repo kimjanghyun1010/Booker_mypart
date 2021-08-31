@@ -46,6 +46,7 @@ common:
     version: 2.5.8
 # mount한 볼륨으로 longhorn을 구성할지에 대한 설정 false는 default 볼륨을 사용함(/var/lib/longhorn)
 longhorn:
+  version: 1.1.0
   enable: true
   name:
     disk-1: /mnt/test/longhorn-1

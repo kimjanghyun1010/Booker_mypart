@@ -40,15 +40,15 @@ Longhorn_Start() {
       exit
   fi
 
-  sudo sed -i "s/LONGHORN_ID/${longhorn_id}/gi"  "${path}/create-longhorn-namespace.json"
-  sudo sed -i "s/LONGHORN_ID/${longhorn_id}/gi"  "${path}/create-longhorn-app.json"
+  sudo sed -i "s/LONGHORN_ID/${longhorn_id}/gi"  "${path}/longhorn-create-namespace.json"
+  sudo sed -i "s/LONGHORN_ID/${longhorn_id}/gi"  "${path}/longhorn-create-app.json"
 
   # create Longhorn Namespace
   echo_api_blue "[INFO] Create namespace Longhorn"
   curl -ks "${rancher_url}/v3/clusters/local/namespace" \
     -H 'content-type: application/json' \
     -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
-    -d @${path}/create-longhorn-namespace.json  > /dev/null 2>&1
+    -d @${path}/longhorn-create-namespace.json  > /dev/null 2>&1
 
   sleep 10 
 
@@ -57,10 +57,10 @@ Longhorn_Start() {
   curl -ks "${rancher_url}/v3/projects/${longhorn_id}/app" \
     -H 'content-type: application/json' \
     -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
-    -d @${path}/create-longhorn-app.json > /dev/null 2>&1
+    -d @${path}/longhorn-create-app.json > /dev/null 2>&1
 
-  sudo sed -i "s/${longhorn_id}/LONGHORN_ID/gi"  "${path}/create-longhorn-namespace.json"
-  sudo sed -i "s/${longhorn_id}/LONGHORN_ID/gi"  "${path}/create-longhorn-app.json"
+  sudo sed -i "s/${longhorn_id}/LONGHORN_ID/gi"  "${path}/longhorn-create-namespace.json"
+  sudo sed -i "s/${longhorn_id}/LONGHORN_ID/gi"  "${path}/longhorn-create-app.json"
 
 }
 
