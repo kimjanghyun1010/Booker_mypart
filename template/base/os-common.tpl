@@ -31,8 +31,8 @@ SSH_COMMAND() {
     echo "------------------------------"
 
     ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget ${ISCSI} 2>&1 >/dev/null
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} 
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH}
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
+    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
     scp ${APP_PATH}/function.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${APP_PATH}/properties.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${OS_PATH}/common/common.sh ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
@@ -53,17 +53,15 @@ SSH_COMMAND() {
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo systemctl enable docker
             elif [ ${INSTALL_ROLE} == "offline" ]
             then
-                scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/docker/docker.sh
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/docker/docker-svc-start.sh
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/docker/docker-login.sh
+                scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}/docker
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker.sh
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker-svc-start.sh
+                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker-login.sh
             fi
         fi
     fi
     if [ ! -z ${SCP_HAPROXY_NAMED} ]
     then
-        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
-        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
         if [ ${INSTALL_ROLE} == "offline" ]
         then
             scp -r ${RPM_PATH} ${USERNAME}@${NODE_NAME}${NUM}:~/
