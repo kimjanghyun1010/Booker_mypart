@@ -4,7 +4,7 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 echo_create "docker-svc-start.sh"
-cat >> ${OS_PATH}/docker/docker-svc-start.sh << 'EOF'
+cat > ${OS_PATH}/docker/docker-svc-start.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -37,7 +37,7 @@ docker version
 EOF
 
 echo_create "docker-svc-delete.sh"
-cat >> ${OS_PATH}/docker/docker-svc-delete.sh << 'EOF'
+cat > ${OS_PATH}/docker/docker-svc-delete.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -68,7 +68,7 @@ fi
 echo_yellow "./docker.sh "
 EOF
 
-cat >> ${OS_PATH}/docker/docker-login.sh << 'EOF'
+cat > ${OS_PATH}/docker/docker-login.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
