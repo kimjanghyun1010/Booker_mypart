@@ -145,6 +145,7 @@ if [ -z ${CHECK_KUBECTL} ]
 then
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v{{ .common.kubectl.version }}/bin/linux/amd64/kubectl 
     sudo chmod +x kubectl && sudo cp kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
+    CHECK_KUBECTL=`ls /usr/local/bin | grep ^kubectl$`
 fi
 
 if [ ! -z ${CHECK_KUBECTL} ]
