@@ -6,8 +6,6 @@ source {{ .common.directory.app }}/properties.env
 rancher_url="https://${RANCHER_URL}"
 keycloak_url="https://${KEYCLOAK_URL}"
 path="${JSON_PATH}/rancher"
-p_realm=paasxpert
-m_realm=master
 
 server_cert=$(cat ${APP_PATH}/certs/server-cert.pem | sed 'N;N;N;N;N;s/\n/\\n/gi' | sed 'N;s/\n/\\n/gi' | sed 'N;s/\n/\\n/gi' | sed 'N;s/\n/\\n/gi')
 server_key=$(cat ${APP_PATH}/certs/server-key.pem | sed 'N;N;N;N;N;s/\n/\\n/gi' | sed 'N;s/\n/\\n/gi' | sed 'N;s/\n/\\n/gi' | sed 'N;s/\n/\\n/gi')
@@ -28,7 +26,7 @@ echo_api_blue "[INFO] Get Token"
 token=$(curl -sk  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode 'password=crossent1234!' --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
 echo "----"
 
-curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
   "description": "UI Session",
@@ -42,7 +40,7 @@ curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProvi
   "username": "admin"
 }' > /dev/null 2>&1
 
-R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
+R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
 # rancher-keycloak-oauth-api
 CERTIFICATE=$(curl -ks  -X GET "${keycloak_url}/auth/admin/realms/${p_realm}/keys" --header "Authorization: Bearer ${token}" --header 'Content-Type: application/json'  | grep -Po '"certificate": *\K"[^"]*"' | cut -d '"' -f2 | sed 's%/%\\/%gi' )
@@ -95,7 +93,7 @@ curl -ks -X POST "${rancher_url}/v3/clusterroletemplatebinding" \
 
 ## create rancher api token
 curl -ks "${rancher_url}/v3/token" -H 'content-type: application/json' -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" -d '{"current":false,"enabled":true,"expired":false,"isDerived":false,"ttl":0,"type":"token","description":"admin-api-token"}'  | grep -Po '"token": *\K"[^"]*"' | cut -d '"' -f2 > ${path}/rancher-api-token.txt
-sed -i "s/RANCHER_TOKEN/$(cat $path/rancher-api-token.txt)/gi" "${HELM_PATH}/portal/portal-values.yaml"
+sed -i "s/RANCHER_TOKEN/$(cat ${path}/rancher-api-token.txt)/gi" "${HELM_PATH}/portal/portal-values.yaml"
 
 
 ## get kubeconfig token

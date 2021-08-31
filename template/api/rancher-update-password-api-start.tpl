@@ -16,7 +16,7 @@ path="${JSON_PATH}/rancher"
 #/
 
 echo_api_blue "[INFO] Login rancher admin user"
-curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
   "description": "UI Session",
@@ -30,7 +30,7 @@ curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProvi
   "username": "admin"
 }' > /dev/null 2>&1
 
-R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
+R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
 # update admin password
 echo_api_blue "[INFO] Update Password admin user"

@@ -10,6 +10,7 @@
 # @authors 크로센트
 # @see
 #/
+
 DEFAULT_USER="{{ .common.default_username }}"
 USERNAME="{{ .common.username }}"
 PASSWORD="{{ .common.password }}"
@@ -49,3 +50,12 @@ GLOBAL_NAMESPACE="{{ .global.namespace }}"
 KEYCLOAK_ADMIN_PW="{{ .keycloak.adminPassword }}"
 
 LONGHORN_VOLUME=({{ range $element := .longhorn.name }}"{{ $element }}" {{ end }})
+
+DOCKER_VERSION={{ .common.docker.version }}
+RKE_VERSION={{ .common.rke.version }}
+RANCHER_VERSION={{ .common.rancher.version }}
+KUBECTL_VERSION={{ .common.kubectl.version }}
+
+
+p_realm=paasxpert
+m_realm=master

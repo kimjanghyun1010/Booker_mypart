@@ -4,8 +4,6 @@ source {{ .common.directory.app }}/properties.env
 
 keycloak_url="https://${KEYCLOAK_URL}"
 harbor_url="https://${HARBOR_URL}"
-p_realm=paasxpert
-m_realm=master
 
 path="${JSON_PATH}/harbor"
 cookie_path=${path}/cookie.txt

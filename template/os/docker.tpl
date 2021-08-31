@@ -5,15 +5,15 @@ source {{ .common.directory.app }}/properties.env
 
 echo_create "docker-svc-start.sh"
 cat >> ${OS_PATH}/docker/docker-svc-start.sh << 'EOF'
+#!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
-
 TITLE="- docker svc - Install"
 
 echo_blue "${TITLE}"
 echo '{{ .common.password }}' | sudo --stdin yum install -y yum-utils
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-sudo yum install -y docker-ce-{{ .common.docker.version }} docker-ce-cli-{{ .common.docker.version }} containerd.io
+sudo yum install -y docker-ce-${DOCKER_VERSION} docker-ce-cli-${DOCKER_VERSION} containerd.io
 yum list docker-ce --showduplicates | sort -r
 sudo groupadd docker
 sudo gpasswd -a {{ .common.username }} docker
@@ -26,7 +26,9 @@ EOF
 
 echo_create "docker-svc-delete.sh"
 cat >> ${OS_PATH}/docker/docker-svc-delete.sh << 'EOF'
+#!/bin/sh
 source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
 
 TITLE="- docker svc - Delete"
 
@@ -56,6 +58,8 @@ EOF
 
 cat >> ${OS_PATH}/docker/docker-login.sh << 'EOF'
 #!/bin/sh
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
 
 echo -n "Harbor login PASSWORD : "
 stty -echo
@@ -63,8 +67,8 @@ read PASSWORD
 stty echo
 
 {{- if .global.port.nginx_https }}
-echo "${PASSWORD}" | docker login -u admin --password-stdin {{ .harbor.ingress.cname }}.{{ .global.domain }}:{{ .global.port.nginx_https }}
+echo "${PASSWORD}" | docker login -u admin --password-stdin ${HARBOR_URL}:{{ .global.port.nginx_https }}
 {{ else }}
-echo "${PASSWORD}" | docker login -u admin --password-stdin {{ .harbor.ingress.cname }}.{{ .global.domain }}
+echo "${PASSWORD}" | docker login -u admin --password-stdin ${HARBOR_URL}
 {{- end }}
 EOF

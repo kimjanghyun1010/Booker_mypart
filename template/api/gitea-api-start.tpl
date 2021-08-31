@@ -4,8 +4,6 @@ source {{ .common.directory.app }}/properties.env
 
 keycloak_url="https://${KEYCLOAK_URL}"
 gitea_url="https://${GITEA_URL}"
-p_realm=paasxpert
-m_realm=master
 
 path="${JSON_PATH}/gitea"
 cookie_path=${path}/gitea-cookie.txt

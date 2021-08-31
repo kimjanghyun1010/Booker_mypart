@@ -95,14 +95,15 @@ ingress:
 EOF
 
 cat > ${OS_PATH}/rke/rke-install.sh << EOF
-## rke install
+#!/bin/sh
+
+source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 CHECK_RKE=`ls ${OS_PATH}/rke | grep ^rke$`
-
 if [ -z ${CHEKCK_RKE} ]
 then
-    wget https://github.com/rancher/rke/releases/download/v{{ .common.rke.version }}/rke_linux-amd64 -O ${OS_PATH}/rke/rke
+    wget https://github.com/rancher/rke/releases/download/v${RKE_VERSION}/rke_linux-amd64 -O ${OS_PATH}/rke/rke
 
     ## rke cluster install
     chmod +x ${OS_PATH}/rke/rke
@@ -115,13 +116,13 @@ EOF
 
 
 cat > ${OS_PATH}/rke/kubectl-install.sh << 'EOF'
+#!/bin/sh
 
+source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 CHECK_HELM=`ls /usr/local/bin | grep ^helm$`
-
 CHECK_KUBECTL=`ls /usr/local/bin | grep ^kubectl$`
-
 
 if [ ! -d ~/.kube ]; then
     mkdir ~/.kube
@@ -143,7 +144,7 @@ fi
 
 if [ -z ${CHECK_KUBECTL} ]
 then
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v{{ .common.kubectl.version }}/bin/linux/amd64/kubectl 
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl 
     sudo chmod +x kubectl && sudo cp kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
     CHECK_KUBECTL=`ls /usr/local/bin | grep ^kubectl$`
 fi
@@ -173,10 +174,13 @@ fi
 EOF
 
 cat > ${OS_PATH}/rke/rancher-install.sh << EOF
+#!/bin/sh
+
+source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-helm fetch rancher-stable/rancher --version {{ .common.rancher.version }}
-tar -zxvf rancher-{{ .common.rancher.version }}.tgz -C ${OS_PATH}/rke/
+helm fetch rancher-stable/rancher --version ${RANCHER_VERSION}
+tar -zxvf rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke/
 helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke
 EOF

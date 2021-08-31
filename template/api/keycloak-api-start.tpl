@@ -4,8 +4,6 @@ source {{ .common.directory.app }}/properties.env
 
 keycloak_url="https://${KEYCLOAK_URL}"
 path="${JSON_PATH}/keycloak"
-p_realm=paasxpert
-m_realm=master
 
 #/
 # <pre>
