@@ -10,7 +10,7 @@ echo_blue "./registry.sh"
 
 
 echo_create "registry-img-load.sh"
-cat >> {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'EOF'
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -22,7 +22,7 @@ ${REGISTRY_PATH}/rancher-load-images.sh --images ${REGISTRY_PATH}/rancher-images
 EOF
 
 echo_create "registry-img-load.sh"
-cat >> {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'EOF'
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -41,7 +41,7 @@ echo_yellow "${TITLE}"
 EOF
 
 echo_create "config.yml"
-cat >> {{ .common.directory.app }}/deploy/os/registry/config.yml << 'EOF'
+cat > {{ .common.directory.app }}/deploy/os/registry/config.yml << 'EOF'
 version: 0.1
 log:
   fields:
@@ -72,7 +72,7 @@ health:
 EOF
 
 echo_create "registry-start.sh"
-cat >> {{ .common.directory.app }}/deploy/os/registry/registry-start.sh << 'EOF'
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-start.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
@@ -98,7 +98,7 @@ echo_yellow "${TITLE}"
 EOF
 
 echo_create "registry-delete.sh"
-cat >> {{ .common.directory.app }}/deploy/os/registry/registry-delete.sh << 'EOF'
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-delete.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
