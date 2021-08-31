@@ -61,6 +61,7 @@ KUBECTL_VERSION={{ .common.kubectl.version }}
 ## offline
 
 REGISTRY_PORT={{ .global.port.registry }}
+REGISTRY_URL=registry.{{ .global.domain }}:${REGISTRY_PORT}
 
 OFFLINE_FILE_PATH=${HOME}/offline_file
 RPM_PATH=${OFFLINE_FILE_PATH}/rpm
