@@ -18,7 +18,7 @@ common:
     data: /data
     log: /applog
     ## gitea-push, harbor-login에서 사용
-    workdir: paasxpert-deployment-tool
+    workdir: /home/paasadm/paasxpert-deployment-tool
   default_username: centos
   username: paasadm
   password: crossent1234!

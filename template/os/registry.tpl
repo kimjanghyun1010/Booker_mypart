@@ -9,16 +9,16 @@ source {{ .common.directory.app }}/properties.env
 echo_blue "./registry.sh"
 
 
-echo_create "registry-img-load.sh"
-cat > {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'EOF'
+echo_create "registry-img-pull.sh"
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-img-pull.sh << 'EOF'
 #!/bin/sh
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-docker load -i ${REGISTRY_PATH}/rancher-images.tar.gz
+docker load -i ${RANCHER_PACKAGE_PATH}/rancher-images.tar.gz
 
-${REGISTRY_PATH}/rancher-load-images.sh --images ${REGISTRY_PATH}/rancher-images.tar.gz \
-  --registry ${REGISTRY_URL} --image-list ${REGISTRY_PATH}/rancher-images.txt
+${RANCHER_PACKAGE_PATH}/rancher-load-images.sh --images ${RANCHER_PACKAGE_PATH}/rancher-images.tar.gz \
+  --registry ${REGISTRY_URL} --image-list ${RANCHER_PACKAGE_PATH}/rancher-images.txt
 EOF
 
 echo_create "registry-img-load.sh"

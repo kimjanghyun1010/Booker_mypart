@@ -19,6 +19,11 @@ w=0
 # @see
 #/
 
+SSH_FUNC() {
+    ssh ${USERNAME}@${NODE_NAME}${NUM}
+}
+
+
 SSH_COMMAND() {
     NODE_NAME=$1
     NUM=${2:-""}
@@ -31,35 +36,35 @@ SSH_COMMAND() {
     echo "------------------------------"
 
     ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget ${ISCSI} 2>&1 >/dev/null
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${HOME}/${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
+    SSH_FUNC sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
+    SSH_FUNC sudo chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
     scp ${APP_PATH}/function.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${APP_PATH}/properties.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${OS_PATH}/common/common.sh ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/common.sh
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/etc-hosts.sh
+    SSH_FUNC sudo bash ${APP_PATH}/common.sh
+    SSH_FUNC sudo bash ${APP_PATH}/etc-hosts.sh
     scp ~/.ssh/id_rsa ${USERNAME}@${NODE_NAME}${NUM}:~/.ssh
     # -z null 일때 참
     if [ -z ${DOCKER} ]
     then
-        CHECK_DOCKER=`ssh ${USERNAME}@${NODE_NAME}${NUM} yum list installed  | grep  "docker-ce\." | awk '{print $1}'`
+        CHECK_DOCKER=`SSH_FUNC yum list installed  | grep  "docker-ce\." | awk '{print $1}'`
         if [ -z ${CHECK_DOCKER} ]
         then
             if [ ${INSTALL_ROLE} == "online" ]
             then
-                ssh ${USERNAME}@${NODE_NAME}${NUM} "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo usermod -aG docker ${USERNAME}
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo systemctl enable docker
+                SSH_FUNC "curl https://releases.rancher.com/install-docker/${DOCKER_URL}.sh | sh -"
+                SSH_FUNC sudo usermod -aG docker ${USERNAME}
+                SSH_FUNC sudo systemctl enable docker
             elif [ ${INSTALL_ROLE} == "offline" ]
             then
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${RPM_PATH}
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${RPM_PATH}
+                SSH_FUNC sudo mkdir -p ${RPM_PATH}
+                SSH_FUNC sudo chown -R ${USERNAME}. ${RPM_PATH}
                 scp -r ${RPM_DOCKER_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${RPM_PATH}
                 scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}/docker
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker.sh
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker-svc-start.sh
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker-login.sh
+                SSH_FUNC sudo bash ${OS_PATH}/docker/docker.sh
+                SSH_FUNC sudo bash ${OS_PATH}/docker/docker-svc-start.sh
+                SSH_FUNC sudo bash ${OS_PATH}/docker/docker-login.sh
             fi
         fi
     fi
