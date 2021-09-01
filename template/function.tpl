@@ -6,8 +6,7 @@ BLUE='\e[34m'
 NC='\e[0m'
 
 ECHO_CUR=0
-ECHO_TOTAL=$(grep "^echo_create" $0 | wc -l)
-
+ECHO_TOTAL=$(grep "^echo_" $0 | wc -l)
 ECHO_TOTAL_CREATE=$(grep "^echo_create" $0 | wc -l)
 
 ECHO_API_CUR=0
