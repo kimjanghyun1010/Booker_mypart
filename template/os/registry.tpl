@@ -88,7 +88,7 @@ docker run -dit -p ${REGISTRY_PORT}:5000 --restart=always --name registry --priv
   -v ${APP_PATH}/registry:/var/lib/registry \
   registry:2
 
-docker login ${REGISTRY_URL} -uadmin -p${PASSWORD}
+bash ${ETC_PATH}/harbor-login.sh
 
 if [ -n ${STATUS} ];
 then
@@ -128,7 +128,7 @@ EOF
 {{- end }}
 
 
-cat > {{ .common.directory.app }}/deploy/os/registry/registry-app-img-pull.sh  <<EOF
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-app-img-pull.sh  << 'EOF'
 #!/bin/sh
 
 source {{ .common.directory.app }}/function.env
@@ -151,7 +151,6 @@ function docker_push(){
 }
 
 ## Main
-step "gitea docker image upload"
 
 for i in ${image_list[@]}
 do

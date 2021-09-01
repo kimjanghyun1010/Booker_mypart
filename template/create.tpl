@@ -8,7 +8,7 @@ HELM_NAME=("mariadb-galera" "postgresql" "keycloak" "gitea" "harbor" "jenkins" "
 API_SHELL_NAME=("keycloak-api-start" "gitea-api-start" "harbor-api-start" "longhorn-api-start" "jenkins-api-start" "rancher-keycloak-oauth-api-start" "rancher-update-password-api-start" "jenkins-api-start" "longhorn-volume-api-start")
 JSON_NAME=("keycloak-gitea-api" "keycloak-harbor-api" "keycloak-jenkins-api" "keycloak-portal-api" "keycloak-rancher-api" "keycloak-master-portal-api" "gitea-source" "harbor-source" "keycloak-master-portal-role-admin" "rancher-keycloak-api" "longhorn-volume-add" "longhorn-create-app" )
 SQL_NAME=("SQL-mariadb" "SQL-postgresql")
-ETC_NAME=("gitea-push" "harbor-login" "jenkins-image-push" )
+ETC_NAME=("gitea-push" "harbor-login" "registry-login" "jenkins-image-push" )
 ## new path
 BASEDIR=$(dirname "$0")
 APP_PATH="{{ .common.directory.app }}"
