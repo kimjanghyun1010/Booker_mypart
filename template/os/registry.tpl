@@ -1,12 +1,8 @@
 #!/bin/sh
 
-source {{ .common.directory.app }}/function.env
-source {{ .common.directory.app }}/properties.env
 {{- if .global.imagePullSecrets }}
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
-
-echo_blue "./registry.sh"
 
 
 echo_create "registry-img-pull.sh"
@@ -80,6 +76,10 @@ source {{ .common.directory.app }}/properties.env
 TITLE="- private registry container - Install"
 STATUS=` docker ps | grep registry | grep Up | awk '{print $1}'`
 
+if [ ! -d ${APP_PATH}/certs ]; then
+    sudo bash ${OS_PATH}/certificate/certificate.sh
+fi
+
 echo_blue "${TITLE}"
 docker run -dit -p ${REGISTRY_PORT}:5000 --restart=always --name registry --privileged=true \
   -v ${APP_PATH}/deploy/os/registry/config.yml:/etc/docker/registry/config.yml \
@@ -123,5 +123,4 @@ else
 fi
 echo_yellow "${TITLE}"
 EOF
-echo_yellow "./registry.sh"
 {{- end }}

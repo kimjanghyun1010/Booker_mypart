@@ -60,7 +60,13 @@ echo_yellow "Common setting"
 
 sudo mkdir -p /etc/docker
 cat > /etc/docker/daemon.json << 'EOF'
+{{- if .global.imagePullSecrets }}
+{
+    "insecure-registries" : ["{{ .global.image.repository }}", "{{ .harbor.ingress.cname }}.{{ .global.domain }}"]
+}
+{{ else }}
 {
     "insecure-registries" : ["{{ .harbor.ingress.cname }}.{{ .global.domain }}"]
 }
+{{- end }}
 EOF

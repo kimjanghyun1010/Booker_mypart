@@ -57,7 +57,8 @@ global:
   namespace: platform
   domain: prd.msxpert.co.kr
   ## private registry 설정할 경우 setting, harbor_secret 과 다른이름으로 생성
-  imagePullSecrets: 
+  ## public일 경우 imagePullSecrets 비워둠
+  imagePullSecrets:
   harborimagePullSecrets: regcred
   storageClass: longhorn
 

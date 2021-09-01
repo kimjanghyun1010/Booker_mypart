@@ -25,28 +25,11 @@ ECHO_INSTALL_TOTAL=$(grep "echo_install" $0 | wc -l)
 #/
 
 
-function echo_blue(){
-	MSG=$1
-	ECHO_CUR=$(($ECHO_CUR + 1))
-	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL}]${BLUE}${MSG} Start.${NC}"
-}
-
-function echo_green(){
-	MSG=$1
-	ECHO_CUR=$(($ECHO_CUR + 1))
-	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL}]${GREEN}${MSG} Success.${NC}"
-}
 
 function echo_create(){
 	MSG=$1
 	ECHO_CUR=$(($ECHO_CUR + 1))
 	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL_CREATE}]${GREEN}${MSG} Create.${NC}"
-}
-
-function echo_red(){
-	MSG=$1
-	ECHO_CUR=$(($ECHO_CUR + 1))
-	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL}]${RED}${MSG} Failed.${NC}"
 }
 
 function echo_yellow(){
@@ -55,9 +38,35 @@ function echo_yellow(){
 	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL}]${YELLOW}${MSG} Exit.${NC}"
 }
 
+
+## red
+function echo_red(){
+	MSG=$1
+	ECHO_CUR=$(($ECHO_CUR + 1))
+	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL}]${RED}${MSG} Failed.${NC}"
+}
+
 function echo_err(){
 	MSG=$1
 	echo -e "${RED}${MSG}${NC}" >${ERR_OUT}
+}
+
+function echo_error_red(){
+	MSG=$1
+	echo -e "${RED}${MSG} Failed.${NC}"
+}
+
+function echo_api_red_no_num(){
+	MSG=$1
+	echo -e "${RED}${MSG} Start.${NC}"
+}
+
+
+## blue
+function echo_blue(){
+	MSG=$1
+	ECHO_CUR=$(($ECHO_CUR + 1))
+	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL}]${BLUE}${MSG} Start.${NC}"
 }
 
 function echo_api_blue(){
@@ -66,25 +75,9 @@ function echo_api_blue(){
 	echo -e "${YELLOW}[${ECHO_API_CUR}/${ECHO_API_TOTAL}]${BLUE}${MSG} Start.${NC}"
 }
 
-function echo_install_green(){
-	MSG=$1
-	ECHO_INSTALL_CUR=$(($ECHO_INSTALL_CUR + 1))
-	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_TOTAL}]${GREEN}${MSG} Success.${NC}"
-}
-
-function echo_error_red(){
-	MSG=$1
-	echo -e "${RED}${MSG} Failed.${NC}"
-}
-
 function echo_api_blue_stop(){
 	MSG=$1
 	echo -e "${BLUE}${MSG} Stop.${NC}"
-}
-
-function echo_install_green_stop(){
-	MSG=$1
-	echo -e "${GREEN}${MSG} Stop.${NC}"
 }
 
 function echo_api_blue_no_num(){
@@ -93,13 +86,27 @@ function echo_api_blue_no_num(){
 }
 
 
+## green
+function echo_green(){
+	MSG=$1
+	ECHO_CUR=$(($ECHO_CUR + 1))
+	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL}]${GREEN}${MSG} Success.${NC}"
+}
+
+function echo_install_green(){
+	MSG=$1
+	ECHO_INSTALL_CUR=$(($ECHO_INSTALL_CUR + 1))
+	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_TOTAL}]${GREEN}${MSG} Success.${NC}"
+}
+
+function echo_install_green_stop(){
+	MSG=$1
+	echo -e "${GREEN}${MSG} Stop.${NC}"
+}
+
 function echo_api_green_no_num(){
 	MSG=$1
 	echo -e "${GREEN}${MSG} Start.${NC}"
 }
 
 
-function echo_api_red_no_num(){
-	MSG=$1
-	echo -e "${RED}${MSG} Start.${NC}"
-}
