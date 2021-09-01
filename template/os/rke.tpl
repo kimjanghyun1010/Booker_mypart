@@ -98,7 +98,7 @@ EOF
 
 if [ ${INSTALL_ROLE} == "offline" ]
 then
-cat >> ${OS_PATH}/rke/cluster.yml << 'EOF'
+cat >> ${OS_PATH}/rke/cluster.yml << EOF
 private_registries:
     - url: registry.${GLOBAL_URL}:${REGISTRY_PORT}
       user: admin
