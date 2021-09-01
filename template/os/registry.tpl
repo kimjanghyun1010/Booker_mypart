@@ -5,37 +5,6 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 
-echo_create "registry-img-pull.sh"
-cat > {{ .common.directory.app }}/deploy/os/registry/registry-img-pull.sh << 'EOF'
-#!/bin/sh
-source {{ .common.directory.app }}/function.env
-source {{ .common.directory.app }}/properties.env
-
-docker load -i ${RANCHER_PACKAGE_PATH}/rancher-images.tar.gz
-
-${RANCHER_PACKAGE_PATH}/rancher-load-images.sh --images ${RANCHER_PACKAGE_PATH}/rancher-images.tar.gz \
-  --registry ${REGISTRY_URL} --image-list ${RANCHER_PACKAGE_PATH}/rancher-images.txt
-EOF
-
-echo_create "registry-img-load.sh"
-cat > {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'EOF'
-#!/bin/sh
-source {{ .common.directory.app }}/function.env
-source {{ .common.directory.app }}/properties.env
-
-IMAGE=`ls ${REGISTRY_PATH} | grep registry | awk '{print $1}'`
-TITLE="- private registry container - Load"
-
-echo_blue "${TITLE}"
-docker load -i ${REGISTRY_PATH}/${IMAGE}
-mkdir -p ${APP_PATH}/deploy/os/registry/auth
-docker run \
-  --entrypoint htpasswd \
-  registry:2 -Bbn admin ${PASSWORD} > ${APP_PATH}/deploy/os/registry/auth/htpasswd
-
-echo_yellow "${TITLE}"
-EOF
-
 echo_create "config.yml"
 cat > {{ .common.directory.app }}/deploy/os/registry/config.yml << 'EOF'
 version: 0.1
@@ -65,6 +34,25 @@ health:
     enabled: true
     interval: 10s
     threshold: 3
+EOF
+
+echo_create "registry-img-load.sh"
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-img-load.sh << 'EOF'
+#!/bin/sh
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+IMAGE=`ls ${REGISTRY_PATH} | grep registry | awk '{print $1}'`
+TITLE="- private registry container - Load"
+
+echo_blue "${TITLE}"
+docker load -i ${REGISTRY_PATH}/${IMAGE}
+mkdir -p ${APP_PATH}/deploy/os/registry/auth
+docker run \
+  --entrypoint htpasswd \
+  registry:2 -Bbn admin ${PASSWORD} > ${APP_PATH}/deploy/os/registry/auth/htpasswd
+
+echo_yellow "${TITLE}"
 EOF
 
 echo_create "registry-start.sh"
@@ -128,6 +116,20 @@ EOF
 {{- end }}
 
 
+echo_create "registry-img-pull.sh"
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-img-pull.sh << 'EOF'
+#!/bin/sh
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+docker load -i ${RANCHER_PACKAGE_PATH}/rancher-images.tar.gz
+
+${RANCHER_PACKAGE_PATH}/rancher-load-images.sh --images ${RANCHER_PACKAGE_PATH}/rancher-images.tar.gz \
+  --registry ${REGISTRY_URL} --image-list ${RANCHER_PACKAGE_PATH}/rancher-images.txt
+EOF
+
+
+echo_create "registry-app-img-pull.sh"
 cat > {{ .common.directory.app }}/deploy/os/registry/registry-app-img-pull.sh  << 'EOF'
 #!/bin/sh
 
@@ -135,14 +137,15 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 docker_images=()
+path=$1
 
 ## 변수
-count=`ls ${APP_PACKAGE_PATH} | grep tar | wc -l`
-image_list=`ls ${APP_PACKAGE_PATH} | grep tar | awk '{print $1}'`
+count=`ls ${path} | grep tar | wc -l`
+image_list=`ls ${path} | grep tar | awk '{print $1}'`
 
 ## 함수
 function docker_load(){
-        docker load -i ${APP_PACKAGE_PATH}/$1 -q | awk '{ split($0, arr, " "); print arr[3]}'
+        docker load -i ${path}/$1 -q | awk '{ split($0, arr, " "); print arr[3]}'
 }
 
 function docker_push(){
@@ -165,4 +168,14 @@ do
 done
 echo "############ "$PWD" -> docker images "$count" upload complete ############"
 
+EOF
+
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-pull-all.sh  << 'EOF'
+#!/bin/sh
+
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+bash registry-img-pull.sh
+bash registry-app-img-pull.sh ${APP_PACKAGE_PATH}
+bash registry-app-img-pull.sh ${LONGHORN_PACKAGE_PATH}
 EOF

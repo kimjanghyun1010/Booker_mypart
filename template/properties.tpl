@@ -39,7 +39,6 @@ WORKDIR="{{ .common.directory.workdir }}"
 WORKDIR_BIN="{{ .common.directory.workdir }}/bin"
 
 GLOBAL_URL={{ .global.domain }}
-
 GITEA_URL={{ .gitea.ingress.cname }}.{{ .global.domain }}
 HARBOR_URL={{ .harbor.ingress.cname }}.{{ .global.domain }}
 KEYCLOAK_URL={{ .keycloak.ingress.cname }}.{{ .global.domain }}
@@ -48,9 +47,7 @@ JENKINS_URL={{ .jenkins.ingress.cname }}.{{ .global.domain }}
 PORTAL_URL={{ .portal.ingress.cname }}.{{ .global.domain }}
 
 GLOBAL_NAMESPACE="{{ .global.namespace }}"
-
 KEYCLOAK_ADMIN_PW="{{ .keycloak.adminPassword }}"
-
 LONGHORN_VOLUME=({{ range $element := .longhorn.name }}"{{ $element }}" {{ end }})
 
 DOCKER_VERSION={{ .common.docker.version }}
@@ -76,6 +73,7 @@ RKE_CLI_PATH=${OFFLINE_FILE_PATH}/rke_client
 REGISTRY_PATH=${OFFLINE_FILE_PATH}/registry
 RANCHER_PACKAGE_PATH=${OFFLINE_FILE_PATH}/rancher_package
 APP_PACKAGE_PATH=${OFFLINE_FILE_PATH}/app_images
+LONGHORN_PACKAGE_PATH=${OFFLINE_FILE_PATH}/longhorn_images
 
 ## api
 p_realm=paasxpert
