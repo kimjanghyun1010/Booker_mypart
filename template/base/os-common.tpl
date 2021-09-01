@@ -59,7 +59,7 @@ SSH_COMMAND() {
                 scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}/docker
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker.sh
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker-svc-start.sh
-                ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker-login.sh
+                
             fi
         fi
     fi
