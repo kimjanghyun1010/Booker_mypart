@@ -124,3 +124,44 @@ fi
 echo_yellow "${TITLE}"
 EOF
 {{- end }}
+
+
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-app-img-pull.sh  <<EOF
+#!/bin/sh
+
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+docker_images=()
+
+## 변수
+count=`ls ${APP_PACKAGE_PATH} | grep tar | wc -l`
+image_list=`ls ${APP_PACKAGE_PATH} | grep tar | awk '{print $1}'`
+
+## 함수
+function docker_load(){
+        docker load -i $APP_PACKAGE_PATH/$1 -q | awk '{ split($0, arr, " "); print arr[3]}'
+}
+
+function docker_push(){
+        docker tag $1 ${docker_reg_ip}/$1
+       docker push ${docker_reg_ip}/$1
+}
+
+## Main
+step "gitea docker image upload"
+
+for i in ${image_list[@]}
+do
+        docker_images+=(`docker_load $i`)
+        echo ""$i" load complete!!"
+done
+
+for i in ${docker_images[@]}
+do
+        docker_push $i
+        echo ""$i" push complete!!"
+done
+echo "############ "$PWD" -> docker images "$count" upload complete ############"
+
+EOF

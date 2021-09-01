@@ -75,7 +75,7 @@ KUBECTL_CLI_PATH=${OFFLINE_FILE_PATH}/kubectl_client
 RKE_CLI_PATH=${OFFLINE_FILE_PATH}/rke_client
 REGISTRY_PATH=${OFFLINE_FILE_PATH}/registry
 RANCHER_PACKAGE_PATH=${OFFLINE_FILE_PATH}/rancher_package
-
+APP_PACKAGE_PATH=${OFFLINE_FILE_PATH}/app_images
 
 ## api
 p_realm=paasxpert
