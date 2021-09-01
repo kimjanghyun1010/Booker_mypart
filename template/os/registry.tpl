@@ -76,7 +76,7 @@ docker run -dit -p ${REGISTRY_PORT}:5000 --restart=always --name registry --priv
   -v ${APP_PATH}/registry:/var/lib/registry \
   registry:2
 
-bash ${ETC_PATH}/harbor-login.sh
+bash ${ETC_PATH}/registry-login.sh
 
 if [ -n ${STATUS} ];
 then
