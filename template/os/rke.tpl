@@ -25,7 +25,7 @@ w=0
 
 
 cat > ${OS_PATH}/rke/rancher-values.yml << EOF
-hostname: {{ .rancher.cname }}.{{ .global.domain }}
+hostname: ${RANCHER_URL}
 ingress:
   enable: true
   tls:
@@ -100,7 +100,7 @@ if [ ${INSTALL_ROLE} == "offline" ]
 then
 cat >> ${OS_PATH}/rke/cluster.yml << EOF
 private_registries:
-    - url: registry.${GLOBAL_URL}:${REGISTRY_PORT}
+    - url: ${REGISTRY_CNAME}.${GLOBAL_URL}:${REGISTRY_PORT}
       user: admin
       password: ${PASSWORD}
 EOF

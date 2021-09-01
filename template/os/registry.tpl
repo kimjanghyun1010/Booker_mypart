@@ -52,7 +52,6 @@ docker run \
   --entrypoint htpasswd \
   registry:2 -Bbn admin ${PASSWORD} > ${APP_PATH}/deploy/os/registry/auth/htpasswd
 
-echo_yellow "${TITLE}"
 EOF
 
 echo_create "registry-start.sh"
@@ -69,22 +68,24 @@ if [ ! -d ${APP_PATH}/certs ]; then
 fi
 
 echo_blue "${TITLE}"
-docker run -dit -p ${REGISTRY_PORT}:5000 --restart=always --name registry --privileged=true \
-  -v ${APP_PATH}/deploy/os/registry/config.yml:/etc/docker/registry/config.yml \
-  -v ${APP_PATH}/deploy/os/registry/auth:/auth \
-  -v ${APP_PATH}/certs:/certs \
-  -v ${APP_PATH}/registry:/var/lib/registry \
-  registry:2
 
+if [ -z ${STATUS} ]
+then
+    docker run -dit -p ${REGISTRY_PORT}:5000 --restart=always --name registry --privileged=true \
+      -v ${APP_PATH}/deploy/os/registry/config.yml:/etc/docker/registry/config.yml \
+      -v ${APP_PATH}/deploy/os/registry/auth:/auth \
+      -v ${APP_PATH}/certs:/certs \
+      -v ${APP_PATH}/registry:/var/lib/registry \
+      registry:2
+fi
 bash ${ETC_PATH}/registry-login.sh
 
-if [ -n ${STATUS} ];
+if [ -n ${STATUS} ]
 then
   echo_green "${TITLE}"
 else
   echo_red "${TITLE}"
 fi
-echo_yellow "${TITLE}"
 EOF
 
 echo_create "registry-delete.sh"
@@ -102,7 +103,7 @@ stty -echo
 read PASSWORD
 stty echo
 
-if [ ${INPUT} == Y ];
+if [ ${INPUT} == Y ]
 then
   docker rm -f registry 
   echo '${PASSWORD}'  | sudo --stdin rm -rf ${DATA_PATH}/registry
@@ -111,7 +112,6 @@ then
 else
   echo_red "${TITLE}"
 fi
-echo_yellow "${TITLE}"
 EOF
 {{- end }}
 

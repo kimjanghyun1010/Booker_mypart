@@ -59,7 +59,7 @@ KUBECTL_VERSION={{ .common.kubectl.version }}
 
 REGISTRY_PORT={{ .global.port.registry }}
 REGISTRY_URL=registry.{{ .global.domain }}:${REGISTRY_PORT}
-
+REGISTRY_CNAME={{ .registry.cname }}
 OFFLINE_FILE_PATH=/home/${USERNAME}/offline_file
 RPM_PATH=${OFFLINE_FILE_PATH}/rpm
 RPM_DOCKER_PATH=${RPM_PATH}/docker
