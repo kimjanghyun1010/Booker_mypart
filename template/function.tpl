@@ -6,7 +6,9 @@ BLUE='\e[34m'
 NC='\e[0m'
 
 ECHO_CUR=0
-ECHO_TOTAL=$(grep "^echo_" $0 | wc -l)
+ECHO_TOTAL=$(grep "^echo_create" $0 | wc -l)
+
+ECHO_TOTAL_CREATE=$(grep "^echo_create" $0 | wc -l)
 
 ECHO_API_CUR=0
 ECHO_INSTALL_CUR=0
@@ -39,7 +41,7 @@ function echo_green(){
 function echo_create(){
 	MSG=$1
 	ECHO_CUR=$(($ECHO_CUR + 1))
-	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL}]${GREEN}${MSG} Create.${NC}"
+	echo -e "${YELLOW}[${ECHO_CUR}/${ECHO_TOTAL_CREATE}]${GREEN}${MSG} Create.${NC}"
 }
 
 function echo_red(){
