@@ -140,12 +140,12 @@ image_list=`ls ${APP_PACKAGE_PATH} | grep tar | awk '{print $1}'`
 
 ## 함수
 function docker_load(){
-        docker load -i $APP_PACKAGE_PATH/$1 -q | awk '{ split($0, arr, " "); print arr[3]}'
+        docker load -i ${APP_PACKAGE_PATH}/$1 -q | awk '{ split($0, arr, " "); print arr[3]}'
 }
 
 function docker_push(){
-        docker tag $1 ${docker_reg_ip}/$1
-       docker push ${docker_reg_ip}/$1
+        docker tag $1 ${REGISTRY_URL}/$1
+       docker push ${REGISTRY_URL}/$1
 }
 
 ## Main
