@@ -56,7 +56,7 @@ SSH_COMMAND() {
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${RPM_PATH}
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${RPM_PATH}
                 scp -r ${RPM_DOCKER_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${RPM_PATH}
-                scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}/docker
+                scp -r ${OS_PATH}/docker  ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker.sh
                 ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${OS_PATH}/docker/docker-svc-start.sh
                 
@@ -67,7 +67,10 @@ SSH_COMMAND() {
     then
         if [ ${INSTALL_ROLE} == "offline" ]
         then
+            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${RPM_PATH}
+            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${OFFLINE_FILE_PATH}
             scp -r ${RPM_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${OFFLINE_FILE_PATH}
+            
         fi
         scp -r ${OS_PATH}/haproxy ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp -r ${OS_PATH}/named ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
