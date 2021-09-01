@@ -19,7 +19,7 @@ OS_PATH="{{ .common.directory.app }}/deploy/os"
 HELM_PATH="{{ .common.directory.app }}/deploy/helm"
 API_PATH="{{ .common.directory.app }}/deploy/api"
 ETC_PATH="{{ .common.directory.app }}/deploy/etc"
-WORKDIR_PATH="/home/${USERNAME}/{{ .common.directory.workdir }}"
+WORKDIR_PATH="{{ .common.directory.workdir }}"
 
 ## template path
 TEMPLATE_DIR="${BASEDIR}/../template"
