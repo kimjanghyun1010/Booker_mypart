@@ -88,6 +88,8 @@ docker run -dit -p ${REGISTRY_PORT}:5000 --restart=always --name registry --priv
   -v ${APP_PATH}/registry:/var/lib/registry \
   registry:2
 
+docker login ${REGISTRY_URL} -uadmin -p${PASSWORD}
+
 if [ -n ${STATUS} ];
 then
   echo_green "${TITLE}"
