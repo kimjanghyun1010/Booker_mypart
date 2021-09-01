@@ -159,7 +159,7 @@ then
         ${OS_PATH}/rke/get_helm.sh
     elif [ ${INSTALL_ROLE} == "offline" ]
     then
-        cp ${HELM_CLI_PATH}/helm ${OS_PATH}/rke/helm
+        cp ${HELM_CLI_PATH}/helm ${OS_PATH}/rke
         sudo chmod +x ${OS_PATH}/rke/helm && sudo cp ${OS_PATH}/rke/helm /usr/local/bin/helm && sudo ln -s /usr/local/bin/helm /usr/bin/helm
     else
         echo "[ERROR] Failed INSTALL_ROLE setting"
@@ -177,7 +177,7 @@ then
         curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl 
     elif [ ${INSTALL_ROLE} == "offline" ]
     then
-        cp ${KUBECTL_CLI_PATH}/kubectl ${OS_PATH}/rke/kubectl
+        cp ${KUBECTL_CLI_PATH}/kubectl ${OS_PATH}/rke
         sudo chmod +x ${OS_PATH}/rke/kubectl && sudo cp ${OS_PATH}/rke/kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
     else
         echo "[ERROR] Failed INSTALL_ROLE setting"
