@@ -84,6 +84,9 @@ rancher:
 ## ---
 registry:
   cname: registry
+  gitea_catalog:
+    domain: catalog-git.crossent.com:3000
+    
 ## ---
 
 mariadb:

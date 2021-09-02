@@ -163,7 +163,6 @@ echo "############ "$PWD" -> docker images "$count" upload complete ############
 
 EOF
 
-
 echo_create "registry-pull-all.sh"
 cat > {{ .common.directory.app }}/deploy/os/registry/registry-pull-all.sh  << 'EOF'
 #!/bin/sh
@@ -174,4 +173,16 @@ bash registry-img-pull.sh
 bash registry-app-img-pull.sh ${LONGHORN_PACKAGE_PATH}
 bash registry-app-img-pull.sh ${APP_PACKAGE_PATH}
 
+EOF
+
+echo_create "docker-gitea.sh"
+cat > {{ .common.directory.app }}/deploy/os/registry/gitea-docker-start.sh  << 'EOF'
+#!/bin/sh
+
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
+sudo tar zxvfp ${GIT_PACKAGE_PATH}/gitea-data.tgz -C ${REGISTRY_APP_PATH}
+docker load -i ${GIT_PACKAGE_PATH}/catalog-git.tar
+docker run --name gitea -p 3000:3000 -v ${REGISTRY_APP_PATH}/data:/data/gitea -d catalog-git:latest
 EOF

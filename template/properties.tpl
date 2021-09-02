@@ -61,6 +61,7 @@ REGISTRY_URL={{ .global.image.repository }}
 REGISTRY_PORT={{ .global.port.registry }}
 REGISTRY_CNAME={{ .registry.cname }}
 REGISTRY_SECRET_NAME={{ .global.imagePullSecrets }}
+REGISTRY_APP_PATH=${OS_PATH}/registry
 
 OFFLINE_FILE_PATH=/home/${USERNAME}/offline_file
 RPM_PATH=${OFFLINE_FILE_PATH}/rpm
@@ -69,14 +70,17 @@ RPM_NAMED_PATH=${RPM_PATH}/named
 RPM_HAPROXY_PATH=${RPM_PATH}/haproxy
 RPM_ISCSI_PATH=${RPM_PATH}/iscsi
 
-GUCCI_CLI_PATH=${OFFLINE_FILE_PATH}/gucci_client
-HELM_CLI_PATH=${OFFLINE_FILE_PATH}/helm_client
-KUBECTL_CLI_PATH=${OFFLINE_FILE_PATH}/kubectl_client
-RKE_CLI_PATH=${OFFLINE_FILE_PATH}/rke_client
-REGISTRY_PATH=${OFFLINE_FILE_PATH}/registry
+GUCCI_CLI_PATH=${OFFLINE_FILE_PATH}/cli/gucci_client
+HELM_CLI_PATH=${OFFLINE_FILE_PATH}/cli/helm_client
+KUBECTL_CLI_PATH=${OFFLINE_FILE_PATH}/cli/kubectl_client
+RKE_CLI_PATH=${OFFLINE_FILE_PATH}/cli/rke_client
+
+REGISTRY_PATH=${OFFLINE_FILE_PATH}/images/registry_images
+APP_PACKAGE_PATH=${OFFLINE_FILE_PATH}/images/app_images
+LONGHORN_PACKAGE_PATH=${OFFLINE_FILE_PATH}/images/longhorn_images
+GIT_PACKAGE_PATH=${OFFLINE_FILE_PATH}/images/git_images
+
 RANCHER_PACKAGE_PATH=${OFFLINE_FILE_PATH}/rancher_package
-APP_PACKAGE_PATH=${OFFLINE_FILE_PATH}/app_images
-LONGHORN_PACKAGE_PATH=${OFFLINE_FILE_PATH}/longhorn_images
 
 ## api
 p_realm=paasxpert
