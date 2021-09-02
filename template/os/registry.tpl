@@ -170,12 +170,15 @@ echo "############ "$PWD" -> docker images "$count" upload complete ############
 
 EOF
 
+
+echo_create "registry-pull-all.sh"
 cat > {{ .common.directory.app }}/deploy/os/registry/registry-pull-all.sh  << 'EOF'
 #!/bin/sh
 
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 bash registry-img-pull.sh
-bash registry-app-img-pull.sh ${APP_PACKAGE_PATH}
 bash registry-app-img-pull.sh ${LONGHORN_PACKAGE_PATH}
+bash registry-app-img-pull.sh ${APP_PACKAGE_PATH}
+
 EOF

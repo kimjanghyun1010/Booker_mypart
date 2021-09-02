@@ -103,6 +103,7 @@ private_registries:
     - url: ${REGISTRY_CNAME}.${GLOBAL_URL}:${REGISTRY_PORT}
       user: admin
       password: ${PASSWORD}
+      is_default: true
 EOF
 fi
 
@@ -120,7 +121,7 @@ then
         wget https://github.com/rancher/rke/releases/download/v${RKE_VERSION}/rke_linux-amd64 -O ${OS_PATH}/rke/rke
     elif [ ${INSTALL_ROLE} == "offline" ]
     then
-        cp ${RKE_CLI_PATH}/rke ${OS_PATH}/rke/
+        cp ${RKE_CLI_PATH}/rke ${OS_PATH}/rke
     else
         echo "[ERROR] Failed INSTALL_ROLE setting"
     fi
@@ -151,7 +152,6 @@ sudo chown ${USERNAME}. ~/.kube/config
 
 if [ -z ${CHECK_HELM} ]
 then
-
     if [ ${INSTALL_ROLE} == "online" ]
     then
         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > ${OS_PATH}/rke/get_helm.sh
@@ -178,7 +178,7 @@ then
     elif [ ${INSTALL_ROLE} == "offline" ]
     then
         cp ${KUBECTL_CLI_PATH}/kubectl ${OS_PATH}/rke
-        sudo chmod +x ${OS_PATH}/rke/kubectl && sudo cp ${OS_PATH}/rke/kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
+        chmod +x ${OS_PATH}/rke/kubectl && sudo cp ${OS_PATH}/rke/kubectl /usr/local/bin/kubectl && sudo ln -s /usr/local/bin/kubectl /usr/bin/kubectl
     else
         echo "[ERROR] Failed INSTALL_ROLE setting"
     fi
@@ -223,10 +223,10 @@ then
     helm fetch rancher-stable/rancher --version ${RANCHER_VERSION}
 elif [ ${INSTALL_ROLE} == "offline" ]
 then
-    cp ${RANCHER_PACKAGE_PATH}/rancher-${RANCHER_VERSION}.tgz
+    cp ${RANCHER_PACKAGE_PATH}/rancher-${RANCHER_VERSION}.tgz ${OS_PATH}/rke
 else
     echo "[ERROR] Failed INSTALL_ROLE setting"
 fi
-tar -zxvf rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke/
+tar -zxvf ${OS_PATH}/rke/rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke
 helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke
 EOF
