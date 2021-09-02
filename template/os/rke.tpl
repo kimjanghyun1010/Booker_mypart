@@ -108,7 +108,7 @@ private_registries:
 {{ end }}
 EOF
 
-cat > ${OS_PATH}/rke/rke-install.sh << EOF
+cat > ${OS_PATH}/rke/rke-install.sh << 'EOF'
 #!/bin/sh
 
 source {{ .common.directory.app }}/function.env
@@ -212,7 +212,7 @@ fi
 
 EOF
 
-cat > ${OS_PATH}/rke/rancher-install.sh << EOF
+cat > ${OS_PATH}/rke/rancher-install.sh << 'EOF'
 #!/bin/sh
 
 source {{ .common.directory.app }}/function.env
