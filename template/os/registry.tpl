@@ -79,13 +79,6 @@ then
       registry:2
 fi
 bash ${ETC_PATH}/registry-login.sh
-
-if [ -n ${STATUS} ]
-then
-  echo_green "${TITLE}"
-else
-  echo_red "${TITLE}"
-fi
 EOF
 
 echo_create "registry-delete.sh"
