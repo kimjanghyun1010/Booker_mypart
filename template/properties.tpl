@@ -57,9 +57,11 @@ KUBECTL_VERSION={{ .common.kubectl.version }}
 
 ## offline
 
+REGISTRY_URL={{ global.image.repository }}
 REGISTRY_PORT={{ .global.port.registry }}
-REGISTRY_URL=registry.{{ .global.domain }}:${REGISTRY_PORT}
 REGISTRY_CNAME={{ .registry.cname }}
+REGISTRY_SECRET_NAME={{ .global.imagePullSecrets }}
+
 OFFLINE_FILE_PATH=/home/${USERNAME}/offline_file
 RPM_PATH=${OFFLINE_FILE_PATH}/rpm
 RPM_DOCKER_PATH=${RPM_PATH}/docker

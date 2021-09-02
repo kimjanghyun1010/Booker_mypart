@@ -31,6 +31,12 @@ ingress:
   tls:
     source: secret
 privateCA: true
+{{ if .global.imagePullSecrets }}
+rancherImage: ${REGISTRY_URL}/rancher/rancher
+imagePullSecrets: 
+ - name: ${REGISTRY_SECRET_NAME}
+systemDefaultRegistry: ${REGISTRY_URL}
+{{ end }}
 EOF
 
 cat > ${OS_PATH}/rke/cluster.yml << 'EOF'
@@ -83,7 +89,7 @@ EOF
 done
 
 
-cat >> ${OS_PATH}/rke/cluster.yml << 'EOF'
+cat >> ${OS_PATH}/rke/cluster.yml << EOF
 services:
   etcd:
     snapshot: true
@@ -93,19 +99,14 @@ ingress:
   provider: nginx
   options:
     use-forwarded-headers: "true"
-EOF
-
-
-if [ ${INSTALL_ROLE} == "offline" ]
-then
-cat >> ${OS_PATH}/rke/cluster.yml << EOF
+{{ if .global.imagePullSecrets }}
 private_registries:
-    - url: ${REGISTRY_CNAME}.${GLOBAL_URL}:${REGISTRY_PORT}
+    - url: ${REGISTRY_URL}
       user: admin
       password: ${PASSWORD}
       is_default: true
+{{ end }}
 EOF
-fi
 
 cat > ${OS_PATH}/rke/rke-install.sh << EOF
 #!/bin/sh
