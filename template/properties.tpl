@@ -57,7 +57,7 @@ KUBECTL_VERSION={{ .common.kubectl.version }}
 
 ## offline
 
-REGISTRY_URL={{ global.image.repository }}
+REGISTRY_URL={{ .global.image.repository }}
 REGISTRY_PORT={{ .global.port.registry }}
 REGISTRY_CNAME={{ .registry.cname }}
 REGISTRY_SECRET_NAME={{ .global.imagePullSecrets }}
@@ -67,6 +67,7 @@ RPM_PATH=${OFFLINE_FILE_PATH}/rpm
 RPM_DOCKER_PATH=${RPM_PATH}/docker
 RPM_NAMED_PATH=${RPM_PATH}/named
 RPM_HAPROXY_PATH=${RPM_PATH}/haproxy
+RPM_ISCSI_PATH=${RPM_PATH}/iscsi
 
 GUCCI_CLI_PATH=${OFFLINE_FILE_PATH}/gucci_client
 HELM_CLI_PATH=${OFFLINE_FILE_PATH}/helm_client

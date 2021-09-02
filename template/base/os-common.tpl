@@ -18,6 +18,7 @@ w=0
 # @authors 크로센트
 # @see
 #/
+HOME_DIR=${HOME}
 
 SSH_COMMAND() {
     NODE_NAME=$1
@@ -30,16 +31,20 @@ SSH_COMMAND() {
     echo "${NODE_NAME} ${NUM}"
     echo "------------------------------"
 
-    ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget ${ISCSI} 2>&1 >/dev/null
-    ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${WORKDIR} ${OS_PATH} ${DEPLOY_PATH} 
+    ssh -o StrictHostKeyChecking=no ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${WORKDIR} ${OS_PATH} ${DEPLOY_PATH} 
     ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${APP_PATH} ${DATA_PATH} ${LOG_PATH} ${WORKDIR} ${OS_PATH} ${DEPLOY_PATH}
+    
+    if [ ${INSTALL_ROLE} == "online" ]
+    then
+        ssh ${USERNAME}@${NODE_NAME}${NUM} sudo yum install -y wget ${ISCSI} 2>&1 >/dev/null
+    fi
     scp ${APP_PATH}/function.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${APP_PATH}/properties.env ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${OS_PATH}/common/common.sh ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     scp ${BASEDIR}/etc-hosts.sh ${USERNAME}@${NODE_NAME}${NUM}:${APP_PATH}
     ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/common.sh
     ssh ${USERNAME}@${NODE_NAME}${NUM} sudo bash ${APP_PATH}/etc-hosts.sh
-    scp ~/.ssh/id_rsa ${USERNAME}@${NODE_NAME}${NUM}:~/.ssh
+    scp ${HOME_DIR}/.ssh/id_rsa ${USERNAME}@${NODE_NAME}${NUM}:${HOME_DIR}/.ssh
     # -z null 일때 참
     if [ -z ${DOCKER} ]
     then
@@ -67,14 +72,22 @@ SSH_COMMAND() {
     then
         if [ ${INSTALL_ROLE} == "offline" ]
         then
-            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${RPM_PATH}
+            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${RPM_HAPROXY_PATH} ${RPM_NAMED_PATH}
             ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${OFFLINE_FILE_PATH}
-            scp -r ${RPM_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${OFFLINE_FILE_PATH}
+            scp -r ${RPM_NAMED_PATH} ${RPM_HAPROXY_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${RPM_PATH}
             
         fi
         scp -r ${OS_PATH}/haproxy ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp -r ${OS_PATH}/named ${USERNAME}@${NODE_NAME}${NUM}:${OS_PATH}
         scp ${DEPLOY_PATH}/loadbalancer-install.sh ${USERNAME}@${NODE_NAME}${NUM}:${DEPLOY_PATH}
+    fi
+    if [ ${INSTALL_ROLE} == "offline" ]
+    then
+        if [ ! -z ${ISCSI} ]
+        then
+            scp -r ${RPM_ISCSI_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${RPM_PATH}
+            ssh ${USERNAME}@${NODE_NAME}${NUM} "sudo rpm -ivh --nodeps --force --replacefiles --replacepkgs ${RPM_ISCSI_PATH}/*.rpm"
+        fi
     fi
 }
 
