@@ -85,6 +85,8 @@ SSH_COMMAND() {
     then
         if [ ! -z ${ISCSI} ]
         then
+            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${RPM_HAPROXY_PATH} ${RPM_ISCSI_PATH}
+            ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${RPM_ISCSI_PATH}
             scp -r ${RPM_ISCSI_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${RPM_PATH}
             ssh ${USERNAME}@${NODE_NAME}${NUM} "sudo rpm -ivh --nodeps --force --replacefiles --replacepkgs ${RPM_ISCSI_PATH}/*.rpm"
         fi

@@ -169,9 +169,9 @@ cat > {{ .common.directory.app }}/deploy/os/registry/registry-pull-all.sh  << 'E
 
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
-bash registry-img-pull.sh
-bash registry-app-img-pull.sh ${LONGHORN_PACKAGE_PATH}
-bash registry-app-img-pull.sh ${APP_PACKAGE_PATH}
+bash ${REGISTRY_APP_PATH}/registry-img-pull.sh
+bash ${REGISTRY_APP_PATH}/registry-app-img-pull.sh ${LONGHORN_PACKAGE_PATH}
+bash ${REGISTRY_APP_PATH}/registry-app-img-pull.sh ${APP_PACKAGE_PATH}
 
 EOF
 
