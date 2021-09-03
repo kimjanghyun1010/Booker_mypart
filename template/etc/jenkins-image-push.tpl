@@ -29,6 +29,6 @@ done
 for i in ${docker_images[@]}
 do
         docker_push $i
-        echo_install_green "[INFO] "$i" push complete!!"
+        echo_api_green_no_num "[INFO] "$i" push complete!!"
 done
-echo_install_green "[INFO] "$PWD" -> docker images "$count" upload complete"
+echo_api_green_no_num "[INFO] "$PWD" -> docker images "$count" upload complete"
