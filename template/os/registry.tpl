@@ -78,6 +78,9 @@ then
       -v ${APP_PATH}/registry:/var/lib/registry \
       registry:2
 fi
+
+sleep 10
+
 bash ${ETC_PATH}/registry-login.sh
 EOF
 

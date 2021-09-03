@@ -93,6 +93,11 @@ then
     worker_command
 fi
 
+if [ "${role}" == "haproxy" ]
+then
+    haproxy_command
+fi
+
 if [ "${role}" == "inception" ]
 then
     inception_command
