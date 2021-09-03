@@ -231,10 +231,9 @@ fi
 tar -zxvf ${OS_PATH}/rke/rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke
 helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke
 
-sleep 15
-
 if [ ${INSTALL_ROLE} == "offline" ]
 then
+    sleep 15
     kubectl patch deployment rancher -n rke --patch "$(cat ${OS_PATH}/rke/rancher-private-patch.yaml)"
 fi
 EOF
