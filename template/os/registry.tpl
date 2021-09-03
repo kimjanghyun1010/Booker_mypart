@@ -200,7 +200,13 @@ cat > {{ .common.directory.app }}/deploy/os/registry/gitea-docker-start.sh  << '
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-sudo tar zxvfp ${GIT_PACKAGE_PATH}/gitea-data.tgz -C ${REGISTRY_APP_PATH}
-docker load -i ${GIT_PACKAGE_PATH}/catalog-git.tar
-docker run --name gitea -p 3000:3000 -v ${REGISTRY_APP_PATH}/data:/data/gitea -d catalog-git:latest
+CHECK_GITEA_DOCKER=`docker ps -a | grep gitea | awk '{print $1}'`
+
+if [ -z ${CHECK_GITEA_DOCKER} ]
+then
+    sudo tar zxvfp ${GIT_PACKAGE_PATH}/gitea-data.tgz -C ${REGISTRY_APP_PATH}
+    docker load -i ${GIT_PACKAGE_PATH}/catalog-git.tar
+    docker run --name gitea -p 3000:3000 -v ${REGISTRY_APP_PATH}/data:/data/gitea -d catalog-git:latest
+fi
+
 EOF

@@ -58,9 +58,10 @@ KUBECTL_VERSION={{ .common.kubectl.version }}
 ## offline
 
 REGISTRY_URL={{ .global.image.repository }}
-REGISTRY_PORT={{ .global.port.registry }}
+
 REGISTRY_CNAME={{ .registry.cname }}
 {{ if .global.imagePullSecrets }}
+REGISTRY_PORT={{ .global.port.registry }}
 REGISTRY_SECRET_NAME={{ .global.imagePullSecrets }}
 {{ end }}
 REGISTRY_APP_PATH=${OS_PATH}/registry

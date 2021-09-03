@@ -105,7 +105,6 @@ Platform_Start() {
 }
 
 
-
 curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
   -H 'content-type: application/json' \
   -d '{
