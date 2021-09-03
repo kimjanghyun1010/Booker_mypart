@@ -170,12 +170,22 @@ cat > {{ .common.directory.app }}/deploy/os/registry/registry-install-all.sh  <<
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
+echo_install_start_green "[INSTALL] registry-img-load.sh"
 bash ${REGISTRY_APP_PATH}/registry-img-load.sh
+
+echo_install_start_green "[INSTALL] registry-start.sh"
 bash ${REGISTRY_APP_PATH}/registry-start.sh
+
+echo_install_start_green "[INSTALL] registry-img-pull.sh"
 bash ${REGISTRY_APP_PATH}/registry-img-pull.sh
+
+echo_install_start_green "[INSTALL] Longhorn registry-app-img-pull.sh"
 bash ${REGISTRY_APP_PATH}/registry-app-img-pull.sh ${LONGHORN_PACKAGE_PATH}
+
+echo_install_start_green "[INSTALL] APP registry-app-img-pull.sh"
 bash ${REGISTRY_APP_PATH}/registry-app-img-pull.sh ${APP_PACKAGE_PATH}
 
+echo_install_start_green "[INSTALL] gitea-docker-start.sh"
 bash ${REGISTRY_APP_PATH}/gitea-docker-start.sh
 
 EOF

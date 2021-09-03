@@ -99,6 +99,12 @@ function echo_install_green(){
 	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_TOTAL}]${GREEN}${MSG} Success.${NC}"
 }
 
+function echo_install_start_green(){
+	MSG=$1
+	ECHO_INSTALL_CUR=$(($ECHO_INSTALL_CUR + 1))
+	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_TOTAL}]${GREEN}${MSG} Start.${NC}"
+}
+
 function echo_install_green_stop(){
 	MSG=$1
 	echo -e "${GREEN}${MSG} Stop.${NC}"
