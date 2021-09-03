@@ -32,7 +32,7 @@ curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/
 
 R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
-echo_api_blue "[INFO] Update Password admin user"
+echo_api_blue "[INFO] Update Catalog"
 curl -ks -X PUT "${rancher_url}/v3/catalogs/helm3-library" \
   -H 'content-type: application/json' \
   -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \

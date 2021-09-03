@@ -163,7 +163,7 @@ echo "############ "$PWD" -> docker images "$count" upload complete ############
 
 EOF
 
-echo_create "registry-pull-all.sh"
+echo_create "registry-install-all.sh"
 cat > {{ .common.directory.app }}/deploy/os/registry/registry-install-all.sh  << 'EOF'
 #!/bin/sh
 

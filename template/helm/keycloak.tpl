@@ -28,10 +28,10 @@ keycloak:
   ## Additional init containers, e. g. for providing custom themes
   extraInitContainers: |
     - name: theme-provider
-      {{- if .global.imagePullSecrets -}}
+      {{ if .global.imagePullSecrets -}}
       image: {{ .global.image.repository }}/library/paasxpert:{{ .keycloak.theme.paasxpert.tag }}
       {{- else -}}
-      {{- if .harbor.externalURL }}
+      {{ if .harbor.externalURL -}}
       image: {{ .harbor.externalURL }}/library/paasxpert:{{ .keycloak.theme.paasxpert.tag }}
       {{ else }}
       image: {{ .harbor.ingress.cname }}.{{ .global.domain }}/library/paasxpert:{{ .keycloak.theme.paasxpert.tag }}
