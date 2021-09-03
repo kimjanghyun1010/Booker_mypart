@@ -248,7 +248,7 @@ spec:
       affinity:
       hostAliases:
       {{ if .common.IP.inception -}}
-      - ip: "{{ .common.IP.haproxy.inception1 }}"
+      - ip: "{{ .common.IP.inception.inception1 }}"
       {{ else -}}
       - ip: "{{ .common.IP.haproxy.haproxy1 }}"
       {{ end -}}
