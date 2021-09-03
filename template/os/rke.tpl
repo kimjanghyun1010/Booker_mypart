@@ -233,13 +233,13 @@ helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher
 
 if [ ${INSTALL_ROLE} == "offline" ]
 then
-    kubectl patch deployment rancher -n rke --patch "$(cat ${OS_PATH}/rke/patch-file.yaml)"
+    kubectl patch deployment rancher -n rke --patch "$(cat ${OS_PATH}/rke/rancher-private-patch.yaml)"
 fi
 EOF
 
 if [ ${INSTALL_ROLE} == "offline" ]
 then
-cat > ${OS_PATH}/rke/rancher-private-patch.json << 'EOF'
+cat > ${OS_PATH}/rke/rancher-private-patch.yaml << 'EOF'
 spec:
   template:
     spec:
