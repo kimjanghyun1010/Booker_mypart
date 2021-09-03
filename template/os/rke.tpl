@@ -31,7 +31,7 @@ ingress:
   tls:
     source: secret
 privateCA: true
-{{ if .global.imagePullSecrets }}
+{{ if .global.imagePullSecrets -}}
 rancherImage: ${REGISTRY_URL}/rancher/rancher
 imagePullSecrets: 
  - name: ${REGISTRY_SECRET_NAME}
