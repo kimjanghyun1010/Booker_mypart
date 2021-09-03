@@ -95,6 +95,13 @@ Platform_Start() {
     -H 'content-type: application/json' \
     -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
     -d '{"projectId":"'"${platform_id}"'"}' > /dev/null 2>&1
+
+  # move rke namespace
+  echo_api_blue "[INFO] Move namespace rke"
+  curl -ks "${rancher_url}/v3/cluster/local/namespaces/rke?action=move" \
+    -H 'content-type: application/json' \
+    -H "cookie: R_USERNAME=admin; R_SESS=${R_SESS}" \
+    -d '{"projectId":"'"${platform_id}"'"}' > /dev/null 2>&1
 }
 
 
