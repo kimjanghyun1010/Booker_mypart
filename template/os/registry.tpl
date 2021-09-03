@@ -164,14 +164,19 @@ echo "############ "$PWD" -> docker images "$count" upload complete ############
 EOF
 
 echo_create "registry-pull-all.sh"
-cat > {{ .common.directory.app }}/deploy/os/registry/registry-pull-all.sh  << 'EOF'
+cat > {{ .common.directory.app }}/deploy/os/registry/registry-install-all.sh  << 'EOF'
 #!/bin/sh
 
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
+
+bash ${REGISTRY_APP_PATH}/registry-img-load.sh
+bash ${REGISTRY_APP_PATH}/registry-start.sh
 bash ${REGISTRY_APP_PATH}/registry-img-pull.sh
 bash ${REGISTRY_APP_PATH}/registry-app-img-pull.sh ${LONGHORN_PACKAGE_PATH}
 bash ${REGISTRY_APP_PATH}/registry-app-img-pull.sh ${APP_PACKAGE_PATH}
+
+bash ${REGISTRY_APP_PATH}/gitea-docker-start.sh
 
 EOF
 

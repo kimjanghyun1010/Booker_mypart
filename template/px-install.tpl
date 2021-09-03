@@ -128,6 +128,13 @@ sleep 5
 echo_api_blue_no_num "[API] rancher-update-password"
 bash ${API_PATH}/rancher-update-password-api-start.sh
 
+
+if [ ${INSTALL_ROLE} == "offline"]
+then
+    echo_api_blue_no_num "[API] rancher-update-catalog"
+    bash ${API_PATH}/rancher-update-catalog-api-start.sh
+fi
+
 echo_api_blue_no_num "[API] longhorn-api"
 CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
 
