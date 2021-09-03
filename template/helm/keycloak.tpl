@@ -29,7 +29,7 @@ keycloak:
   extraInitContainers: |
     - name: theme-provider
       {{ if .global.imagePullSecrets -}}
-      image: {{ .global.image.repository }}/library/paasxpert:{{ .keycloak.theme.paasxpert.tag }}
+      image: {{ .global.image.repository }}/paasxpert:{{ .keycloak.theme.paasxpert.tag }}
       {{- else -}}
       {{ if .harbor.externalURL -}}
       image: {{ .harbor.externalURL }}/library/paasxpert:{{ .keycloak.theme.paasxpert.tag }}
