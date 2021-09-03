@@ -15,6 +15,7 @@ ECHO_INSTALL_CUR=0
 ECHO_API_TOTAL=$(grep "echo_api" $0  | wc -l)
 ECHO_INSTALL_TOTAL=$(grep "echo_install" $0 | wc -l)
 
+ECHO_INSTALL_GREEN_TOTAL=$(grep "echo_install_green" $0 | awk '{print $1}' | grep ^echo_install_green$ | wc -l)
 #/
 # <pre>
 # echo에 색을 입히는 기능
@@ -96,7 +97,7 @@ function echo_green(){
 function echo_install_green(){
 	MSG=$1
 	ECHO_INSTALL_CUR=$(($ECHO_INSTALL_CUR + 1))
-	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_TOTAL}]${GREEN}${MSG} Success.${NC}"
+	echo -e "${YELLOW}[${ECHO_INSTALL_CUR}/${ECHO_INSTALL_GREEN_TOTAL}]${GREEN}${MSG} Success.${NC}"
 }
 
 function echo_install_start_green(){
