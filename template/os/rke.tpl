@@ -221,8 +221,7 @@ source {{ .common.directory.app }}/properties.env
 if [ ${INSTALL_ROLE} == "online" ]
 then
     helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-    helm fetch rancher-stable/rancher --version ${RANCHER_VERSION}
-    cp ${WORKDIR_BIN}/rancher-${RANCHER_VERSION}.tgz ${OS_PATH}/rke
+    helm fetch rancher-stable/rancher --version ${RANCHER_VERSION} -d ${OS_PATH}/rke
 elif [ ${INSTALL_ROLE} == "offline" ]
 then
     cp ${RANCHER_PACKAGE_PATH}/rancher-${RANCHER_VERSION}.tgz ${OS_PATH}/rke

@@ -129,7 +129,7 @@ echo_api_blue_no_num "[API] rancher-update-password"
 bash ${API_PATH}/rancher-update-password-api-start.sh
 
 
-if [ ${INSTALL_ROLE} == "offline"]
+if [ ${INSTALL_ROLE} == "offline" ]
 then
     echo_api_blue_no_num "[API] rancher-update-catalog"
     bash ${API_PATH}/rancher-update-catalog-api-start.sh
