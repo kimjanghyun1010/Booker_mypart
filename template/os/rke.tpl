@@ -230,4 +230,29 @@ else
 fi
 tar -zxvf ${OS_PATH}/rke/rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke
 helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke
+
+if [ ${INSTALL_ROLE} == "offline" ]
+then
+    kubectl patch deployment rancher -n rke --patch "$(cat ${OS_PATH}/rke/patch-file.yaml)"
+fi
 EOF
+
+if [ ${INSTALL_ROLE} == "offline" ]
+then
+cat > ${OS_PATH}/rke/rancher-private-patch.json << 'EOF'
+spec:
+  template:
+    spec:
+      affinity:
+      hostAliases:
+      {{ if .common.IP.inception -}}
+      - ip: "{{ .common.IP.haproxy.inception1 }}"
+      {{ else -}}
+      - ip: "{{ .common.IP.haproxy.haproxy1 }}"
+      {{ end -}}
+        hostnames:
+        - "{{ .registry.gitea_catalog.domain }}"
+
+EOF
+
+fi

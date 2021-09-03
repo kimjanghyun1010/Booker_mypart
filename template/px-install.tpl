@@ -74,7 +74,10 @@ CHECK_API() {
     do
         read -p "[INFO] RUN ${SHELL_NAME} ? [ Y/N ]  : " INPUT
 
-        if [ ${INPUT} == Y ] || [ ${INPUT} == y ]
+        if [ -z ${INPUT} ]
+        then
+            echo_install_green_stop "[INFO] INPUT COMMAND"
+        elif [ ${INPUT} == Y ] || [ ${INPUT} == y ]
         then
             echo_api_blue_no_num "[API] ${SHELL_NAME}"
             bash ${SHELL_PATH}/${SHELL_NAME}
@@ -98,7 +101,11 @@ CHECK_ADD_COMMAND() {
     do
         read -p "[INFO] RUN ${SHELL_NAME} ? [ Y/N/D ]  : " INPUT
 
-        if [ ${INPUT} == Y ] || [ ${INPUT} == y ]
+
+        if [ -z ${INPUT} ]
+        then
+            echo_install_green_stop "[INFO] INPUT COMMAND"
+        elif [ ${INPUT} == Y ] || [ ${INPUT} == y ]
         then
             CHECK_STATUS "helm list" ${NAMESPACE} ${HELM_NAME} ${SHELL_PATH}/${SHELL_NAME}
             break
