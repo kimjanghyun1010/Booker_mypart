@@ -102,7 +102,7 @@ do
     cp -r ${BASEDIR}/../package/chart/${helm} ${HELM_PATH}/${helm}/
     gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${HELM_TEMPLATE_DIR}/${helm}.tpl > ${HELM_PATH}/${helm}/${helm}-values.yaml
     echo "option=\${1:-install}" > ${HELM_PATH}/${helm}/${helm}-install.sh
-    echo "helm \${option} ${helm} -f ${HELM_PATH}/${helm}/${helm}-values.yaml ${HELM_PATH}/${helm}/${helm} --namespace ${GLOBAL_NAMESPACE}" >> ${HELM_PATH}/${helm}/${helm}-install.sh
+    echo "helm \${option} ${helm} -f ${HELM_PATH}/${helm}/${helm}-values.yaml ${HELM_PATH}/${helm}/${helm} --namespace ${GLOBAL_NAMESPACE}  > /dev/null 2>&1 " >> ${HELM_PATH}/${helm}/${helm}-install.sh
     echo "helm delete ${helm} --namespace ${GLOBAL_NAMESPACE}" > ${HELM_PATH}/${helm}/${helm}-delete.sh
 done
 
