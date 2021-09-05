@@ -212,11 +212,14 @@ PaasXpert Install
 
 - Global 화면에서 Security 탭의 Authentication을 클릭 합니다.
 
+![image-20210905234254653](https://user-images.githubusercontent.com/48508250/132132265-041e1ee7-a896-420e-be37-2747e2e80b36.png)
 
 
 3.1.2
 
 - SAML - KeyCloak을 누릅니다.
+
+![image-20210905234321154](https://user-images.githubusercontent.com/48508250/132132275-273bf0ca-5706-4727-905b-ce01fcfc94e9.png)
 
 
 
@@ -231,6 +234,7 @@ PaasXpert Install
     해당 이슈에 대한 내용이 담긴 링크 입니다.
     https://github.com/rancher/rancher/issues/31163
 
+![image-20210905234452223](https://user-images.githubusercontent.com/48508250/132132284-ae5bd948-0ef2-4c66-b5a3-5c8e6e5d91aa.png)
 
 
 
@@ -240,6 +244,8 @@ PaasXpert Install
 3.1.4
 
 - Site Access 탭에서 중간에 있는 버튼을 선택하고, /paasxpert 그룹을 추가 후 저장 합니다.
+
+![image-20210905234724016](https://user-images.githubusercontent.com/48508250/132132291-e1651277-fadb-4118-a6aa-9b1c2306975b.png)
 
 
 
@@ -253,12 +259,15 @@ PaasXpert Install
 
 - openid 버튼으로 paasadm 계정에 로그인하고, 프로필을 눌러 설정 버튼을 누릅니다.
 
+![image-20210906001230281](https://user-images.githubusercontent.com/48508250/132132295-32a2b353-5384-46d8-9b1d-d4735f18e870.png)
 
 
 3.2.2
 
 - 기존 paasword와 똑같이 입력후 변경 해줍니다.
 - 변경전에는 [현재 비밀번호] 칸이 없으니 새 비밀번호와 다시 입력에 입력후 변경 합니다.
+
+![image-20210906001408609](https://user-images.githubusercontent.com/48508250/132132300-6978e58a-0c30-4b16-b6ca-9f99d8a18ef8.png)
 
 
 
@@ -272,12 +281,15 @@ PaasXpert Install
 
 - paasadm 계정으로 로그인을 하고, 환경설정 - 사용자 관리에 접속합니다.
 
+![image-20210906002208263](https://user-images.githubusercontent.com/48508250/132132308-5696ce00-616e-465e-b961-928dd42b52f5.png)
+
 
 
 3.3.2
 
 - 클러스터 권한을 ADMIN으로 주고 저장 합니다.
 
+![image-20210906002200822](https://user-images.githubusercontent.com/48508250/132132313-ad3cfe72-38db-4776-b753-abf407b66f3b.png)
 
 
 
@@ -286,4 +298,5 @@ PaasXpert Install
 
 - 노드를 클릭 했을때 아래 자원 사용량이 나오면 됩니다.
 
+![image-20210906002419082](https://user-images.githubusercontent.com/48508250/132132322-16848d11-7149-48ac-bdd1-47a2db8ea175.png)
 
