@@ -1,14 +1,14 @@
 
 
-PaasXpert Install
+## PaasXpert Install
 
 
 
 
 
-[온라인 설치]
+**[온라인 설치]**
 
-1. 사전 준비
+### 1. 사전 준비
 
 - ssh key copy가 설정되어 있어야 합니다
 
@@ -16,7 +16,7 @@ PaasXpert Install
 - longhorn을 다른 볼륨으로 사용할 경우  마운트는 따로 해야 합니다.
   
 
-2. 설치 방법
+### 2. 설치 방법
 
 - inception이 없을 경우 haproxy에서 모든 설치를 진행합니다.
 - inception이 있을 경우 inception에서 모든 설치를 진행합니다.
@@ -24,9 +24,9 @@ PaasXpert Install
 
 
 
-2.1 유저 생성 및 배포 환경 설정
+#### 2.1 유저 생성 및 배포 환경 설정
 
-2.1.1 유저 생성 shell
+##### 2.1.1 유저 생성 shell
 
 아래 shell을 전체 복사 해서 그대로 커맨드에 넣고 입력하면 됩니다.
 
@@ -63,13 +63,13 @@ PaasXpert Install
 
 
 
-2.1.2 새로 생성한 유저에 접속합니다.
+##### 2.1.2 새로 생성한 유저에 접속합니다.
 
     sudo su paasadm
 
 
 
-2.1.3  설치에 필요한 기본 패키지를 설치합니다.
+##### 2.1.3  설치에 필요한 기본 패키지를 설치합니다.
 
     sudo yum install -y tree wget git net-tools
     
@@ -83,7 +83,7 @@ PaasXpert Install
 
 
 
-2.1.4 배포 환경 설정 (site.yaml)
+##### 2.1.4 배포 환경 설정 (site.yaml)
 
     common:
     ## online, offline
@@ -154,7 +154,7 @@ PaasXpert Install
 
 
 
-2.1.5 배포 스크립트 생성 및 실행 (create.sh)
+##### 2.1.5 배포 스크립트 생성 및 실행 (create.sh)
 
     cd /home/paasadm/paasxpert-deployment-tool/bin
     gucci -o missingkey=zero -f site.yaml ../template/create.tpl > create.sh
@@ -162,60 +162,60 @@ PaasXpert Install
 
 
 
-2.1.6  Inception 서버 hosts 등록
+##### 2.1.6  Inception 서버 hosts 등록
 
     sudo bash etc-hosts.sh
 
 
 
-2.1.7 배포 대상 서버에 paasadm 유저 생성
+##### 2.1.7 배포 대상 서버에 paasadm 유저 생성
 
     bash run-user-add.sh # 이미 생성 했으면 실행하지 않습니다.
 
 
 
-2.1.8 배포 대상 서버 공통 설정
+##### 2.1.8 배포 대상 서버 공통 설정
 
     bash base-common.sh
 
 
 
-2.1.9 LB 구성
+##### 2.1.9 LB 구성
 
     bash ../app/deploy/loadbalancer-install.sh   # haproxy 와 named 설치
 
 
 
-2.1.10 RKE 설치
+##### 2.1.10 RKE 설치
 
     bash ../app/deploy/os/rke/rke.sh
     bash ../app/deploy/os/rke/rke-install.sh
 
 
 
-2.1.11 PaaSXpert 서비스 설치
+##### 2.1.11 PaaSXpert 서비스 설치
 
     # (~/paasxpert-deployment-tool/bin 폴더에서 실행)
     bash ../app/deploy/os/rke/px-install.sh
 
 
 
-3. 연동
+### 3. 연동
 
 - 연동 점검과 설정을 진행하면서 coreDNS의 에러를 자주 볼 수 있는데 서버 상태가 좋지 못한거라 coreDNS와 kube-proxy를 재시작 해주면 간혹 정상으로 돌아옵니다.
 
-3.1 rancher Authentication 설정
+#### 3.1 rancher Authentication 설정
 
 
 
-3.1.1
+##### 3.1.1
 
 - Global 화면에서 Security 탭의 Authentication을 클릭 합니다.
 
 ![image-20210905234254653](https://user-images.githubusercontent.com/48508250/132132265-041e1ee7-a896-420e-be37-2747e2e80b36.png)
 
 
-3.1.2
+##### 3.1.2
 
 - SAML - KeyCloak을 누릅니다.
 
@@ -225,7 +225,7 @@ PaasXpert Install
 
 
 
-3.1.3
+##### 3.1.3
 
 - 필요한 값들은 이미 들어가 있으니 Authenticate with KeyCloak 버튼을 누릅니다.
 - 팝업 로그인 창이 뜨면 keycloak에서 만든 paasadm 계정으로 로그인을 합니다. 
@@ -241,7 +241,7 @@ PaasXpert Install
 
 
 
-3.1.4
+##### 3.1.4
 
 - Site Access 탭에서 중간에 있는 버튼을 선택하고, /paasxpert 그룹을 추가 후 저장 합니다.
 
@@ -251,18 +251,18 @@ PaasXpert Install
 
 
 
-3.2 Gitea Password update
+#### 3.2 Gitea Password update
 
 
 
-3.2.1 
+##### 3.2.1 
 
 - openid 버튼으로 paasadm 계정에 로그인하고, 프로필을 눌러 설정 버튼을 누릅니다.
 
 ![image-20210906001230281](https://user-images.githubusercontent.com/48508250/132132295-32a2b353-5384-46d8-9b1d-d4735f18e870.png)
 
 
-3.2.2
+##### 3.2.2
 
 - 기존 paasword와 똑같이 입력후 변경 해줍니다.
 - 변경전에는 [현재 비밀번호] 칸이 없으니 새 비밀번호와 다시 입력에 입력후 변경 합니다.
@@ -273,11 +273,11 @@ PaasXpert Install
 
 
 
-3.3 Portal 설정
+#### 3.3 Portal 설정
 
 - 네트워크 문제로 추정되는 에러가 많이 뜹니다.
 
-3.3.1 
+##### 3.3.1 
 
 - paasadm 계정으로 로그인을 하고, 환경설정 - 사용자 관리에 접속합니다.
 
@@ -285,7 +285,7 @@ PaasXpert Install
 
 
 
-3.3.2
+##### 3.3.2
 
 - 클러스터 권한을 ADMIN으로 주고 저장 합니다.
 
@@ -294,7 +294,7 @@ PaasXpert Install
 
 
 
-3.3.3 
+##### 3.3.3 
 
 - 노드를 클릭 했을때 아래 자원 사용량이 나오면 됩니다.
 
