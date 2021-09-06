@@ -14,9 +14,9 @@ common:
 ## online, offline
   env: online
   directory:
-    app: /app
-    data: /data
-    log: /applog
+    app: /home/paasadm/paasxpert-deployment-tool/app
+    data: /home/paasadm/paasxpert-deployment-tool/data
+    log: /home/paasadm/paasxpert-deployment-tool/applog
     ## gitea-push, harbor-login에서 사용
     workdir: /home/paasadm/paasxpert-deployment-tool
   default_username: centos
@@ -43,7 +43,7 @@ common:
 # mount한 볼륨으로 longhorn을 구성할지에 대한 설정 false는 default 볼륨을 사용함(/var/lib/longhorn)
 longhorn:
   version: 1.1.0
-  enable: true
+  enable: false
   name:
     disk-1: /data/longhorn1
     disk-2: /data/longhorn2
