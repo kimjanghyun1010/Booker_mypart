@@ -115,9 +115,9 @@ do
         if [ ${NODE_COUNT_H} -gt 1 ]
         then
             let "h += 1"
-            SSH_COMMAND haproxy ${h} no
+            SSH_COMMAND haproxy ${h} 
         else
-            SSH_COMMAND haproxy "" no
+            SSH_COMMAND haproxy "" 
         fi
     fi
 done
