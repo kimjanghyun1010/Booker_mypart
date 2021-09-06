@@ -218,6 +218,8 @@ cat > ${OS_PATH}/rke/rancher-install.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
+CHECK_RANCHER=`kubectl get pod -n rke  | grep rancher | tail -1 | awk '{print $1}'`
+
 if [ ${INSTALL_ROLE} == "online" ]
 then
     helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
@@ -228,8 +230,12 @@ then
 else
     echo "[ERROR] Failed INSTALL_ROLE setting"
 fi
-tar -zxvf ${OS_PATH}/rke/rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke
-helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke > /dev/null 2>&1
+
+if [ -z ${CHECK_RANCHER} ]
+then
+    tar -zxvf ${OS_PATH}/rke/rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke > /dev/null 2>&1
+    helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke > /dev/null 2>&1
+fi
 
 if [ ${INSTALL_ROLE} == "offline" ]
 then

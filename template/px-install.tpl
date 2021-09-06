@@ -21,7 +21,7 @@ CHECK_POD(){
     sleep 5
     while true
     do
-        IS_RUN=$(kubectl get pod -n ${NAMESPACE} | grep ${POD_NAME} | tail -1 | awk '{print $3}')
+        IS_RUN=$(kubectl get pod -A | grep ${POD_NAME} | tail -1 | awk '{print $4}')
         
         if [ -n ${IS_RUN} ]
         then
@@ -53,7 +53,7 @@ CHECK_STATUS() {
     SHELL_PATH=$4
     POD_NAME=${5:-$3}
     ADD_COMMAND=${6:-""}
-    GET_HELM_NAME=$(${CLI} -n ${NAMESPACE} | grep ${HELM_NAME} | awk '{print $1}')
+    GET_HELM_NAME=$(${CLI} | grep ${HELM_NAME} | awk '{print $2}' | tail -1 )
     ## -z : null 일때 참
     if [ -z "${GET_HELM_NAME}" ]
     then
@@ -141,7 +141,7 @@ then
 fi
 
 echo_api_blue_no_num "[API] longhorn-api"
-CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
+CHECK_STATUS "kubectl get pod -A" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
 
 if [ ${CHECK_LONGHORN_VOLUME} == "true" ]
 then
