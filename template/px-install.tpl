@@ -12,8 +12,6 @@ source {{ .common.directory.app }}/properties.env
 # @see
 #/
 
-LONGHORN_VOLUME={{ .longhorn.enable }}
-HOME_PATH=${HOME}
 
 CHECK_POD(){
     NAMESPACE=$1
@@ -145,7 +143,7 @@ fi
 echo_api_blue_no_num "[API] longhorn-api"
 CHECK_STATUS "kubectl get pod" longhorn-system longhorn ${API_PATH}/longhorn-api-start.sh csi-provisioner "CHECK_POD longhorn-system longhorn-manager"
 
-if [ ${LONGHORN_VOLUME} == "true" ]
+if [ ${CHECK_LONGHORN_VOLUME} == "true" ]
 then
     echo_api_blue_no_num "[API] longhorn-Volume-api"
     bash ${API_PATH}/longhorn-volume-api-start.sh
@@ -173,7 +171,7 @@ CHECK_ADD_COMMAND platform keycloak ${HELM_PATH}/keycloak keycloak-install.sh "b
 sleep 5
 
 echo_install_green "[INSTALL] jenkins-install"
-CHECK_ADD_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "cp -r ${HOME_PATH}/images ${ETC_PATH}" "bash ${ETC_PATH}/jenkins-image-push.sh"
+CHECK_ADD_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "cp -r ${HOME}/images ${ETC_PATH}" "bash ${ETC_PATH}/jenkins-image-push.sh"
 
 ## api
 

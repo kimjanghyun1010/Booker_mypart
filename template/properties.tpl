@@ -48,6 +48,7 @@ PORTAL_URL={{ .portal.ingress.cname }}.{{ .global.domain }}
 
 GLOBAL_NAMESPACE="{{ .global.namespace }}"
 KEYCLOAK_ADMIN_PW="{{ .keycloak.adminPassword }}"
+CHECK_LONGHORN_VOLUME="{{ .longhorn.enable }}"
 LONGHORN_VOLUME=({{ range $element := .longhorn.name }}"{{ $element }}" {{ end }})
 
 DOCKER_VERSION={{ .common.docker.version }}
