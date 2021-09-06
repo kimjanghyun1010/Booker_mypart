@@ -229,7 +229,7 @@ else
     echo "[ERROR] Failed INSTALL_ROLE setting"
 fi
 tar -zxvf ${OS_PATH}/rke/rancher-${RANCHER_VERSION}.tgz -C ${OS_PATH}/rke
-helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke
+helm install rancher -f ${OS_PATH}/rke/rancher-values.yml ${OS_PATH}/rke/rancher -n rke > /dev/null 2>&1
 
 if [ ${INSTALL_ROLE} == "offline" ]
 then
