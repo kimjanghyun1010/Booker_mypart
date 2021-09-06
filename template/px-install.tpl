@@ -88,7 +88,7 @@ CHECK_API() {
     done
 }
 
-CHECK_ADD_COMMAND() {
+CHECK_COMMAND() {
     NAMESPACE=$1
     HELM_NAME=$2
     SHELL_PATH=$3
@@ -166,12 +166,12 @@ echo_install_green "[INSTALL] gitea-install"
 CHECK_STATUS "helm list" platform gitea ${HELM_PATH}/gitea/gitea-install.sh
 
 echo_install_green "[INSTALL] keycloak-install"
-CHECK_ADD_COMMAND platform keycloak ${HELM_PATH}/keycloak keycloak-install.sh "bash ${WORKDIR_BIN}/ssh-command.sh \"\" docker"
+CHECK_COMMAND platform keycloak ${HELM_PATH}/keycloak keycloak-install.sh "bash ${WORKDIR_BIN}/ssh-command.sh \"\" docker"
 
 sleep 5
 
 echo_install_green "[INSTALL] jenkins-install"
-CHECK_ADD_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "cp -r ${HOME}/images ${ETC_PATH}" "bash ${ETC_PATH}/jenkins-image-push.sh"
+CHECK_COMMAND platform jenkins ${HELM_PATH}/jenkins jenkins-install.sh "cp -r ${HOME}/images ${ETC_PATH}" "bash ${ETC_PATH}/jenkins-image-push.sh"
 
 ## api
 
