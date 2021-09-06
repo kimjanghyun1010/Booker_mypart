@@ -218,7 +218,7 @@ cat > ${OS_PATH}/rke/rancher-install.sh << 'EOF'
 source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
-CHECK_RANCHER=`kubectl get pod -n rke  | grep rancher | tail -1 | awk '{print $1}'`
+CHECK_RANCHER=`kubectl get pod -A  | grep rancher | tail -1 | awk '{print $1}'`
 
 if [ ${INSTALL_ROLE} == "online" ]
 then
