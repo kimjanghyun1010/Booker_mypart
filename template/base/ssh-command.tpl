@@ -87,7 +87,7 @@ keycloak_theme() {
 
 if [ "${role}" == "" ]
 then
-
+    haproxy_command 
     inception_command
     master_command
     worker_command
