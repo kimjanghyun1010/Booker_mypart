@@ -180,7 +180,8 @@
 ##### 2.1.8 배포 대상 서버 공통 설정
 
     bash base-common.sh
-
+    sg docker -c "bash"
+    sg ${USER} -c "bash"
 
 
 ##### 2.1.9 LB 구성
