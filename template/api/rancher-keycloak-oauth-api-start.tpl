@@ -26,19 +26,22 @@ echo_api_blue "[INFO] Get Token"
 token=$(curl -sk  --request POST "${keycloak_url}/auth/realms/master/protocol/openid-connect/token" --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=admin' --data-urlencode 'password=crossent1234!' --data-urlencode 'client_id=admin-cli' --data-urlencode 'grant_type=password' |  cut -f 4 -d '"' )
 echo "----"
 
-curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
-  -H 'content-type: application/json' \
-  -d '{
-  "description": "UI Session",
-  "labels": {
-    "ui-session": "true"
-  },
-  "ui-session": "true",
-  "password": "crossent1234!",
-  "responseType": "cookie",
-  "ttl": 57600000,
-  "username": "admin"
-}' > /dev/null 2>&1
+if [ ! -f ${JSON_PATH}/rancher-cookie.txt ]
+then
+    curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+      -H 'content-type: application/json' \
+      -d '{
+      "description": "UI Session",
+      "labels": {
+        "ui-session": "true"
+      },
+      "ui-session": "true",
+      "password": "crossent1234!",
+      "responseType": "cookie",
+      "ttl": 57600000,
+      "username": "admin"
+    }' > /dev/null 2>&1
+fi
 
 R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 

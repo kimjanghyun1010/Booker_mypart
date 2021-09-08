@@ -17,19 +17,23 @@ path="${JSON_PATH}/longhorn"
 #/
 
 #echo "[INFO] Custom Longhorn Volume"
-curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
-  -H 'content-type: application/json' \
-  -d '{
-  "description": "UI Session",
-  "labels": {
-    "ui-session": "true"
-  },
-  "ui-session": "true",
-  "password": "crossent1234!",
-  "responseType": "cookie",
-  "ttl": 57600000,
-  "username": "admin"
-}' > /dev/null 2>&1
+
+if [ ! -f ${JSON_PATH}/rancher-cookie.txt ]
+then
+    curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+      -H 'content-type: application/json' \
+      -d '{
+      "description": "UI Session",
+      "labels": {
+        "ui-session": "true"
+      },
+      "ui-session": "true",
+      "password": "crossent1234!",
+      "responseType": "cookie",
+      "ttl": 57600000,
+      "username": "admin"
+    }' > /dev/null 2>&1
+fi
 
 R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 

@@ -14,20 +14,22 @@ path="${JSON_PATH}/rancher"
 # @authors 크로센트
 # @see
 #/
-
-curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
-  -H 'content-type: application/json' \
-  -d '{
-  "description": "UI Session",
-  "labels": {
-    "ui-session": "true"
-  },
-  "ui-session": "true",
-  "password": "crossent1234!",
-  "responseType": "cookie",
-  "ttl": 57600000,
-  "username": "admin"
-}' > /dev/null 2>&1
+if [ ! -f ${JSON_PATH}/rancher-cookie.txt ]
+then
+    curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+      -H 'content-type: application/json' \
+      -d '{
+      "description": "UI Session",
+      "labels": {
+        "ui-session": "true"
+      },
+      "ui-session": "true",
+      "password": "crossent1234!",
+      "responseType": "cookie",
+      "ttl": 57600000,
+      "username": "admin"
+    }' > /dev/null 2>&1
+fi
 
 R_SESS=$(sudo cat ${path}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
