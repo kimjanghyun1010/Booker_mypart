@@ -62,6 +62,12 @@ Longhorn_Start() {
   sudo sed -i "s/${longhorn_id}/LONGHORN_ID/gi"  "${path}/longhorn-create-namespace.json"
   sudo sed -i "s/${longhorn_id}/LONGHORN_ID/gi"  "${path}/longhorn-create-app.json"
 
+  # Change Longhorn policy
+  echo_api_blue "[INFO] Change Longhorn policy"
+  curl -ks -X PUT "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/settings/node-down-pod-deletion-policy" \
+    -H "cookie: R_SESS=${R_SESS}" \
+    -d @${path}/longhorn-policy.json  > /dev/null 2>&1
+
 }
 
 
@@ -105,19 +111,22 @@ Platform_Start() {
 }
 
 
-curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
-  -H 'content-type: application/json' \
-  -d '{
-  "description": "UI Session",
-  "labels": {
-    "ui-session": "true"
-  },
-  "ui-session": "true",
-  "password": "crossent1234!",
-  "responseType": "cookie",
-  "ttl": 57600000,
-  "username": "admin"
-}' > /dev/null 2>&1
+if [ ! -f ${JSON_PATH}/rancher-cookie.txt ]
+then
+    curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/local?action=login" \
+      -H 'content-type: application/json' \
+      -d '{
+      "description": "UI Session",
+      "labels": {
+        "ui-session": "true"
+      },
+      "ui-session": "true",
+      "password": "crossent1234!",
+      "responseType": "cookie",
+      "ttl": 57600000,
+      "username": "admin"
+    }' > /dev/null 2>&1
+fi
 
 R_SESS=$(sudo cat ${JSON_PATH}/rancher-cookie.txt | grep R_SESS | awk '{print $7}')
 
