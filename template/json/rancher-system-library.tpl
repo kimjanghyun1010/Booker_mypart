@@ -6,7 +6,7 @@
     
   },
   "baseType": "catalog",
-  "branch": "master",
+  "branch": "release-v2.5",
   "createdTS": 1630572301000,
   "creatorId": "null",
   "description": "",
