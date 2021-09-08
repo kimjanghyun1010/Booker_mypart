@@ -74,3 +74,7 @@ do
     curl -ks "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/nodes/${node}?action=diskUpdate" \
      -H "cookie: R_SESS=${R_SESS}"  -d @${path}/longhorn-volume-add.json  > /dev/null 2>&1
 done
+
+curl -ks -X PUT "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/settings/node-down-pod-deletion-policy" \
+  -H "cookie: R_SESS=${R_SESS}" \
+  -d @${path}/longhorn-policy.json  > /dev/null 2>&1

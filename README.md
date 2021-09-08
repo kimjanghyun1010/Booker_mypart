@@ -200,7 +200,7 @@
 ##### 2.1.11 PaaSXpert 서비스 설치
 
     # (~/paasxpert-deployment-tool/bin 폴더에서 실행)
-    bash ../app/deploy/os/rke/px-install.sh
+    bash ../app/deploy/px-install.sh
 
 
 

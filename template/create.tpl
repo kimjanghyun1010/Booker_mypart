@@ -6,7 +6,7 @@ BASE_DIR_NAME=("base-common" "ssh-key-copy" "ssh-command" "user-add" "run-user-a
 OS_NAME=("common" "haproxy" "named" "certificate" "docker" "registry" "rancher" "rke")
 HELM_NAME=("mariadb-galera" "postgresql" "keycloak" "gitea" "harbor" "jenkins" "portal")
 API_SHELL_NAME=("keycloak-api-start" "gitea-api-start" "harbor-api-start" "longhorn-api-start" "jenkins-api-start" "rancher-keycloak-oauth-api-start" "rancher-update-password-api-start" "jenkins-api-start" "longhorn-volume-api-start" "rancher-update-catalog-api-start" )
-JSON_NAME=("keycloak-gitea-api" "keycloak-harbor-api" "keycloak-jenkins-api" "keycloak-portal-api" "keycloak-rancher-api" "keycloak-master-portal-api" "gitea-source" "harbor-source" "keycloak-master-portal-role-admin" "rancher-keycloak-api" "longhorn-volume-add" "longhorn-create-app" "rancher-helm3-library" "rancher-library" "rancher-system-library" )
+JSON_NAME=("keycloak-gitea-api" "keycloak-harbor-api" "keycloak-jenkins-api" "keycloak-portal-api" "keycloak-rancher-api" "keycloak-master-portal-api" "gitea-source" "harbor-source" "keycloak-master-portal-role-admin" "rancher-keycloak-api" "longhorn-volume-add" "longhorn-create-app" "rancher-helm3-library" "rancher-library" "rancher-system-library" "longhorn-policy")
 SQL_NAME=("SQL-mariadb" "SQL-postgresql")
 ETC_NAME=("gitea-push" "harbor-login" "registry-login" "jenkins-image-push" )
 ## new path
@@ -80,12 +80,6 @@ for name in "${OS_NAME[@]}"
 do
     mkdir -p ${OS_PATH}/${name}
     gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${OS_TEMPLATE_DIR}/${name}.tpl > ${OS_PATH}/${name}/${name}.sh
-
-    # rke
-    if [ $name == rke ]
-    then
-        gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/px-install.tpl > ${OS_PATH}/${name}/px-install.sh
-    fi
 done
 
 for name in "${ETC_NAME[@]}"
@@ -134,6 +128,7 @@ gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/function.tpl > 
 gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/properties.tpl > ${APP_PATH}/properties.env
 
 gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${OS_TEMPLATE_DIR}/loadbalancer-install.tpl > ${DEPLOY_PATH}/loadbalancer-install.sh
+gucci -o missingkey=zero -f ${BASEDIR}/site.yaml ${TEMPLATE_DIR}/px-install.tpl > ${DEPLOY_PATH}/px-install.sh
 
 chown -R ${USERNAME}. ${WORKDIR_PATH} ${DATA_PATH} ${LOG_PATH} ${APP_PATH}
 
