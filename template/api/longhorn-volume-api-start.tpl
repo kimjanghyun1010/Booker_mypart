@@ -25,7 +25,7 @@ curl -ks -c ${JSON_PATH}/rancher-cookie.txt "${rancher_url}/v3-public/localProvi
     "ui-session": "true"
   },
   "ui-session": "true",
-  "password": "admin",
+  "password": "crossent1234!",
   "responseType": "cookie",
   "ttl": 57600000,
   "username": "admin"
@@ -75,6 +75,7 @@ do
      -H "cookie: R_SESS=${R_SESS}"  -d @${path}/longhorn-volume-add.json  > /dev/null 2>&1
 done
 
+echo_api_blue "[INFO] Change Longhorn policy"
 curl -ks -X PUT "${rancher_url}/k8s/clusters/local/api/v1/namespaces/longhorn-system/services/http:longhorn-frontend:80/proxy/v1/settings/node-down-pod-deletion-policy" \
   -H "cookie: R_SESS=${R_SESS}" \
   -d @${path}/longhorn-policy.json  > /dev/null 2>&1

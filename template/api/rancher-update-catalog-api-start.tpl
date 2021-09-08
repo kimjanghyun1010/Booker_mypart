@@ -23,7 +23,7 @@ curl -ks -c ${path}/rancher-cookie.txt "${rancher_url}/v3-public/localProviders/
     "ui-session": "true"
   },
   "ui-session": "true",
-  "password": "admin",
+  "password": "crossent1234!",
   "responseType": "cookie",
   "ttl": 57600000,
   "username": "admin"
