@@ -79,7 +79,8 @@ rancher:
 registry:
   cname: registry
   gitea_catalog:
-    domain: catalog-git.crossent.com:3000
+    domain: catalog-git.crossent.com
+    port: 3000
     
 ## ---
 
