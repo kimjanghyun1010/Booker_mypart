@@ -1,6 +1,7 @@
 #!/bin/sh
-source /app/function.env
-source /app/properties.env
+source {{ .common.directory.app }}/function.env
+source {{ .common.directory.app }}/properties.env
+
 
 rancher_url="https://${RANCHER_URL}"
 path="${JSON_PATH}/rancher"

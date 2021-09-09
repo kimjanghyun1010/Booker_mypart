@@ -252,14 +252,12 @@ spec:
     spec:
       affinity:
       hostAliases:
-      {{ if .common.IP.inception -}}
-      - ip: "{{ .common.IP.inception.inception1 }}"
-      {{ else -}}
-      - ip: "{{ .common.IP.haproxy.haproxy1 }}"
-      {{ end -}}
-        hostnames:
-        - "{{ .registry.gitea_catalog.domain }}"
-
+      - hostnames:
+        - {{ .registry.gitea_catalog.domain }}
+        {{ if .common.IP.inception -}}
+            ip: "{{ .common.IP.inception.inception1 }}"
+        {{ else -}}
+            ip: "{{ .common.IP.haproxy.haproxy1 }}"
+        {{ end }}
 EOF
-
 fi
