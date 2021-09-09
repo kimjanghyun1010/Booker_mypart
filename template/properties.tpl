@@ -11,6 +11,7 @@
 # @see
 #/
 INSTALL_ROLE="{{ .common.env }}"
+APP_NAMESPACE="{{ .global.namespace }}"
 
 DEFAULT_USER="{{ .common.default_username }}"
 USERNAME="{{ .common.username }}"
