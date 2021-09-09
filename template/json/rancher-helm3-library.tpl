@@ -28,7 +28,7 @@
   "transitioning": "no",
   "transitioningMessage": "",
   "type": "catalog",
-  "url": "http://{{ .registry.gitea_catalog.domain }}/sudouser/helm3-library.git",
+  "url": "http://{{ .registry.gitea_catalog.domain }}:{{ .registry.gitea_catalog.port }}/sudouser/helm3-library.git",
   "username": "sudouser",
   "password": "Crossent1234!"
 }
