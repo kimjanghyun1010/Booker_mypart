@@ -85,3 +85,4 @@ do
 done
 
 cat /etc/hosts
+cat /etc/resolv.conf

@@ -88,7 +88,11 @@ SSH_COMMAND() {
             ssh ${USERNAME}@${NODE_NAME}${NUM} sudo mkdir -p ${RPM_HAPROXY_PATH} ${RPM_ISCSI_PATH}
             ssh ${USERNAME}@${NODE_NAME}${NUM} sudo chown -R ${USERNAME}. ${RPM_ISCSI_PATH}
             scp -r ${RPM_ISCSI_PATH} ${USERNAME}@${NODE_NAME}${NUM}:${RPM_PATH}
-            ssh ${USERNAME}@${NODE_NAME}${NUM} "sudo rpm -ivh --nodeps --force --replacefiles --replacepkgs ${RPM_ISCSI_PATH}/*.rpm"
+            CHECK_ISCSI=$(ssh ${USERNAME}@${NODE_NAME}${NUM} yum list installed | grep iscsi | tail -1 | awk '{print $1}')
+            if [ -z ${CHECK_ISCSI} ]
+            then
+                ssh ${USERNAME}@${NODE_NAME}${NUM} "sudo rpm -ivh --nodeps --force --replacefiles --replacepkgs ${RPM_ISCSI_PATH}/*.rpm"
+            fi
         fi
     fi
 }
