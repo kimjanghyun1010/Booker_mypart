@@ -22,11 +22,20 @@ DATA_PATH="{{ .common.directory.data }}"
 LOG_PATH="{{ .common.directory.log }}"
 DOCKER_URL="{{ .common.docker.curl }}"
 
-HAPROXY=({{ range $element := .common.IP.haproxy }}"{{ $element }}" {{ end }})
-INCEPTION=({{ range $element := .common.IP.inception }}"{{ $element }}" {{ end }})
-RANCHER=({{ range $element := .common.IP.rancher }}"{{ $element }}" {{ end }})
-MASTER=({{ range $element := .common.IP.master }}"{{ $element }}" {{ end }})
-WORKER=({{ range $element := .common.IP.worker }}"{{$element}}" {{ end }})
+# key
+HAPROXY_KEY=({{ range $key, $value := .common.IP.haproxy }}"{{ $key }}" {{ end }})
+INCEPTION_KEY=({{ range $key, $value := .common.IP.inception }}"{{ $key }}" {{ end }})
+RANCHER_KEY=({{ range $key, $value := .common.IP.rancher }}"{{ $key }}" {{ end }})
+MASTER_KEY=({{ range $key, $value := .common.IP.master }}"{{ $key }}" {{ end }})
+WORKER_KEY=({{ range $key, $value := .common.IP.worker }}"{{ $key }}" {{ end }})
+
+
+# value
+HAPROXY=({{ range $value := .common.IP.haproxy }}"{{ $value }}" {{ end }})
+INCEPTION=({{ range $value := .common.IP.inception }}"{{ $value }}" {{ end }})
+RANCHER=({{ range $value := .common.IP.rancher }}"{{ $value }}" {{ end }})
+MASTER=({{ range $value := .common.IP.master }}"{{ $value }}" {{ end }})
+WORKER=({{ range $value := .common.IP.worker }}"{{$value}}" {{ end }})
 
 BASEDIR=$(dirname "$0")
 DEPLOY_PATH="${APP_PATH}/deploy"
