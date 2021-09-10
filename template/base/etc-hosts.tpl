@@ -4,12 +4,6 @@ source {{ .common.directory.app }}/function.env
 source {{ .common.directory.app }}/properties.env
 
 TITLE="Ipaddress Define"
-h=0
-i=0
-r=0
-m=0
-w=0
-
 
 #/
 # <pre>
@@ -25,64 +19,41 @@ echo "[INFO] Update /etc/hosts"
 
 echo '${PASSWORD}' | sudo --stdin su
 
-echo "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4" > /etc/hosts
-echo "::1         localhost localhost.localdomain localhost6 localhost6.localdomain6" >> /etc/hosts
 sudo sed -i '/nameserver/d' /etc/resolv.conf
-for host in ${HAPROXY[@]}
-do
-    NODE_COUNT=$(echo ${#HAPROXY[@]})
-    ## -gt >
-    if [ ${NODE_COUNT} -gt 1 ]
-    then
-        let "h += 1"
-        echo "${host} haproxy${h}" >> /etc/hosts
-        echo "nameserver ${host}" >> /etc/resolv.conf
+do_setting(){
+    NUM=0
+    NODE_NAME=$1
+    eval NODE_NUM=\${#${NODE_NAME}[@]}
+    while [ ${NUM} -lt ${NODE_NUM} ]
+    do
+        NODE_KEY=${NODE_NAME}_KEY[${NUM}]
+        NODE_VALUE=${NODE_NAME}[${NUM}]
+        
+        CHECK_ETC_HOSTS=`cat /etc/hosts | grep ${!NODE_KEY}`
 
-    else
-        echo "${host} haproxy" >> /etc/hosts
-        echo "nameserver ${host}" >> /etc/resolv.conf
-    fi
-done
+        if [[ -z ${CHECK_ETC_HOSTS} ]]
+        then
+            echo  "${!NODE_VALUE} ${!NODE_KEY}"  >> /etc/hosts
+        fi
+
+        if [ ${NODE_NAME} == "HAPROXY" ]
+        then
+            echo "nameserver ${!NODE_VALUE}" >> /etc/resolv.conf
+        fi
+        NUM=$(($NUM+1))
+
+    done
+
+}
+
+do_setting HAPROXY
+do_setting INCEPTION
+do_setting RANCHER
+do_setting MASTER
+do_setting WORKER
 
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 
-for host in ${INCEPTION[@]}
-do
-    NODE_COUNT=$(echo ${#INCEPTION[@]})
-    ## -gt >
-    if [ ${NODE_COUNT} -gt 1 ]
-    then
-        let "i += 1"
-        echo "${host} inception${i}" >> /etc/hosts
-    else
-        echo "${host} inception" >> /etc/hosts
-    fi
-done
-
-for host in ${RANCHER[@]}
-do
-    NODE_COUNT=$(echo ${#RANCHER[@]})
-    ## -gt >
-    if [ ${NODE_COUNT} -gt 1 ]
-    then
-        let "r += 1"
-        echo "${host} rancher${r}" >> /etc/hosts
-    else
-        echo "${host} rancher" >> /etc/hosts
-    fi
-done
-
-for host in ${MASTER[@]}
-do
-    let "m += 1"
-    echo "${host} master${m}" >> /etc/hosts
-done
-
-for host in ${WORKER[@]}
-do
-    let "w += 1"
-    echo "${host} worker${w}" >> /etc/hosts
-done
-
 cat /etc/hosts
+echo "-----------------------"
 cat /etc/resolv.conf
